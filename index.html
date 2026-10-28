@@ -5,19 +5,19 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#050b07" id="themeMeta">
 <title>golda-mesenger</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'></text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🟢</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#050b07;--p1:#0a130d;--p2:#0d1a11;--p3:#12241a;--line:rgba(61,255,133,.14);--line2:rgba(61,255,133,.32);--neon:#3dff85;--gold:#ffd34d;--red:#ff6161;--tx:#dcf7e6;--mut:#7da88c;--mut2:#5b8268;--accent:#3dff85;--font:'Manrope',system-ui,sans-serif;--disp:'Unbounded',sans-serif;--mono:'JetBrains Mono',monospace}
+:root{--bg:#050b07;--p1:#0a130d;--p2:#0d1a11;--p3:#12241a;--line:rgba(61,255,133,.14);--line2:rgba(61,255,133,.32);--neon:#3dff85;--gold:#ffd34d;--red:#ff6161;--tx:#dcf7e6;--mut:#7da88c;--mut2:#5b8268;--accent:#3dff85;--font-size:14px;--font:'Manrope',system-ui,sans-serif;--disp:'Unbounded',sans-serif;--mono:'JetBrains Mono',monospace}
 body[data-theme="light"]{--bg:#f4f7f5;--p1:#ffffff;--p2:#eef5f0;--p3:#e4ede7;--line:rgba(15,120,60,.15);--line2:rgba(15,120,60,.35);--neon:#0b8a4a;--gold:#c98a00;--red:#d43030;--tx:#14281c;--mut:#4a6b56;--mut2:#6b8a75;--accent:#0b8a4a}
 body[data-theme="orange"]{--bg:#0f0a05;--p1:#1a1108;--p2:#241809;--p3:#2e1f0b;--line:rgba(255,140,50,.15);--line2:rgba(255,140,50,.35);--neon:#ff8c32;--gold:#ffd34d;--red:#ff6161;--tx:#ffe8d4;--mut:#b88a60;--mut2:#8a6540;--accent:#ff8c32}
 body[data-theme="green"]{--bg:#041208;--p1:#071d0f;--p2:#0a2a16;--p3:#0d361d;--line:rgba(0,230,118,.15);--line2:rgba(0,230,118,.35);--neon:#00e676;--gold:#ffd34d;--red:#ff6161;--tx:#d4ffe8;--mut:#5ba87a;--mut2:#3d7a56;--accent:#00e676}
 body[data-theme="blue"]{--bg:#050a14;--p1:#081220;--p2:#0b1a2e;--p3:#0e223d;--line:rgba(60,140,255,.15);--line2:rgba(60,140,255,.35);--neon:#3c8cff;--gold:#ffd34d;--red:#ff6161;--tx:#d4e4ff;--mut:#6088b8;--mut2:#40608a;--accent:#3c8cff}
 html,body{height:100%}
-body{background:var(--bg);color:var(--tx);font-family:var(--font);overflow:hidden;transition:background .4s,color .4s}
+body{background:var(--bg);color:var(--tx);font-family:var(--font);font-size:var(--font-size);overflow:hidden;transition:background .4s,color .4s}
 body::before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(1000px 640px at 10% -12%,rgba(61,255,133,.13),transparent 62%),radial-gradient(820px 560px at 108% 112%,rgba(255,211,77,.07),transparent 60%);transition:background .4s}
 body[data-theme="orange"]::before{background:radial-gradient(1000px 640px at 10% -12%,rgba(255,140,50,.15),transparent 62%),radial-gradient(820px 560px at 108% 112%,rgba(255,211,77,.08),transparent 60%)}
 body[data-theme="green"]::before{background:radial-gradient(1000px 640px at 10% -12%,rgba(0,230,118,.15),transparent 62%),radial-gradient(820px 560px at 108% 112%,rgba(255,211,77,.08),transparent 60%)}
@@ -257,7 +257,7 @@ body[data-theme="light"] .admin-chat-row{background:rgba(0,0,0,.02)}
 <div class="update-screen" id="updateScreen">
   <div class="update-logo">G</div>
   <div class="update-title">Мессенджер обновляется</div>
-  <div class="update-sub">Пожалуйста, подожди несколько секунд. Мы делаем golda-mesenger ещё лучше ✨</div>
+  <div class="update-sub">Пожалуйста, подожди несколько секунд. Мы делаем golda-mesenger ещё лучше </div>
   <div class="update-loader"><div class="update-loader-bar"></div></div>
   <div class="update-dots"><span></span><span></span><span></span></div>
 </div>
@@ -423,7 +423,7 @@ body[data-theme="light"] .admin-chat-row{background:rgba(0,0,0,.02)}
 
 <div class="overlay" id="adminOverlay">
   <div class="modal wide">
-    <div class="m-head"><div class="m-title" style="color:var(--gold)"> Админ-панель</div><button class="icon-btn x" data-close>✕</button></div>
+    <div class="m-head"><div class="m-title" style="color:var(--gold)">⚡ Админ-панель</div><button class="icon-btn x" data-close>✕</button></div>
     <div class="adm-tabs" id="admTabs">
       <button class="adm-tab active" data-tab="users">Пользователи</button>
       <button class="adm-tab hidden" data-tab="chats">💬 Чаты</button>
@@ -464,7 +464,7 @@ body[data-theme="light"] .admin-chat-row{background:rgba(0,0,0,.02)}
 
     <div class="settings-section">
       <div class="settings-label">Внешний вид</div>
-      <div class="settings-row" id="settingsThemeRow">
+      <div class="settings-row" style="cursor:default">
         <div class="settings-row-left">
           <div class="settings-row-icon">🎨</div>
           <div>
@@ -472,24 +472,22 @@ body[data-theme="light"] .admin-chat-row{background:rgba(0,0,0,.02)}
             <div class="settings-row-sub" id="currentTheme">Тёмная</div>
           </div>
         </div>
-        <div style="color:var(--mut2);font:700 12px var(--font)">Изменить ›</div>
       </div>
       <div class="theme-options">
-        <button class="theme-opt" data-t="dark">🌙 Тёмная</button>
+        <button class="theme-opt" data-t="dark"> Тёмная</button>
         <button class="theme-opt" data-t="light">☀ Светлая</button>
-        <button class="theme-opt" data-t="orange"> Оранж</button>
-        <button class="theme-opt" data-t="green"> Зелён</button>
+        <button class="theme-opt" data-t="orange">🟠 Оранж</button>
+        <button class="theme-opt" data-t="green">🟢 Зелён</button>
         <button class="theme-opt" data-t="blue">🔵 Синяя</button>
       </div>
-      <div class="settings-row" id="settingsFontRow">
+      <div class="settings-row" style="cursor:default">
         <div class="settings-row-left">
-          <div class="settings-row-icon"></div>
+          <div class="settings-row-icon">🔤</div>
           <div>
             <div class="settings-row-title">Размер шрифта</div>
             <div class="settings-row-sub" id="currentFontSize">Средний</div>
           </div>
         </div>
-        <div style="color:var(--mut2);font:700 12px var(--font)">Изменить ›</div>
       </div>
       <div class="font-size-options">
         <button class="font-size-opt" data-size="small">Маленький</button>
@@ -522,7 +520,7 @@ body[data-theme="light"] .admin-chat-row{background:rgba(0,0,0,.02)}
       </div>
       <div class="settings-row">
         <div class="settings-row-left">
-          <div class="settings-row-icon">📳</div>
+          <div class="settings-row-icon"></div>
           <div>
             <div class="settings-row-title">Вибрация</div>
             <div class="settings-row-sub">Вибрировать при сообщении</div>
@@ -532,47 +530,13 @@ body[data-theme="light"] .admin-chat-row{background:rgba(0,0,0,.02)}
       </div>
       <div class="settings-row">
         <div class="settings-row-left">
-          <div class="settings-row-icon">👁</div>
+          <div class="settings-row-icon"></div>
           <div>
             <div class="settings-row-title">Превью сообщений</div>
             <div class="settings-row-sub">Показывать текст в уведомлении</div>
           </div>
         </div>
         <div class="toggle on" id="togglePreview"></div>
-      </div>
-    </div>
-
-    <div class="settings-section">
-      <div class="settings-label">Конфиденциальность</div>
-      <div class="settings-row" id="settingsOnlineStatus">
-        <div class="settings-row-left">
-          <div class="settings-row-icon">🔒</div>
-          <div>
-            <div class="settings-row-title">Статус «в сети»</div>
-            <div class="settings-row-sub" id="onlineStatusText">Видят все</div>
-          </div>
-        </div>
-        <div style="color:var(--mut2);font:700 12px var(--font)">Изменить ›</div>
-      </div>
-      <div class="settings-row" id="settingsWhoCanWrite">
-        <div class="settings-row-left">
-          <div class="settings-row-icon"></div>
-          <div>
-            <div class="settings-row-title">Кто может писать</div>
-            <div class="settings-row-sub" id="whoCanWriteText">Все</div>
-          </div>
-        </div>
-        <div style="color:var(--mut2);font:700 12px var(--font)">Изменить ›</div>
-      </div>
-      <div class="settings-row" id="settingsProfilePhoto">
-        <div class="settings-row-left">
-          <div class="settings-row-icon"></div>
-          <div>
-            <div class="settings-row-title">Фото профиля</div>
-            <div class="settings-row-sub" id="profilePhotoText">Видят все</div>
-          </div>
-        </div>
-        <div style="color:var(--mut2);font:700 12px var(--font)">Изменить ›</div>
       </div>
     </div>
 
@@ -604,7 +568,7 @@ body[data-theme="light"] .admin-chat-row{background:rgba(0,0,0,.02)}
       <div class="settings-label">Чаты</div>
       <div class="settings-row">
         <div class="settings-row-left">
-          <div class="settings-row-icon">💬</div>
+          <div class="settings-row-icon"></div>
           <div>
             <div class="settings-row-title">Размер сообщений</div>
             <div class="settings-row-sub" id="msgSizeText">Обычный</div>
@@ -722,46 +686,43 @@ const themeNames={dark:'Тёмная',light:'Светлая',orange:'Оранж�
 function applyTheme(t){document.body.setAttribute('data-theme',t);const colors={dark:'#050b07',light:'#f4f7f5',orange:'#0f0a05',green:'#041208',blue:'#050a14'};$('#themeMeta').setAttribute('content',colors[t]||'#050b07');document.querySelectorAll('.theme-opt').forEach(b=>b.classList.toggle('active',b.dataset.t===t));$('#currentTheme').textContent=themeNames[t]||t;localStorage.setItem(THEME_KEY,t);}
 applyTheme(localStorage.getItem(THEME_KEY)||'dark');
 document.querySelectorAll('.theme-opt').forEach(b=>b.onclick=()=>applyTheme(b.dataset.t));
-$('#settingsThemeRow').onclick=()=>{toast('Выбери тему выше 👆');};
 
-// ===== РАЗМЕР ШРИФТА =====
+// ===== РАЗМЕР ШРИФТА (ИСПРАВЛЕНО - через CSS-переменную) =====
 const FONT_KEY='golda_font_size';
 const fontNames={small:'Маленький',medium:'Средний',large:'Большой'};
-const fontSizes={small:'13px',medium:'14px',large:'16px'};
-function applyFontSize(size){document.body.style.fontSize=fontSizes[size]||'14px';document.querySelectorAll('.font-size-opt').forEach(b=>b.classList.toggle('active',b.dataset.size===size));$('#currentFontSize').textContent=fontNames[size]||size;localStorage.setItem(FONT_KEY,size);}
+const fontSizes={small:'12px',medium:'14px',large:'17px'};
+function applyFontSize(size){
+  document.documentElement.style.setProperty('--font-size',fontSizes[size]||'14px');
+  document.querySelectorAll('.font-size-opt').forEach(b=>b.classList.toggle('active',b.dataset.size===size));
+  $('#currentFontSize').textContent=fontNames[size]||size;
+  localStorage.setItem(FONT_KEY,size);
+}
 applyFontSize(localStorage.getItem(FONT_KEY)||'medium');
 document.querySelectorAll('.font-size-opt').forEach(b=>b.onclick=()=>applyFontSize(b.dataset.size));
-$('#settingsFontRow').onclick=()=>{toast('Выбери размер выше 👆');};
 
 // ===== НАСТРОЙКИ =====
 const PREFS_KEY='golda_prefs';
-let PREFS=JSON.parse(localStorage.getItem(PREFS_KEY)||'{"sound":true,"vibrate":true,"preview":true,"autoload":true,"compact":false,"night":false,"onlineStatus":"all","whoCanWrite":"all","profilePhoto":"all"}');
+let PREFS=JSON.parse(localStorage.getItem(PREFS_KEY)||'{"sound":true,"vibrate":true,"preview":true,"autoload":true,"compact":false,"night":false}');
 function savePrefs(){localStorage.setItem(PREFS_KEY,JSON.stringify(PREFS));}
-function applyPrefs(){$('#toggleSound').classList.toggle('on',!!PREFS.sound);$('#toggleVibrate').classList.toggle('on',!!PREFS.vibrate);$('#togglePreview').classList.toggle('on',!!PREFS.preview);$('#toggleAutoload').classList.toggle('on',!!PREFS.autoload);$('#toggleCompact').classList.toggle('on',!!PREFS.compact);$('#toggleNight').classList.toggle('on',!!PREFS.night);$('#onlineStatusText').textContent=PREFS.onlineStatus==='all'?'Видят все':PREFS.onlineStatus==='contacts'?'Только контакты':'Никто';$('#whoCanWriteText').textContent=PREFS.whoCanWrite==='all'?'Все':PREFS.whoCanWrite==='contacts'?'Только контакты':'Никто';$('#profilePhotoText').textContent=PREFS.profilePhoto==='all'?'Видят все':PREFS.profilePhoto==='contacts'?'Только контакты':'Никто';$('#msgSizeText').textContent=PREFS.compact?'Компактный':'Обычный';}
+function applyPrefs(){
+  $('#toggleSound').classList.toggle('on',!!PREFS.sound);
+  $('#toggleVibrate').classList.toggle('on',!!PREFS.vibrate);
+  $('#togglePreview').classList.toggle('on',!!PREFS.preview);
+  $('#toggleAutoload').classList.toggle('on',!!PREFS.autoload);
+  $('#toggleCompact').classList.toggle('on',!!PREFS.compact);
+  $('#toggleNight').classList.toggle('on',!!PREFS.night);
+  $('#msgSizeText').textContent=PREFS.compact?'Компактный':'Обычный';
+}
 applyPrefs();
 $('#toggleSound').onclick=()=>{PREFS.sound=!PREFS.sound;savePrefs();applyPrefs();toast(PREFS.sound?'Звук включён 🔔':'Звук выключен 🔕');};
 $('#toggleVibrate').onclick=()=>{PREFS.vibrate=!PREFS.vibrate;savePrefs();applyPrefs();toast(PREFS.vibrate?'Вибрация включена 📳':'Вибрация выключена');};
-$('#togglePreview').onclick=()=>{PREFS.preview=!PREFS.preview;savePrefs();applyPrefs();toast(PREFS.preview?'Превью включено ':'Превью выключено');};
+$('#togglePreview').onclick=()=>{PREFS.preview=!PREFS.preview;savePrefs();applyPrefs();toast(PREFS.preview?'Превью включено 👁':'Превью выключено');};
 $('#toggleAutoload').onclick=()=>{PREFS.autoload=!PREFS.autoload;savePrefs();applyPrefs();toast(PREFS.autoload?'Автозагрузка включена 📥':'Автозагрузка выключена');};
 $('#toggleCompact').onclick=()=>{PREFS.compact=!PREFS.compact;savePrefs();applyPrefs();toast(PREFS.compact?'Компактный вид включён':'Обычный вид включён');};
 $('#toggleNight').onclick=()=>{PREFS.night=!PREFS.night;savePrefs();applyPrefs();toast(PREFS.night?'Ночной режим включён 🌙':'Ночной режим выключен');};
 
-// Конфиденциальность - циклическое переключение
-function cyclePrivacy(key,elementId,textId,options){
-  const current=PREFS[key]||options[0];
-  const idx=options.indexOf(current);
-  const next=options[(idx+1)%options.length];
-  PREFS[key]=next;
-  savePrefs();
-  applyPrefs();
-  toast(textId+' изменён');
-}
-$('#settingsOnlineStatus').onclick=()=>cyclePrivacy('onlineStatus','onlineStatusText','Статус «в сети»',['all','contacts','nobody']);
-$('#settingsWhoCanWrite').onclick=()=>cyclePrivacy('whoCanWrite','whoCanWriteText','Кто может писать',['all','contacts','nobody']);
-$('#settingsProfilePhoto').onclick=()=>cyclePrivacy('profilePhoto','profilePhotoText','Фото профиля',['all','contacts','nobody']);
-
-$('#settingsClearCache').onclick=()=>{if(confirm('Очистить кэш?')){localStorage.removeItem('golda_cache');$('#cacheSize').textContent='0 МБ';toast('Кэш очищен ✔');}};
-$('#settingsPinned').onclick=()=>toast('Закреплённые чаты — в разработке ');
+$('#settingsClearCache').onclick=()=>{if(confirm('Очистить кэш?')){for(let k in localStorage){if(k.startsWith('golda_')&&k!==THEME_KEY&&k!==FONT_KEY&&k!==PREFS_KEY)localStorage.removeItem(k);}let size=0;for(let k in localStorage){if(localStorage.hasOwnProperty(k))size+=localStorage[k].length;}$('#cacheSize').textContent=(size/1024/1024).toFixed(2)+' МБ';toast('Кэш очищен ✔');}};
+$('#settingsPinned').onclick=()=>toast('Закреплённые чаты — в разработке 📌');
 $('#settingsLanguage').onclick=()=>toast('Язык: Русский (другие языки в разработке) 🌍');
 $('#settingsAbout').onclick=()=>toast('golda-mesenger v1.0.0\nНеоновый мессенджер\nСоздано с ❤️');
 $('#settingsPrivacy').onclick=()=>{const modal=document.createElement('div');modal.className='overlay open';modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:200;padding:18px';modal.innerHTML=`<div class="modal"><div class="m-head"><div class="m-title">📄 Политика конфиденциальности</div><button class="icon-btn x" onclick="this.closest('.overlay').remove()">✕</button></div><div style="color:var(--tx);font-size:14px;line-height:1.6"><p style="margin-bottom:12px"><b>1. Сбор данных</b><br>Мы собираем только необходимые данные: почту, юзернейм и сообщения для работы мессенджера.</p><p style="margin-bottom:12px"><b>2. Использование данных</b><br>Данные используются исключительно для функционирования сервиса. Мы не передаём их третьим лицам.</p><p style="margin-bottom:12px"><b>3. Безопасность</b><br>Все данные хранятся в зашифрованном виде на серверах Supabase с защитой RLS (Row Level Security).</p><p style="margin-bottom:12px"><b>4. Модерация</b><br>Администраторы могут просматривать чаты пользователей в целях безопасности и предотвращения нарушений.</p><p><b>5. Удаление аккаунта</b><br>Вы можете удалить свой аккаунт в любой момент через настройки профиля.</p></div></div>`;document.body.appendChild(modal);modal.onclick=e=>{if(e.target===modal)modal.remove();};};
@@ -788,7 +749,7 @@ function confirmBox(title,text){return new Promise(res=>{$('#cfTitle').textConte
 const normUname=v=>v.trim().toLowerCase().replace(/\s+/g,'');
 const validUname=v=>/^[a-z0-9_]{3,20}$/.test(v);
 function parseMedia(c){const m=String(c).match(/^\[\[(image|video|audio)\|([^\]]+)\]\]([\s\S]*)$/);return m?{kind:m[1],url:m[2],cap:m[3].trim()}:null;}
-function mediaHTML(md){if(md.kind==='image')return `<a href="${esc(md.url)}" target="_blank" rel="noopener"><img class="m-img" src="${esc(md.url)}" alt="фото" loading="lazy"></a>`;if(md.kind==='video')return `<video class="m-video" src="${esc(md.url)}" controls playsinline preload="metadata"></video>`;return `<div class="m-voice">🎤 голосовое сообщение</div><audio class="m-audio" src="${esc(md.url)}" controls preload="metadata"></audio>`;}
+function mediaHTML(md){if(md.kind==='image')return `<a href="${esc(md.url)}" target="_blank" rel="noopener"><img class="m-img" src="${esc(md.url)}" alt="фото" loading="lazy"></a>`;if(md.kind==='video')return `<video class="m-video" src="${esc(md.url)}" controls playsinline preload="metadata"></video>`;return `<div class="m-voice"> голосовое сообщение</div><audio class="m-audio" src="${esc(md.url)}" controls preload="metadata"></audio>`;}
 
 // ===== СКРИМЕР =====
 let screamAudio=null;
@@ -800,12 +761,20 @@ $('#bsLogoutReal').onclick=async()=>{try{await sb.auth.signOut();}catch{}locatio
 // ===== ЭКРАН ОБНОВЛЕНИЯ (ИСПРАВЛЕНО) =====
 function showUpdateScreen(){$('#updateScreen').classList.add('show');const bar=document.querySelector('.update-loader-bar');bar.style.animation='none';void bar.offsetWidth;bar.style.animation='loadBar 8s ease-in-out infinite';}
 function hideUpdateScreen(){$('#updateScreen').classList.remove('show');}
+
+// Проверка флага обновления через отдельный запрос (работает и при F5)
+async function checkOwnerUpdateFlag(){
+  if(!ME||ME.email===OWNER_EMAIL)return; // создателю не показываем
+  const {data:owner}=await sb.from('profiles').select('about').eq('email',OWNER_EMAIL).maybeSingle();
+  if(owner&&owner.about==='__UPDATING__'){showUpdateScreen();}
+  else{hideUpdateScreen();}
+}
+
 function checkUpdateFlag(profile){
   if(profile&&profile.id){
     const u=USERS.find(x=>x.id===profile.id);
     if(u&&u.email===OWNER_EMAIL){
-      // Показывать экран обновления ТОЛЬКО если это НЕ создатель
-      if(ME && ME.email !== OWNER_EMAIL){
+      if(ME&&ME.email!==OWNER_EMAIL){
         if(profile.about==='__UPDATING__')showUpdateScreen();
         else hideUpdateScreen();
       }
@@ -827,10 +796,20 @@ $('#authForm').onsubmit=async e=>{e.preventDefault();const email=$('#authEmail')
 
 $('#setupForm').onsubmit=async e=>{e.preventDefault();const uname=normUname($('#setupUname').value);if(!validUname(uname)){$('#setupMsg').textContent='Юзернейм: 3–20 символов, латиница/цифры/_';return;}try{await createProfile(SETUP_UID,SETUP_EMAIL,uname,$('#setupName').value.trim()||uname);await enterApp();}catch(err){$('#setupMsg').textContent=ru(err.message);}};
 
-async function enterApp(){const {data:{session}}=await sb.auth.getSession();if(!session){showOnly('auth');return;}const {data:p}=await sb.from('profiles').select('*').eq('id',session.user.id).maybeSingle();if(!p){SETUP_UID=session.user.id;SETUP_EMAIL=session.user.email||'';showOnly('setup');return;}ME=p;PROFILES[p.id]=p;UNREAD={};CURRENT=null;showOnly('app');await Promise.all([fetchAllUsers(),loadChats(),loadBlocks()]);renderMe();renderChatList();updateRestrictionUI();if(ME.is_banned)showBanScreen();
-// Не показывать экран обновления создателю при входе
-if(ME.about==='__UPDATING__' && ME.email !== OWNER_EMAIL){showUpdateScreen();}
-subscribeRT();startHeartbeat();}
+async function enterApp(){
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session){showOnly('auth');return;}
+  const {data:p}=await sb.from('profiles').select('*').eq('id',session.user.id).maybeSingle();
+  if(!p){SETUP_UID=session.user.id;SETUP_EMAIL=session.user.email||'';showOnly('setup');return;}
+  ME=p;PROFILES[p.id]=p;UNREAD={};CURRENT=null;
+  showOnly('app');
+  await Promise.all([fetchAllUsers(),loadChats(),loadBlocks()]);
+  renderMe();renderChatList();updateRestrictionUI();
+  if(ME.is_banned)showBanScreen();
+  // Проверяем флаг обновления создателя при каждом входе
+  await checkOwnerUpdateFlag();
+  subscribeRT();startHeartbeat();
+}
 
 async function fetchAllUsers(){const {data}=await sb.from('profiles').select('*').order('username').limit(1000);USERS=data||[];USERS.forEach(u=>PROFILES[u.id]=u);}
 async function loadBlocks(){const {data}=await sb.from('blocks').select('blocked_id').eq('blocker_id',ME.id);BLOCKED=(data||[]).map(r=>r.blocked_id);}
@@ -842,7 +821,7 @@ const otherOf=c=>c.members.find(m=>m.id!==ME.id)||{};
 
 function renderMe(){$('#meAva').innerHTML=`<div class="ava-wrap">${avatarHTML(ME,'m')}<span class="dot on"></span></div>`;$('#meName').textContent=ME.display_name||ME.username;$('#meUname').textContent='@'+ME.username;$('#btnAdmin').classList.toggle('hidden',!ME.is_admin);}
 
-function previewOf(lm,chat){const md=parseMedia(lm.content);const who=lm.sender_id===ME.id?'Вы: ':(chat.type==='group'?((PROFILES[lm.sender_id]||{}).username||'')+': ':'');if(md)return(md.kind==='image'?'📎 Фото':md.kind==='video'?' Видео':'🎤 Голосовое')+(md.cap?' · '+esc(md.cap):'');return esc(who+lm.content);}
+function previewOf(lm,chat){const md=parseMedia(lm.content);const who=lm.sender_id===ME.id?'Вы: ':(chat.type==='group'?((PROFILES[lm.sender_id]||{}).username||'')+': ':'');if(md)return(md.kind==='image'?'📎 Фото':md.kind==='video'?'🎬 Видео':'🎤 Голосовое')+(md.cap?' · '+esc(md.cap):'');return esc(who+lm.content);}
 
 function renderChatList(){const q=($('#searchInput').value||'').toLowerCase();const ts=c=>c.lastMsg?Date.parse(c.lastMsg.created_at):Date.parse(c.created_at);const list=CHATS.filter(c=>titleOf(c).toLowerCase().includes(q)).sort((a,b)=>ts(b)-ts(a));$('#chatList').innerHTML=list.map(c=>{const o=c.type==='direct'?otherOf(c):null;const lm=c.lastMsg;const prev=lm?previewOf(lm,c):'<i>нет сообщений</i>';const unread=UNREAD[c.id]||0;const ava=c.type==='group'?`<div class="ava m ini" style="background:${GRADS[hashOf(c.name||c.id)%GRADS.length]}">${esc((c.name||'Г')[0].toUpperCase())}</div>`:`<div class="ava-wrap">${avatarHTML(o,'m')}<span class="dot ${isOnline(o)?'on':''}"></span></div>`;return `<div class="chat-item ${CURRENT===c.id?'active':''}" data-id="${c.id}">${ava}<div class="ci-body"><div class="ci-top"><span class="ci-name">${esc(titleOf(c))}</span><span class="ci-time">${lm?fmtListTime(lm.created_at):''}</span></div><div class="ci-bottom"><span class="ci-prev">${prev}</span>${unread?`<span class="badge">${unread>99?'99+':unread}</span>`:''}</div></div></div>`;}).join('')||'<div class="empty-note">Чатов пока нет.<br>Нажми ＋ сверху, чтобы начать.</div>';document.querySelectorAll('.chat-item').forEach(el=>el.onclick=()=>openChat(el.dataset.id));}
 $('#searchInput').oninput=renderChatList;
@@ -856,7 +835,7 @@ async function openChat(id){const chat=CHATS.find(c=>c.id===id);if(!chat)return;
 function closeChat(){CURRENT=null;MOD_CHAT_ID=null;$('#chatView').classList.add('hidden');$('#emptyState').classList.remove('hidden');$('#app').classList.remove('chat-open');$('#chatMenu').classList.remove('open');$('#modBanner').classList.add('hidden');renderChatList();}
 $('#backBtn').onclick=closeChat;
 
-function renderChatHeader(){const chat=CHATS.find(c=>c.id===CURRENT);if(!chat){closeChat();return;}const menu=$('#chatMenu');menu.classList.remove('open');$('#headTitle').textContent=titleOf(chat);if(chat.type==='group'){$('#headAva').innerHTML=`<div class="ava m ini" style="background:${GRADS[hashOf(chat.name||chat.id)%GRADS.length]}">${esc((chat.name||'Г')[0].toUpperCase())}</div>`;$('#headSub').textContent=chat.members.length+' '+plural(chat.members.length,'участник','участника','участников');menu.innerHTML=`<button class="menu-i" data-act="leave">🚪 Покинуть группу</button><button class="menu-i danger" data-act="del">🗑 Удалить чат</button>`;}else{const o=otherOf(chat);$('#headAva').innerHTML=`<div class="ava-wrap">${avatarHTML(o,'m')}<span class="dot ${isOnline(o)?'on':''}"></span></div>`;$('#headSub').innerHTML=o.is_banned?'<span style="color:var(--red)">аккаунт заблокирован</span>':(isOnline(o)?'<span class="st-on">● в сети</span>':'не в сети · '+fmtLastSeen(o.last_seen));const blocked=BLOCKED.includes(o.id);menu.innerHTML=`<button class="menu-i" data-act="block">${blocked?' Разблокировать пользователя':'🚫 Заблокировать пользователя'}</button><button class="menu-i danger" data-act="del">🗑 Удалить чат</button>`;}}
+function renderChatHeader(){const chat=CHATS.find(c=>c.id===CURRENT);if(!chat){closeChat();return;}const menu=$('#chatMenu');menu.classList.remove('open');$('#headTitle').textContent=titleOf(chat);if(chat.type==='group'){$('#headAva').innerHTML=`<div class="ava m ini" style="background:${GRADS[hashOf(chat.name||chat.id)%GRADS.length]}">${esc((chat.name||'Г')[0].toUpperCase())}</div>`;$('#headSub').textContent=chat.members.length+' '+plural(chat.members.length,'участник','участника','участников');menu.innerHTML=`<button class="menu-i" data-act="leave">🚪 Покинуть группу</button><button class="menu-i danger" data-act="del">🗑 Удалить чат</button>`;}else{const o=otherOf(chat);$('#headAva').innerHTML=`<div class="ava-wrap">${avatarHTML(o,'m')}<span class="dot ${isOnline(o)?'on':''}"></span></div>`;$('#headSub').innerHTML=o.is_banned?'<span style="color:var(--red)">аккаунт заблокирован</span>':(isOnline(o)?'<span class="st-on">● в сети</span>':'не в сети · '+fmtLastSeen(o.last_seen));const blocked=BLOCKED.includes(o.id);menu.innerHTML=`<button class="menu-i" data-act="block">${blocked?'🔓 Разблокировать пользователя':' Заблокировать пользователя'}</button><button class="menu-i danger" data-act="del"> Удалить чат</button>`;}}
 $('#dotsBtn').onclick=e=>{e.stopPropagation();$('#chatMenu').classList.toggle('open');};
 document.addEventListener('click',()=>$('#chatMenu').classList.remove('open'));
 $('#chatMenu').onclick=async e=>{const act=e.target.closest('[data-act]')?.dataset.act;if(!act)return;const chat=CHATS.find(c=>c.id===CURRENT);if(!chat)return;if(act==='block')await toggleBlock(otherOf(chat).id);if(act==='del'){if(await confirmBox('Удалить чат?','Все сообщения будут удалены безвозвратно для всех участников.')){const {error}=await sb.from('chats').delete().eq('id',CURRENT);if(error)toast(ru(error.message),'red');else removeChatLocal(CURRENT);}}if(act==='leave'){if(await confirmBox('Покинуть группу?','Ты сможешь вернуться, только если тебя добавят снова.')){const {error}=await sb.from('chat_members').delete().eq('chat_id',CURRENT).eq('user_id',ME.id);if(error)toast(ru(error.message),'red');else removeChatLocal(CURRENT);}}};
@@ -864,7 +843,7 @@ $('#headInfo').onclick=()=>{const chat=CHATS.find(c=>c.id===CURRENT);if(!chat)re
 
 function renderBlockBanner(){const chat=CHATS.find(c=>c.id===CURRENT);const bb=$('#blockBanner');const show=chat&&chat.type==='direct'&&BLOCKED.includes(otherOf(chat).id);bb.classList.toggle('hidden',!show);if(show){const o=otherOf(chat);bb.textContent='🚫 Пользователь @'+o.username+' заблокирован. ';const b=document.createElement('button');b.className='link';b.textContent='Разблокировать';b.onclick=()=>toggleBlock(o.id);bb.appendChild(b);}}
 
-function updateRestrictionUI(){if(!ME)return;const muted=ME.muted_until&&Date.parse(ME.muted_until)>Date.now();$('#banBanner').classList.toggle('hidden',!ME.is_banned);$('#muteBanner').classList.toggle('hidden',!(!ME.is_banned&&muted));if(muted&&ME.muted_until)$('#muteBanner').innerHTML=' У тебя мут до <b>&nbsp;'+new Date(ME.muted_until).toLocaleString('ru-RU')+'</b>';$('#inputBar').classList.toggle('hidden',ME.is_banned||muted);}
+function updateRestrictionUI(){if(!ME)return;const muted=ME.muted_until&&Date.parse(ME.muted_until)>Date.now();$('#banBanner').classList.toggle('hidden',!ME.is_banned);$('#muteBanner').classList.toggle('hidden',!(!ME.is_banned&&muted));if(muted&&ME.muted_until)$('#muteBanner').innerHTML='🔇 У тебя мут до <b>&nbsp;'+new Date(ME.muted_until).toLocaleString('ru-RU')+'</b>';$('#inputBar').classList.toggle('hidden',ME.is_banned||muted);}
 
 function restricted(){if(ME.is_banned){toast('Аккаунт заблокирован администратором','red');return true;}if(ME.muted_until&&Date.parse(ME.muted_until)>Date.now()){toast('У тебя мут до '+new Date(ME.muted_until).toLocaleString('ru-RU'),'red');return true;}return false;}
 async function send(){if(MOD_CHAT_ID){toast('Это режим модерации — писать нельзя','red');return;}const text=$('#msgInput').value.trim();if(!text||!CURRENT||restricted())return;const chat=CHATS.find(c=>c.id===CURRENT);if(chat.type==='direct'&&BLOCKED.includes(otherOf(chat).id)){toast('Сначала разблокируй пользователя');return;}$('#msgInput').value='';$('#msgInput').style.height='auto';const {data,error}=await sb.from('messages').insert({chat_id:CURRENT,sender_id:ME.id,content:text}).select().single();if(error){toast(ru(error.message),'red');return;}if(!MSG_IDS.has(data.id)){MSG_IDS.add(data.id);appendMsg(data,chat);scrollBottom();}}
@@ -909,7 +888,7 @@ $('#pfAvaInput').onchange=async e=>{const file=e.target.files[0];e.target.value=
 $('#pfSave').onclick=async()=>{const uname=normUname($('#pfUname').value);if(!validUname(uname))return toast('Юзернейм: 3–20 символов, латиница/цифры/_','red');const {data,error}=await sb.from('profiles').update({username:uname,display_name:$('#pfName').value.trim()||uname,about:$('#pfAbout').value.trim()}).eq('id',ME.id).select().single();if(error)return toast(error.code==='23505'?'Юзернейм уже занят':ru(error.message),'red');Object.assign(ME,data);PROFILES[ME.id]=ME;renderMe();renderChatList();if(CURRENT)renderChatHeader();$('#profileOverlay').classList.remove('open');toast('Профиль сохранён ✔');};
 
 let U_UID=null;
-function openUserModal(u){U_UID=u.id;$('#uAva').innerHTML=avatarHTML(u,'l');$('#uName').textContent=u.display_name||u.username||'—';$('#uUname').textContent='@'+(u.username||'');$('#uStatus').innerHTML=isOnline(u)?'<span class="st-on">● в сети</span>':'не в сети · '+fmtLastSeen(u.last_seen);let tags='';if(u.is_admin)tags+='<span class="tag gold">админ</span>';if(u.is_banned)tags+='<span class="tag red">забанен</span>';$('#uTags').innerHTML=tags;$('#uAbout').textContent=u.about||'—';$('#uBlock').textContent=BLOCKED.includes(u.id)?'🔓 Разблокировать':' Заблокировать';$('#uBlock').style.display=u.id===ME.id?'none':'';$('#userOverlay').classList.add('open');}
+function openUserModal(u){U_UID=u.id;$('#uAva').innerHTML=avatarHTML(u,'l');$('#uName').textContent=u.display_name||u.username||'—';$('#uUname').textContent='@'+(u.username||'');$('#uStatus').innerHTML=isOnline(u)?'<span class="st-on">● в сети</span>':'не в сети · '+fmtLastSeen(u.last_seen);let tags='';if(u.is_admin)tags+='<span class="tag gold">админ</span>';if(u.is_banned)tags+='<span class="tag red">забанен</span>';$('#uTags').innerHTML=tags;$('#uAbout').textContent=u.about||'—';$('#uBlock').textContent=BLOCKED.includes(u.id)?'🔓 Разблокировать':'🚫 Заблокировать';$('#uBlock').style.display=u.id===ME.id?'none':'';$('#userOverlay').classList.add('open');}
 $('#uWrite').onclick=async()=>{$('#userOverlay').classList.remove('open');await openDirectWith(U_UID);};
 $('#uBlock').onclick=async()=>{await toggleBlock(U_UID);$('#uBlock').textContent=BLOCKED.includes(U_UID)?'🔓 Разблокировать':'🚫 Заблокировать';};
 
@@ -932,16 +911,31 @@ $('#btnAdmin').onclick=async()=>{if(!ME.is_admin)return;document.querySelector('
 
 document.querySelectorAll('#admTabs .adm-tab').forEach(tab=>{tab.onclick=async()=>{document.querySelectorAll('#admTabs .adm-tab').forEach(t=>t.classList.remove('active'));tab.classList.add('active');const t=tab.dataset.tab;$('#admUsersPane').classList.toggle('hidden',t!=='users');$('#admChatsPane').classList.toggle('hidden',t!=='chats');$('#admHistPane').classList.toggle('hidden',t!=='history');$('#admUpdatePane').classList.toggle('hidden',t!=='update');if(t==='users')await refreshAdminUsers();if(t==='chats')await loadAdminChats();if(t==='history')await loadAdminHistory();};});
 
-async function refreshAdminUsers(){await fetchAllUsers();$('#admUserList').innerHTML=USERS.map(u=>{const mutedNow=u.muted_until&&Date.parse(u.muted_until)>Date.now();const self=u.id===ME.id;const isOwnerUser=u.email===OWNER_EMAIL;const protectedUser=isOwnerUser||self;return `<div class="a-row">${avatarHTML(u,'s')}<div class="a-info"><b>${esc(u.display_name||u.username)}</b>${isOwnerUser?' <span class="tag gold"> Создатель</span>':self?' <span class="tag green">это ты</span>':''} <span class="a-mail">@${esc(u.username)}</span><br><span class="a-mail">${esc(u.email)}</span><div>${u.is_admin?'<span class="tag gold">админ</span>':''}${u.is_banned?'<span class="tag red">Забанен</span>':''}${mutedNow?`<span class="tag green">мут до ${new Date(u.muted_until).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}</span>`:''}</div></div><div class="a-btns" data-uid="${u.id}">${protectedUser?'<span style="color:var(--mut2);font-size:11px;padding:6px">🔒 защищён</span>':`<button class="mini" data-a="m10">🔇10м</button><button class="mini" data-a="m60">🔇1ч</button><button class="mini" data-a="m1440">🔇24ч</button><button class="mini" data-a="unmute">🔓 Размут</button><button class="mini ${u.is_banned?'unban':'ban'}" data-a="ban">${u.is_banned?'✔ Разбанить':'⛔ Бан'}</button><button class="mini ${u.is_admin?'ban':'unban'}" data-a="toggleadmin">${u.is_admin?'🚫 Снять админа':'⚡ Админ'}</button>`}</div></div>`;}).join('');}
+async function refreshAdminUsers(){await fetchAllUsers();$('#admUserList').innerHTML=USERS.map(u=>{const mutedNow=u.muted_until&&Date.parse(u.muted_until)>Date.now();const self=u.id===ME.id;const isOwnerUser=u.email===OWNER_EMAIL;const protectedUser=isOwnerUser||self;return `<div class="a-row">${avatarHTML(u,'s')}<div class="a-info"><b>${esc(u.display_name||u.username)}</b>${isOwnerUser?' <span class="tag gold">👑 Создатель</span>':self?' <span class="tag green">это ты</span>':''} <span class="a-mail">@${esc(u.username)}</span><br><span class="a-mail">${esc(u.email)}</span><div>${u.is_admin?'<span class="tag gold">админ</span>':''}${u.is_banned?'<span class="tag red">Забанен</span>':''}${mutedNow?`<span class="tag green">мут до ${new Date(u.muted_until).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}</span>`:''}</div></div><div class="a-btns" data-uid="${u.id}">${protectedUser?'<span style="color:var(--mut2);font-size:11px;padding:6px">🔒 защищён</span>':`<button class="mini" data-a="m10">🔇10м</button><button class="mini" data-a="m60">🔇1ч</button><button class="mini" data-a="m1440">🔇24ч</button><button class="mini" data-a="unmute">🔓 Размут</button><button class="mini ${u.is_banned?'unban':'ban'}" data-a="ban">${u.is_banned?'✔ Разбанить':'⛔ Бан'}</button><button class="mini ${u.is_admin?'ban':'unban'}" data-a="toggleadmin">${u.is_admin?'🚫 Снять админа':'⚡ Админ'}</button>`}</div></div>`;}).join('');}
 
 $('#admUserList').addEventListener('click',async e=>{const btn=e.target.closest('[data-a]');if(!btn)return;const uid=btn.closest('[data-uid]').dataset.uid;const u=USERS.find(x=>x.id===uid);if(!u)return;if(u.email===OWNER_EMAIL){toast('👑 Создателя нельзя трогать','red');return;}let upd=null;if(btn.dataset.a==='ban'){if(uid===ME.id){toast('Нельзя забанить самого себя','red');return;}upd={is_banned:!u.is_banned};}else if(btn.dataset.a==='unmute')upd={muted_until:null};else if(btn.dataset.a==='toggleadmin'){if(uid===ME.id){toast('Нельзя снять админку с себя','red');return;}upd={is_admin:!u.is_admin};}else{if(uid===ME.id){toast('Нельзя замутить себя','red');return;}upd={muted_until:new Date(Date.now()+{m10:10,m60:60,m1440:1440}[btn.dataset.a]*60000).toISOString()};}const {error}=await sb.from('profiles').update(upd).eq('id',uid);if(error)return toast(ru(error.message),'red');toast('Готово ✔');await refreshAdminUsers();});
 
 // ===== ПРОСМОТР ЧАТОВ =====
 async function loadAdminChats(){const {data}=await sb.from('chats').select('id,type,name,created_at,created_by,chat_members(user_id,profiles(id,username,display_name))').order('created_at',{ascending:false}).limit(100);if(!data||!data.length){$('#admChatList').innerHTML='<div class="empty-note">Чатов пока нет</div>';return;}$('#admChatList').innerHTML=data.map(c=>{const members=(c.chat_members||[]).map(m=>m.profiles).filter(Boolean);const names=members.map(m=>m.display_name||m.username).join(', ');const title=c.type==='group'?c.name:(names||'Личный чат');return `<div class="admin-chat-row" data-cid="${c.id}"><div class="ava s ini" style="background:${GRADS[hashOf(c.id)%GRADS.length]}">${esc((title||'?')[0].toUpperCase())}</div><div class="admin-chat-info"><div class="admin-chat-name">${esc(title||'Без названия')} ${c.type==='group'?'<span class="tag gold">группа</span>':''}</div><div class="admin-chat-meta">${esc(names||'—')} · ${new Date(c.created_at).toLocaleDateString('ru-RU')}</div></div></div>`;}).join('');document.querySelectorAll('.admin-chat-row').forEach(r=>r.onclick=()=>openModChat(r.dataset.cid));}
 
-async function openModChat(cid){MOD_CHAT_ID=cid;const {data:chat}=await sb.from('chats').select('id,type,name,chat_members(user_id,profiles(id,username,display_name))').eq('id',cid).single();if(!chat)return;const members=(chat.chat_members||[]).map(m=>m.profiles).filter(Boolean);const title=chat.type==='group'?chat.name:members.map(m=>m.display_name||m.username).join(' и ');$('#modChatTitle').textContent=' '+title;const {data:msgs}=await sb.from('messages').select('id,sender_id,content,created_at').eq('chat_id',cid).order('created_at',{ascending:true}).limit(200);$('#modChatBody').innerHTML=(msgs||[]).map(m=>{const p=PROFILES[m.sender_id]||members.find(x=>x.id===m.sender_id)||{username:'?'};const md=parseMedia(m.content);const text=md?md.cap:m.content;return `<div class="msg" data-id="${m.id}" style="max-width:100%">${avatarHTML(p,'s')}<div class="bubble" style="max-width:100%"><div class="m-name" style="color:${nameColor(m.sender_id)}">${esc(p.display_name||p.username)}</div>${md?mediaHTML(md):''}${text?`<div class="m-text">${linkify(esc(text))}</div>`:''}<div class="m-time">${fmtHM(m.created_at)}</div></div></div>`;}).join('')||'<div class="empty-note">Сообщений нет</div>';$('#adminOverlay').classList.remove('open');$('#modChatOverlay').classList.add('open');}
+async function openModChat(cid){MOD_CHAT_ID=cid;const {data:chat}=await sb.from('chats').select('id,type,name,chat_members(user_id,profiles(id,username,display_name))').eq('id',cid).single();if(!chat)return;const members=(chat.chat_members||[]).map(m=>m.profiles).filter(Boolean);const title=chat.type==='group'?chat.name:members.map(m=>m.display_name||m.username).join(' и ');$('#modChatTitle').textContent='👁 '+title;const {data:msgs}=await sb.from('messages').select('id,sender_id,content,created_at').eq('chat_id',cid).order('created_at',{ascending:true}).limit(200);$('#modChatBody').innerHTML=(msgs||[]).map(m=>{const p=PROFILES[m.sender_id]||members.find(x=>x.id===m.sender_id)||{username:'?'};const md=parseMedia(m.content);const text=md?md.cap:m.content;return `<div class="msg" data-id="${m.id}" style="max-width:100%">${avatarHTML(p,'s')}<div class="bubble" style="max-width:100%"><div class="m-name" style="color:${nameColor(m.sender_id)}">${esc(p.display_name||p.username)}</div>${md?mediaHTML(md):''}${text?`<div class="m-text">${linkify(esc(text))}</div>`:''}<div class="m-time">${fmtHM(m.created_at)}</div></div></div>`;}).join('')||'<div class="empty-note">Сообщений нет</div>';$('#adminOverlay').classList.remove('open');$('#modChatOverlay').classList.add('open');}
 
-// ===== ТЕСТ ОБНОВЛЕНИЯ (ИСПРАВЛЕНО) =====
+// ===== ИСТОРИЯ РЕГИСТРАЦИЙ (ДОБАВЛЕНО) =====
+async function loadAdminHistory(){
+  const {data,error}=await sb.from('registrations').select('*').order('created_at',{ascending:false}).limit(300);
+  if(error){$('#admHistList').innerHTML='<div class="empty-note">Ошибка: '+ru(error.message)+'</div>';return;}
+  if(!data||!data.length){$('#admHistList').innerHTML='<div class="empty-note">История пуста</div>';return;}
+  $('#admHistList').innerHTML=data.map((r,i)=>`
+    <div class="h-row" style="display:flex;gap:12px;align-items:center;padding:10px 6px;border-bottom:1px dashed var(--line);font-size:13.5px;flex-wrap:wrap">
+      <span style="color:var(--mut2);font:600 11px var(--mono);width:22px">${i+1}</span>
+      <b>@${esc(r.username)}</b>
+      <span style="font:400 11.5px var(--mono);color:var(--mut2)">${esc(r.email)}</span>
+      <time style="margin-left:auto;font:400 11.5px var(--mono);color:var(--mut2)">${new Date(r.created_at).toLocaleString('ru-RU')}</time>
+    </div>
+  `).join('');
+}
+
+// ===== ТЕСТ ОБНОВЛЕНИЯ =====
 $('#btnTestUpdate').onclick=async()=>{if(!isOwner()){toast('Только создатель может это делать','red');return;}if(!await confirmBox('Включить тест обновления?','У всех пользователей КРОМЕ ТЕБЯ появится экран «Мессенджер обновляется». Экран будет показываться пока ты не нажмёшь «Выключить».'))return;const {error}=await sb.from('profiles').update({about:'__UPDATING__'}).eq('id',ME.id);if(error)return toast(ru(error.message),'red');toast('🚀 Тест обновления включён!');$('#btnTestUpdate').classList.add('hidden');$('#btnStopUpdate').classList.remove('hidden');};
 
 $('#btnStopUpdate').onclick=async()=>{if(!isOwner()){toast('Только создатель может это делать','red');return;}const {error}=await sb.from('profiles').update({about:''}).eq('id',ME.id);if(error)return toast(ru(error.message),'red');toast('✅ Тест обновления выключен');$('#btnTestUpdate').classList.remove('hidden');$('#btnStopUpdate').classList.add('hidden');};
@@ -954,4 +948,4 @@ addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.
 (async function boot(){try{const {data:{session}}=await sb.auth.getSession();if(session)await enterApp();else showOnly('auth');}catch(err){console.error(err);showOnly('auth');}})();
 </script>
 </body>
-</html>
+  </html>
