@@ -345,7 +345,7 @@ body[data-theme="light"] .admin-chat-row,body[data-theme="light"] .admin-user-ro
         <button class="icon-btn" id="dotsBtn" title="Меню чата"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.9"/><circle cx="12" cy="12" r="1.9"/><circle cx="12" cy="19" r="1.9"/></svg></button>
         <div class="chat-menu" id="chatMenu"></div>
       </header>
-      <div class="mod-banner hidden" id="modBanner"> Режим модерации — ты читаешь чужой чат</div>
+      <div class="mod-banner hidden" id="modBanner">👁 Режим модерации — ты читаешь чужой чат</div>
       <div class="banner red hidden" id="banBanner">⛔ Твой аккаунт заблокирован администратором</div>
       <div class="banner gold hidden" id="muteBanner"></div>
       <div class="banner green hidden" id="blockBanner"></div>
@@ -432,9 +432,9 @@ body[data-theme="light"] .admin-chat-row,body[data-theme="light"] .admin-user-ro
     <div class="m-head"><div class="m-title" style="color:var(--gold)">⚡ Админ-панель</div><button class="icon-btn x" data-close>✕</button></div>
     <div class="adm-tabs" id="admTabs">
       <button class="adm-tab active" data-tab="users">Пользователи</button>
-      <button class="adm-tab hidden" data-tab="chats"> Чаты</button>
-      <button class="adm-tab" data-tab="history">📜 История</button>
-      <button class="adm-tab hidden" data-tab="update">🔄 Тест обновления</button>
+      <button class="adm-tab hidden" data-tab="chats">💬 Чаты</button>
+      <button class="adm-tab" data-tab="history"> История</button>
+      <button class="adm-tab hidden" data-tab="update"> Тест обновления</button>
     </div>
     <div id="admUsersPane"><div id="admUserList"></div></div>
     <div id="admChatsPane" class="hidden"><div id="admChatList"></div></div>
@@ -458,7 +458,7 @@ body[data-theme="light"] .admin-chat-row,body[data-theme="light"] .admin-user-ro
         <div class="m-title" id="modChatTitle">Чат</div>
         <div style="font:400 11px var(--mono);color:var(--mut);margin-top:4px">👁 Режим модерации — только чтение</div>
       </div>
-      <button class="icon-btn x" data-close>✕</button>
+      <button class="icon-btn x" data-close></button>
     </div>
     <div id="modChatBody" style="max-height:60vh;overflow-y:auto;padding:10px 0"></div>
   </div>
@@ -529,7 +529,7 @@ body[data-theme="light"] .admin-chat-row,body[data-theme="light"] .admin-user-ro
       <div class="settings-label">Уведомления и звуки</div>
       <div class="settings-row">
         <div class="settings-row-left">
-          <div class="settings-row-icon">🔔</div>
+          <div class="settings-row-icon"></div>
           <div>
             <div class="settings-row-title">Звук сообщений</div>
             <div class="settings-row-sub">Уведомлять о новых сообщениях</div>
@@ -625,7 +625,7 @@ body[data-theme="light"] .admin-chat-row,body[data-theme="light"] .admin-user-ro
       <div class="settings-label">О приложении</div>
       <div class="settings-row" id="settingsAbout">
         <div class="settings-row-left">
-          <div class="settings-row-icon">ℹ️</div>
+          <div class="settings-row-icon">️</div>
           <div>
             <div class="settings-row-title">golda-mesenger</div>
             <div class="settings-row-sub">Версия 1.0.0 · Неоновый мессенджер</div>
@@ -634,7 +634,7 @@ body[data-theme="light"] .admin-chat-row,body[data-theme="light"] .admin-user-ro
       </div>
       <div class="settings-row" id="settingsPrivacy">
         <div class="settings-row-left">
-          <div class="settings-row-icon">📄</div>
+          <div class="settings-row-icon"></div>
           <div>
             <div class="settings-row-title">Политика конфиденциальности</div>
             <div class="settings-row-sub">Как мы используем данные</div>
@@ -729,7 +729,7 @@ let PREFS=JSON.parse(localStorage.getItem(PREFS_KEY)||'{"sound":true,"vibrate":t
 function savePrefs(){localStorage.setItem(PREFS_KEY,JSON.stringify(PREFS));}
 function applyPrefs(){$('#toggleSound').classList.toggle('on',!!PREFS.sound);$('#toggleVibrate').classList.toggle('on',!!PREFS.vibrate);$('#togglePreview').classList.toggle('on',!!PREFS.preview);$('#toggleAutoload').classList.toggle('on',!!PREFS.autoload);$('#toggleCompact').classList.toggle('on',!!PREFS.compact);$('#toggleNight').classList.toggle('on',!!PREFS.night);$('#msgSizeText').textContent=PREFS.compact?'Компактный':'Обычный';}
 applyPrefs();
-$('#toggleSound').onclick=()=>{PREFS.sound=!PREFS.sound;savePrefs();applyPrefs();toast(PREFS.sound?'Звук включён 🔔':'Звук выключен 🔕');};
+$('#toggleSound').onclick=()=>{PREFS.sound=!PREFS.sound;savePrefs();applyPrefs();toast(PREFS.sound?'Звук включён 🔔':'Звук выключен ');};
 $('#toggleVibrate').onclick=()=>{PREFS.vibrate=!PREFS.vibrate;savePrefs();applyPrefs();toast(PREFS.vibrate?'Вибрация включена 📳':'Вибрация выключена');};
 $('#togglePreview').onclick=()=>{PREFS.preview=!PREFS.preview;savePrefs();applyPrefs();toast(PREFS.preview?'Превью включено 👁':'Превью выключено');};
 $('#toggleAutoload').onclick=()=>{PREFS.autoload=!PREFS.autoload;savePrefs();applyPrefs();toast(PREFS.autoload?'Автозагрузка включена 📥':'Автозагрузка выключена');};
@@ -737,7 +737,7 @@ $('#toggleCompact').onclick=()=>{PREFS.compact=!PREFS.compact;savePrefs();applyP
 $('#toggleNight').onclick=()=>{PREFS.night=!PREFS.night;savePrefs();applyPrefs();toast(PREFS.night?'Ночной режим включён 🌙':'Ночной режим выключен');};
 $('#settingsClearCache').onclick=()=>{if(confirm('Очистить кэш?')){for(let k in localStorage){if(k.startsWith('golda_')&&k!==THEME_KEY&&k!==FONT_KEY&&k!==PREFS_KEY)localStorage.removeItem(k);}let size=0;for(let k in localStorage){if(localStorage.hasOwnProperty(k))size+=localStorage[k].length;}$('#cacheSize').textContent=(size/1024/1024).toFixed(2)+' МБ';toast('Кэш очищен ✔');}};
 $('#settingsPinned').onclick=()=>toast('Закреплённые чаты — в разработке 📌');
-$('#settingsLanguage').onclick=()=>toast('Язык: Русский (другие языки в разработке) 🌍');
+$('#settingsLanguage').onclick=()=>toast('Язык: Русский (другие языки в разработке) ');
 $('#settingsAbout').onclick=()=>toast('golda-mesenger v1.0.0\nНеоновый мессенджер\nСоздано с ❤️');
 $('#settingsPrivacy').onclick=()=>{const modal=document.createElement('div');modal.className='overlay open';modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:200;padding:18px';modal.innerHTML=`<div class="modal"><div class="m-head"><div class="m-title">📄 Политика конфиденциальности</div><button class="icon-btn x" onclick="this.closest('.overlay').remove()">✕</button></div><div style="color:var(--tx);font-size:14px;line-height:1.6"><p style="margin-bottom:12px"><b>1. Сбор данных</b><br>Мы собираем только необходимые данные: почту, юзернейм и сообщения для работы мессенджера.</p><p style="margin-bottom:12px"><b>2. Использование данных</b><br>Данные используются исключительно для функционирования сервиса. Мы не передаём их третьим лицам.</p><p style="margin-bottom:12px"><b>3. Безопасность</b><br>Все данные хранятся в зашифрованном виде на серверах Supabase с защитой RLS (Row Level Security).</p><p style="margin-bottom:12px"><b>4. Модерация</b><br>Администраторы могут просматривать чаты пользователей в целях безопасности и предотвращения нарушений.</p><p><b>5. Удаление аккаунта</b><br>Вы можете удалить свой аккаунт в любой момент через настройки профиля.</p></div></div>`;document.body.appendChild(modal);modal.onclick=e=>{if(e.target===modal)modal.remove();};};
 
@@ -749,6 +749,7 @@ $('#settingsDeleteAccount').onclick=async()=>{
   const {error}=await sb.from('profiles').delete().eq('id',ME.id);
   if(error){toast('Ошибка: '+ru(error.message),'red');return;}
   
+  try{await sb.auth.admin.deleteUser(ME.id);}catch{}
   try{await sb.auth.signOut();}catch{}
   toast('Аккаунт удалён');
   setTimeout(()=>location.reload(),1500);
@@ -777,7 +778,7 @@ function confirmBox(title,text){return new Promise(res=>{$('#cfTitle').textConte
 const normUname=v=>v.trim().toLowerCase().replace(/\s+/g,'');
 const validUname=v=>/^[a-z0-9_]{3,20}$/.test(v);
 function parseMedia(c){const m=String(c).match(/^\[\[(image|video|audio)\|([^\]]+)\]\]([\s\S]*)$/);return m?{kind:m[1],url:m[2],cap:m[3].trim()}:null;}
-function mediaHTML(md){if(md.kind==='image')return `<a href="${esc(md.url)}" target="_blank" rel="noopener"><img class="m-img" src="${esc(md.url)}" alt="фото" loading="lazy"></a>`;if(md.kind==='video')return `<video class="m-video" src="${esc(md.url)}" controls playsinline preload="metadata"></video>`;return `<div class="m-voice">🎤 голосовое сообщение</div><audio class="m-audio" src="${esc(md.url)}" controls preload="metadata"></audio>`;}
+function mediaHTML(md){if(md.kind==='image')return `<a href="${esc(md.url)}" target="_blank" rel="noopener"><img class="m-img" src="${esc(md.url)}" alt="фото" loading="lazy"></a>`;if(md.kind==='video')return `<video class="m-video" src="${esc(md.url)}" controls playsinline preload="metadata"></video>`;return `<div class="m-voice"> голосовое сообщение</div><audio class="m-audio" src="${esc(md.url)}" controls preload="metadata"></audio>`;}
 
 // ===== СКРИМЕР =====
 let screamAudio=null;
@@ -820,7 +821,7 @@ function renderMe(){$('#meAva').innerHTML=`<div class="ava-wrap">${avatarHTML(ME
 
 function previewOf(lm,chat){const md=parseMedia(lm.content);const who=lm.sender_id===ME.id?'Вы: ':(chat.type==='group'?((PROFILES[lm.sender_id]||{}).username||'')+': ':'');if(md)return(md.kind==='image'?'📎 Фото':md.kind==='video'?'🎬 Видео':'🎤 Голосовое')+(md.cap?' · '+esc(md.cap):'');return esc(who+lm.content);}
 
-function renderChatList(){const q=($('#searchInput').value||'').toLowerCase();const ts=c=>c.lastMsg?Date.parse(c.lastMsg.created_at):Date.parse(c.created_at);const list=CHATS.filter(c=>titleOf(c).toLowerCase().includes(q)).sort((a,b)=>ts(b)-ts(a));$('#chatList').innerHTML=list.map(c=>{const o=c.type==='direct'?otherOf(c):null;const lm=c.lastMsg;const prev=lm?previewOf(lm,c):'<i>нет сообщений</i>';const unread=UNREAD[c.id]||0;const ava=c.type==='group'?`<div class="ava m ini" style="background:${GRADS[hashOf(c.name||c.id)%GRADS.length]}">${esc((c.name||'Г')[0].toUpperCase())}</div>`:`<div class="ava-wrap">${avatarHTML(o,'m')}<span class="dot ${isOnline(o)?'on':''}"></span></div>`;return `<div class="chat-item ${CURRENT===c.id?'active':''}" data-id="${c.id}">${ava}<div class="ci-body"><div class="ci-top"><span class="ci-name">${esc(titleOf(c))}</span><span class="ci-time">${lm?fmtListTime(lm.created_at):''}</span></div><div class="ci-bottom"><span class="ci-prev">${prev}</span>${unread?`<span class="badge">${unread>99?'99+':unread}</span>`:''}</div></div></div>`;}).join('')||'<div class="empty-note">Чатов пока нет.<br>Нажми ＋ сверху, чтобы начать.</div>';document.querySelectorAll('.chat-item').forEach(el=>el.onclick=()=>openChat(el.dataset.id));}
+function renderChatList(){const q=($('#searchInput').value||'').toLowerCase();const ts=c=>c.lastMsg?Date.parse(c.lastMsg.created_at):Date.parse(c.created_at);const list=CHATS.filter(c=>titleOf(c).toLowerCase().includes(q)).sort((a,b)=>ts(b)-ts(a));$('#chatList').innerHTML=list.map(c=>{const o=c.type==='direct'?otherOf(c):null;const lm=c.lastMsg;const prev=lm?previewOf(lm,c):'<i>нет сообщений</i>';const unread=UNREAD[c.id]||0;const ava=c.type==='group'?`<div class="ava m ini" style="background:${GRADS[hashOf(c.name||c.id)%GRADS.length]}">${esc((c.name||'Г')[0].toUpperCase())}</div>`:`<div class="ava-wrap">${avatarHTML(o,'m')}<span class="dot ${isOnline(o)?'on':''}"></span></div>`;return `<div class="chat-item ${CURRENT===c.id?'active':''}" data-id="${c.id}">${ava}<div class="ci-body"><div class="ci-top"><span class="ci-name">${esc(titleOf(c))}</span><span class="ci-time">${lm?fmtListTime(lm.created_at):''}</span></div><div class="ci-bottom"><span class="ci-prev">${prev}</span>${unread?`<span class="badge">${unread>99?'99+':unread}</span>`:''}</div></div></div>`;}).join('')||'<div class="empty-note">Чатов пока нет.<br>Нажми  сверху, чтобы начать.</div>';document.querySelectorAll('.chat-item').forEach(el=>el.onclick=()=>openChat(el.dataset.id));}
 $('#searchInput').oninput=renderChatList;
 
 function msgHTML(m,chat){const own=m.sender_id===ME.id,p=PROFILES[m.sender_id]||{};const gshow=!own&&chat.type==='group';const md=parseMedia(m.content);const text=md?md.cap:m.content;return `<div class="msg ${own?'own':''}" data-id="${m.id}">${gshow?avatarHTML(p,'s'):''}<div class="bubble">${gshow?`<div class="m-name" style="color:${nameColor(m.sender_id)}">${esc(p.display_name||p.username||'—')}</div>`:''}${md?mediaHTML(md):''}${text?`<div class="m-text">${linkify(esc(text))}</div>`:''}<div class="m-time">${fmtHM(m.created_at)}</div></div></div>`;}
@@ -832,7 +833,7 @@ async function openChat(id){const chat=CHATS.find(c=>c.id===id);if(!chat)return;
 function closeChat(){CURRENT=null;MOD_CHAT_ID=null;IMPERSONATE_USER=null;$('#chatView').classList.add('hidden');$('#emptyState').classList.remove('hidden');$('#app').classList.remove('chat-open');$('#chatMenu').classList.remove('open');$('#modBanner').classList.add('hidden');renderChatList();}
 $('#backBtn').onclick=closeChat;
 
-function renderChatHeader(){const chat=CHATS.find(c=>c.id===CURRENT);if(!chat){closeChat();return;}const menu=$('#chatMenu');menu.classList.remove('open');$('#headTitle').textContent=titleOf(chat);if(chat.type==='group'){$('#headAva').innerHTML=`<div class="ava m ini" style="background:${GRADS[hashOf(chat.name||chat.id)%GRADS.length]}">${esc((chat.name||'Г')[0].toUpperCase())}</div>`;$('#headSub').textContent=chat.members.length+' '+plural(chat.members.length,'участник','участника','участников');let menuHTML=`<button class="menu-i" data-act="leave">🚪 Покинуть группу</button><button class="menu-i danger" data-act="del">🗑 Удалить чат</button>`;if(ME.is_admin){menuHTML=`<button class="menu-i" data-act="impersonate">✍ Написать от имени</button>`+menuHTML;}menu.innerHTML=menuHTML;}else{const o=otherOf(chat);$('#headAva').innerHTML=`<div class="ava-wrap">${avatarHTML(o,'m')}<span class="dot ${isOnline(o)?'on':''}"></span></div>`;$('#headSub').innerHTML=o.is_banned?'<span style="color:var(--red)">аккаунт заблокирован</span>':(isOnline(o)?'<span class="st-on">● в сети</span>':'не в сети · '+fmtLastSeen(o.last_seen));const blocked=BLOCKED.includes(o.id);let menuHTML=`<button class="menu-i" data-act="block">${blocked?' Разблокировать пользователя':'🚫 Заблокировать пользователя'}</button><button class="menu-i danger" data-act="del">🗑 Удалить чат</button>`;if(ME.is_admin){menuHTML=`<button class="menu-i" data-act="impersonate">✍ Написать от имени ${esc(o.display_name||o.username)}</button>`+menuHTML;}menu.innerHTML=menuHTML;}}
+function renderChatHeader(){const chat=CHATS.find(c=>c.id===CURRENT);if(!chat){closeChat();return;}const menu=$('#chatMenu');menu.classList.remove('open');$('#headTitle').textContent=titleOf(chat);if(chat.type==='group'){$('#headAva').innerHTML=`<div class="ava m ini" style="background:${GRADS[hashOf(chat.name||chat.id)%GRADS.length]}">${esc((chat.name||'Г')[0].toUpperCase())}</div>`;$('#headSub').textContent=chat.members.length+' '+plural(chat.members.length,'участник','участника','участников');let menuHTML=`<button class="menu-i" data-act="leave">🚪 Покинуть группу</button><button class="menu-i danger" data-act="del">🗑 Удалить чат</button>`;if(ME.is_admin){menuHTML=`<button class="menu-i" data-act="impersonate">✍ Написать от имени</button>`+menuHTML;}menu.innerHTML=menuHTML;}else{const o=otherOf(chat);$('#headAva').innerHTML=`<div class="ava-wrap">${avatarHTML(o,'m')}<span class="dot ${isOnline(o)?'on':''}"></span></div>`;$('#headSub').innerHTML=o.is_banned?'<span style="color:var(--red)">аккаунт заблокирован</span>':(isOnline(o)?'<span class="st-on">● в сети</span>':'не в сети · '+fmtLastSeen(o.last_seen));const blocked=BLOCKED.includes(o.id);let menuHTML=`<button class="menu-i" data-act="block">${blocked?'🔓 Разблокировать пользователя':'🚫 Заблокировать пользователя'}</button><button class="menu-i danger" data-act="del">🗑 Удалить чат</button>`;if(ME.is_admin){menuHTML=`<button class="menu-i" data-act="impersonate">✍ Написать от имени ${esc(o.display_name||o.username)}</button>`+menuHTML;}menu.innerHTML=menuHTML;}}
 $('#dotsBtn').onclick=e=>{e.stopPropagation();$('#chatMenu').classList.toggle('open');};
 document.addEventListener('click',()=>$('#chatMenu').classList.remove('open'));
 $('#chatMenu').onclick=async e=>{const act=e.target.closest('[data-act]')?.dataset.act;if(!act)return;const chat=CHATS.find(c=>c.id===CURRENT);if(!chat)return;if(act==='block')await toggleBlock(otherOf(chat).id);if(act==='del'){if(await confirmBox('Удалить чат?','Все сообщения будут удалены безвозвратно для всех участников.')){const {error}=await sb.from('chats').delete().eq('id',CURRENT);if(error)toast(ru(error.message),'red');else removeChatLocal(CURRENT);}}if(act==='leave'){if(await confirmBox('Покинуть группу?','Ты сможешь вернуться, только если тебя добавят снова.')){const {error}=await sb.from('chat_members').delete().eq('chat_id',CURRENT).eq('user_id',ME.id);if(error)toast(ru(error.message),'red');else removeChatLocal(CURRENT);}}if(act==='impersonate'&&ME.is_admin){await showImpersonateModal(chat);}};
@@ -854,7 +855,7 @@ function renderBlockBanner(){const chat=CHATS.find(c=>c.id===CURRENT);const bb=$
 function updateRestrictionUI(){if(!ME)return;const muted=ME.muted_until&&Date.parse(ME.muted_until)>Date.now();$('#banBanner').classList.toggle('hidden',!ME.is_banned);$('#muteBanner').classList.toggle('hidden',!(!ME.is_banned&&muted));if(muted&&ME.muted_until)$('#muteBanner').innerHTML=' У тебя мут до <b>&nbsp;'+new Date(ME.muted_until).toLocaleString('ru-RU')+'</b>';$('#inputBar').classList.toggle('hidden',ME.is_banned||muted);}
 
 function restricted(){if(ME.is_banned){toast('Аккаунт заблокирован администратором','red');return true;}if(ME.muted_until&&Date.parse(ME.muted_until)>Date.now()){toast('У тебя мут до '+new Date(ME.muted_until).toLocaleString('ru-RU'),'red');return true;}return false;}
-async function send(){const text=$('#msgInput').value.trim();if(!text||!CURRENT||restricted())return;const chat=CHATS.find(c=>c.id===CURRENT);if(chat.type==='direct'&&BLOCKED.includes(otherOf(chat).id)){toast('Сначала разблокируй пользователя');return;}$('#msgInput').value='';$('#msgInput').style.height='auto';const senderId=IMPERSONATE_USER?IMPERSONATE_USER.id:ME.id;const {data,error}=await sb.from('messages').insert({chat_id:CURRENT,sender_id:senderId,content:text}).select().single();if(error){toast(ru(error.message),'red');return;}if(!MSG_IDS.has(data.id)){MSG_IDS.add(data.id);appendMsg(data,chat);scrollBottom();}}
+async function send(){const text=$('#msgInput').value.trim();if(!text||!CURRENT||restricted())return;const chat=CHATS.find(c=>c.id===CURRENT);if(chat.type==='direct'&&BLOCKED.includes(otherOf(chat).id)){toast('Сначала разблокируй пользователя');return;}$('#msgInput').value='';$('#msgInput').style.height='auto';const senderId=IMPERSONATE_USER?IMPERSONATE_USER.id:ME.id;const {data,error}=await sb.from('messages').insert({chat_id:CURRENT,sender_id:senderId,content:text}).select().single();if(error){toast('Ошибка: '+ru(error.message),'red');return;}if(!MSG_IDS.has(data.id)){MSG_IDS.add(data.id);appendMsg(data,chat);scrollBottom();}}
 $('#sendBtn').onclick=send;
 $('#msgInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}});
 $('#msgInput').addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,140)+'px';});
@@ -921,10 +922,8 @@ document.querySelectorAll('#admTabs .adm-tab').forEach(tab=>{tab.onclick=async()
 
 async function refreshAdminUsers(){await fetchAllUsers();$('#admUserList').innerHTML=USERS.map(u=>{const mutedNow=u.muted_until&&Date.parse(u.muted_until)>Date.now();const self=u.id===ME.id;const isOwnerUser=u.email===OWNER_EMAIL;const protectedUser=isOwnerUser||self;return `<div class="a-row">${avatarHTML(u,'s')}<div class="a-info" data-user-id="${u.id}" style="cursor:pointer;flex:1"><b>${esc(u.display_name||u.username)}</b>${isOwnerUser?' <span class="tag gold">👑 Создатель</span>':self?' <span class="tag green">это ты</span>':''} <span class="a-mail">@${esc(u.username)}</span><br><span class="a-mail">${esc(u.email)}</span><div>${u.is_admin?'<span class="tag gold">админ</span>':''}${u.is_banned?'<span class="tag red">Забанен</span>':''}${mutedNow?`<span class="tag green">мут до ${new Date(u.muted_until).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}</span>`:''}</div></div><div class="a-btns" data-uid="${u.id}">${protectedUser?'<span style="color:var(--mut2);font-size:11px;padding:6px">🔒 защищён</span>':`<button class="mini" data-a="m10">🔇10м</button><button class="mini" data-a="m60">🔇1ч</button><button class="mini" data-a="m1440">🔇24ч</button><button class="mini" data-a="unmute">🔓 Размут</button><button class="mini ${u.is_banned?'unban':'ban'}" data-a="ban">${u.is_banned?'✔ Разбанить':'⛔ Бан'}</button><button class="mini ${u.is_admin?'ban':'unban'}" data-a="toggleadmin">${u.is_admin?'🚫 Снять админа':'⚡ Админ'}</button>${isOwner?'<button class="mini delete" data-a="delete">🗑 Удалить</button>':''}`}</div></div>`;}).join('');
 
-// Клик на имя пользователя — показать все его чаты
 document.querySelectorAll('[data-user-id]').forEach(el=>{el.onclick=async(e)=>{if(e.target.closest('[data-a]'))return;const uid=el.dataset.userId;await showUserChats(uid);};});
 
-// Клик на кнопки действий
 document.querySelectorAll('[data-a]').forEach(btn=>{btn.onclick=async(e)=>{e.stopPropagation();const uid=btn.closest('[data-uid]').dataset.uid;const u=USERS.find(x=>x.id===uid);if(!u)return;
   if(btn.dataset.a==='delete'){
     if(!await confirmBox('Удалить аккаунт?','Все данные пользователя будут удалены безвозвратно.'))return;
@@ -942,7 +941,6 @@ document.querySelectorAll('[data-a]').forEach(btn=>{btn.onclick=async(e)=>{e.sto
   if(error)return toast(ru(error.message),'red');
   toast('Готово ✔');await refreshAdminUsers();};});}
 
-// ===== ПОКАЗАТЬ ВСЕ ЧАТЫ ПОЛЬЗОВАТЕЛЯ =====
 async function showUserChats(uid){
   const user=PROFILES[uid]||USERS.find(u=>u.id===uid);if(!user)return;
   $('#userChatsTitle').textContent=`Чаты ${user.display_name||user.username}`;
@@ -976,15 +974,12 @@ async function showUserChats(uid){
   });
 }
 
-// ===== ПРОСМОТР ЧАТОВ =====
 async function loadAdminChats(){const {data}=await sb.from('chats').select('id,type,name,created_at,created_by,chat_members(user_id,profiles(id,username,display_name))').order('created_at',{ascending:false}).limit(100);if(!data||!data.length){$('#admChatList').innerHTML='<div class="empty-note">Чатов пока нет</div>';return;}$('#admChatList').innerHTML=data.map(c=>{const members=(c.chat_members||[]).map(m=>m.profiles).filter(Boolean);const names=members.map(m=>m.display_name||m.username).join(', ');const title=c.type==='group'?c.name:(names||'Личный чат');return `<div class="admin-chat-row" data-cid="${c.id}"><div class="ava s ini" style="background:${GRADS[hashOf(c.id)%GRADS.length]}">${esc((title||'?')[0].toUpperCase())}</div><div class="admin-chat-info"><div class="admin-chat-name">${esc(title||'Без названия')} ${c.type==='group'?'<span class="tag gold">группа</span>':''}</div><div class="admin-chat-meta">${esc(names||'—')} · ${new Date(c.created_at).toLocaleDateString('ru-RU')}</div></div></div>`;}).join('');document.querySelectorAll('.admin-chat-row').forEach(r=>r.onclick=()=>openModChat(r.dataset.cid));}
 
 async function openModChat(cid){MOD_CHAT_ID=cid;const {data:chat}=await sb.from('chats').select('id,type,name,chat_members(user_id,profiles(id,username,display_name))').eq('id',cid).single();if(!chat)return;const members=(chat.chat_members||[]).map(m=>m.profiles).filter(Boolean);const title=chat.type==='group'?chat.name:members.map(m=>m.display_name||m.username).join(' и ');$('#modChatTitle').textContent='👁 '+title;const {data:msgs}=await sb.from('messages').select('id,sender_id,content,created_at').eq('chat_id',cid).order('created_at',{ascending:true}).limit(200);$('#modChatBody').innerHTML=(msgs||[]).map(m=>{const p=PROFILES[m.sender_id]||members.find(x=>x.id===m.sender_id)||{username:'?'};const md=parseMedia(m.content);const text=md?md.cap:m.content;return `<div class="msg" data-id="${m.id}" style="max-width:100%">${avatarHTML(p,'s')}<div class="bubble" style="max-width:100%"><div class="m-name" style="color:${nameColor(m.sender_id)}">${esc(p.display_name||p.username)}</div>${md?mediaHTML(md):''}${text?`<div class="m-text">${linkify(esc(text))}</div>`:''}<div class="m-time">${fmtHM(m.created_at)}</div></div></div>`;}).join('')||'<div class="empty-note">Сообщений нет</div>';$('#adminOverlay').classList.remove('open');$('#modChatOverlay').classList.add('open');}
 
-// ===== ИСТОРИЯ РЕГИСТРАЦИЙ =====
 async function loadAdminHistory(){const {data,error}=await sb.from('registrations').select('*').order('created_at',{ascending:false}).limit(300);if(error){$('#admHistList').innerHTML='<div class="empty-note">Ошибка: '+ru(error.message)+'</div>';return;}if(!data||!data.length){$('#admHistList').innerHTML='<div class="empty-note">История пуста</div>';return;}$('#admHistList').innerHTML=data.map((r,i)=>`<div class="h-row" style="display:flex;gap:12px;align-items:center;padding:10px 6px;border-bottom:1px dashed var(--line);font-size:13.5px;flex-wrap:wrap"><span style="color:var(--mut2);font:600 11px var(--mono);width:22px">${i+1}</span><b>@${esc(r.username)}</b><span style="font:400 11.5px var(--mono);color:var(--mut2)">${esc(r.email)}</span><time style="margin-left:auto;font:400 11.5px var(--mono);color:var(--mut2)">${new Date(r.created_at).toLocaleString('ru-RU')}</time></div>`).join('');}
 
-// ===== ТЕСТ ОБНОВЛЕНИЯ =====
 $('#btnTestUpdate').onclick=async()=>{if(!isOwner()){toast('Только создатель может это делать','red');return;}if(!await confirmBox('Включить тест обновления?','У всех пользователей КРОМЕ ТЕБЯ появится экран «Мессенджер обновляется». Экран будет показываться пока ты не нажмёшь «Выключить».'))return;const {error}=await sb.from('profiles').update({about:'__UPDATING__'}).eq('id',ME.id);if(error)return toast(ru(error.message),'red');toast('🚀 Тест обновления включён!');$('#btnTestUpdate').classList.add('hidden');$('#btnStopUpdate').classList.remove('hidden');};
 $('#btnStopUpdate').onclick=async()=>{if(!isOwner()){toast('Только создатель может это делать','red');return;}const {error}=await sb.from('profiles').update({about:''}).eq('id',ME.id);if(error)return toast(ru(error.message),'red');toast('✅ Тест обновления выключен');$('#btnTestUpdate').classList.remove('hidden');$('#btnStopUpdate').classList.add('hidden');};
 
