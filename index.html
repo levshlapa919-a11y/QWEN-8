@@ -216,6 +216,9 @@ textarea.inp{resize:none}
 .bs-title{font:800 clamp(30px,9vw,110px) var(--disp);color:#ff1a1a;animation:bsGlitch .8s steps(3) infinite}
 @keyframes bsGlitch{0%{text-shadow:0 0 34px rgba(255,0,0,.95),3px 0 #0ff,-3px 0 #f0f;transform:skewX(0)}33%{text-shadow:0 0 34px rgba(255,0,0,.95),-5px 0 #0ff,5px 0 #f0f;transform:skewX(-4deg)}66%{text-shadow:0 0 44px rgba(255,0,0,.95),3px 3px #0ff,-3px -3px #f0f;transform:skewX(3deg)}}
 .bs-sub{color:#ff9090;font-size:clamp(14px,3.6vw,20px);font-weight:700;max-width:600px}
+.bs-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:8px}
+.bs-btn{background:rgba(255,255,255,.05);border:1px solid rgba(255,97,97,.55);color:#ff9d9d;padding:12px 18px;border-radius:12px;font:700 13.5px var(--font);cursor:pointer;transition:.15s}
+.bs-btn:hover{background:rgba(255,97,97,.15)}
 .bs-hint{position:absolute;bottom:24px;color:#555;font-size:12px}
 
 ::-webkit-scrollbar{width:9px;height:9px}
@@ -412,12 +415,16 @@ textarea.inp{resize:none}
   </div>
 </div>
 
-<!-- ===== СКРИМЕР БАНА ===== -->
+<!-- ===== СКРИМЕР БАНА (теперь с кнопками выхода и звука) ===== -->
 <div id="banScreen" class="ban-screen hidden">
   <div class="bs-face">👹</div>
   <div class="bs-title">ВЫ ЗАБАНЕНЫ</div>
-  <div class="bs-sub">Администратор навсегда заблокировал твой аккаунт в golda-mesenger</div>
-  <div class="bs-hint">🔊 коснись экрана, если звук не включился</div>
+  <div class="bs-sub">Администратор заблокировал твой аккаунт в golda-mesenger</div>
+  <div class="bs-actions">
+    <button class="bs-btn" id="bsSound">🔊 Включить звук</button>
+    <button class="bs-btn" id="bsLogout">🚪 Выйти из аккаунта</button>
+  </div>
+  <div class="bs-hint">звук стартует после нажатия кнопки — браузеры запрещают звук без касания</div>
 </div>
 
 <div id="toasts"></div>
@@ -461,7 +468,6 @@ function confirmBox(title,text){return new Promise(res=>{$('#cfTitle').textConte
 const normUname=v=>v.trim().toLowerCase().replace(/\s+/g,'');
 const validUname=v=>/^[a-z0-9_]{3,20}$/.test(v);
 
-/* ===== МЕДИА: разбор [[image|url]] / [[video|url]] / [[audio|url]] ===== */
 function parseMedia(c){const m=String(c).match(/^\[\[(image|video|audio)\|([^\]]+)\]\]([\s\S]*)$/);return m?{kind:m[1],url:m[2],cap:m[3].trim()}:null;}
 function mediaHTML(md){
   if(md.kind==='image')return `<a href="${esc(md.url)}" target="_blank" rel="noopener"><img class="m-img" src="${esc(md.url)}" alt="фото" loading="lazy"></a>`;
@@ -469,7 +475,7 @@ function mediaHTML(md){
   return `<div class="m-voice">🎤 голосовое сообщение</div><audio class="m-audio" src="${esc(md.url)}" controls preload="metadata"></audio>`;
 }
 
-/* ===== СКРИМЕР: звук синтезируется кодом (файл не нужен) ===== */
+/* ===== ЗВУК СКРИМЕРА ===== */
 let screamCtx=null, screamBuilt=false;
 function buildScream(ctx){
   const t=ctx.currentTime;
@@ -517,10 +523,20 @@ function playScream(){
     }else tryBuildScream();
   }catch(e){}
 }
+/* принудительный запуск по кнопке (гарантированно, т.к. это жест пользователя) */
+function playScreamNow(){
+  try{
+    const ctx=new (window.AudioContext||window.webkitAudioContext)();
+    const go=()=>buildScream(ctx);
+    if(ctx.state==='suspended')ctx.resume().then(go);else go();
+  }catch(e){}
+}
 function showBanScreen(){
   const el=$('#banScreen');
   if(el.classList.contains('hidden')){el.classList.remove('hidden');playScream();}
 }
+$('#bsSound').onclick=e=>{e.stopPropagation();playScreamNow();};
+$('#bsLogout').onclick=async e=>{e.stopPropagation();try{await sb.auth.signOut();}catch(err){}location.reload();};
 
 function showOnly(screen){
   $('#authScreen').classList.toggle('hidden',screen!=='auth');
@@ -764,7 +780,6 @@ $('#sendBtn').onclick=send;
 $('#msgInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}});
 $('#msgInput').addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,140)+'px';});
 
-/* ===== ОТПРАВКА ФОТО / ВИДЕО / ГОЛОСОВЫХ ===== */
 function extOf(blob,kind){const t=blob.type||'';
   if(t.includes('png'))return 'png';if(t.includes('gif'))return 'gif';if(t.includes('webm'))return 'webm';
   if(t.includes('mp4'))return 'mp4';if(t.includes('ogg'))return 'ogg';if(t.includes('jpeg')||t.includes('jpg'))return 'jpg';
@@ -798,7 +813,6 @@ $('#attachInput').onchange=async e=>{
   await uploadMedia(blob,kind);
 };
 
-/* голосовые: удержи кнопку микрофона */
 let mediaRec=null,recChunks=[],recTick=null;
 $('#micBtn').addEventListener('pointerdown',e=>{e.preventDefault();startRec();});
 ['pointerup','pointercancel','pointerleave'].forEach(ev=>$('#micBtn').addEventListener(ev,()=>stopRec()));
@@ -1037,14 +1051,15 @@ async function refreshAdminUsers(){
   await fetchAllUsers();
   $('#admUserList').innerHTML=USERS.map(u=>{
     const mutedNow=u.muted_until&&Date.parse(u.muted_until)>Date.now();
+    const self=u.id===ME.id;
     return `<div class="a-row">${avatarHTML(u,'s')}
-      <div class="a-info"><b>${esc(u.display_name||u.username)}</b> <span class="a-mail">@${esc(u.username)}</span><br><span class="a-mail">${esc(u.email)}</span>
+      <div class="a-info"><b>${esc(u.display_name||u.username)}</b>${self?' <span class="tag green">это ты</span>':''} <span class="a-mail">@${esc(u.username)}</span><br><span class="a-mail">${esc(u.email)}</span>
         <div>${u.is_admin?'<span class="tag gold">админ</span>':''}${u.is_banned?'<span class="tag red">Забанен</span>':''}${mutedNow?`<span class="tag green">мут до ${new Date(u.muted_until).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}</span>`:''}</div></div>
       <div class="a-btns" data-uid="${u.id}">
         <button class="mini" data-a="m10" title="Мут 10 минут">🔇10м</button>
         <button class="mini" data-a="m60" title="Мут 1 час">🔇1ч</button>
         <button class="mini" data-a="m1440" title="Мут 24 часа">🔇24ч</button>
-        <button class="mini" data-a="unmute">✖ мут</button>
+        <button class="mini" data-a="unmute">🔓 Размут</button>
         <button class="mini ${u.is_banned?'unban':'ban'}" data-a="ban">${u.is_banned?'✔ Разбанить':'⛔ Бан'}</button>
         <button class="mini ${u.is_admin?'ban':'unban'}" data-a="toggleadmin">${u.is_admin?'🚫 Снять админа':'⚡ Сделать админом'}</button>
       </div></div>`;
@@ -1055,13 +1070,19 @@ $('#admUserList').addEventListener('click',async e=>{
   const uid=btn.closest('[data-uid]').dataset.uid;
   const u=USERS.find(x=>x.id===uid);if(!u)return;
   let upd=null;
-  if(btn.dataset.a==='ban')upd={is_banned:!u.is_banned};
+  if(btn.dataset.a==='ban'){
+    if(uid===ME.id){toast('Нельзя забанить самого себя 😄');return;}
+    upd={is_banned:!u.is_banned};
+  }
   else if(btn.dataset.a==='unmute')upd={muted_until:null};
   else if(btn.dataset.a==='toggleadmin'){
     if(uid===ME.id){toast('Нельзя снять админку с самого себя');return;}
     upd={is_admin:!u.is_admin};
   }
-  else upd={muted_until:new Date(Date.now()+{m10:10,m60:60,m1440:1440}[btn.dataset.a]*60000).toISOString()};
+  else{
+    if(uid===ME.id){toast('Нельзя замутить самого себя');return;}
+    upd={muted_until:new Date(Date.now()+{m10:10,m60:60,m1440:1440}[btn.dataset.a]*60000).toISOString()};
+  }
   const {error}=await sb.from('profiles').update(upd).eq('id',uid);
   if(error)return toast(ru(error.message),'red');
   toast(btn.dataset.a==='toggleadmin'?(u.is_admin?'Админка снята':'Назначен админом ⚡'):'Готово ✔');
@@ -1073,6 +1094,7 @@ $('#btnLogout').onclick=async()=>{
   ME=null;CHATS=[];CURRENT=null;
   if(rtChannel){sb.removeChannel(rtChannel);rtChannel=null;}
   if(hbTimer)clearInterval(hbTimer);
+  $('#banScreen').classList.add('hidden');
   showOnly('auth');setMode('login');
   $('#authPass').value='';
 };
@@ -1088,4 +1110,4 @@ addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.
 })();
 </script>
 </body>
-</html>
+  </html>
