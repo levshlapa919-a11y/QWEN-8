@@ -349,7 +349,7 @@ textarea.inp{resize:none}
 <div class="overlay" id="ncOverlay">
   <div class="modal">
     <div class="m-head"><div class="m-title">Новый чат</div><button class="icon-btn x" data-close>✕</button></div>
-    <input class="inp" id="ncSearch" placeholder="Поиск по юзернейму или имени…">
+    <input class="inp" id="ncSearch" placeholder="Введи юзернейм для поиска…">
     <div class="pick-list" id="ncList"></div>
   </div>
 </div>
@@ -811,20 +811,26 @@ $('#grpCreate').onclick=async()=>{
   openChat(c.id);toast('Группа «'+name+'» создана 🎉');
 };
 
+/* ===== НОВОЕ: поиск людей ТОЛЬКО по введённому юзернейму ===== */
 function openNewChatModal(){
   $('#ncSearch').value='';ncRender('');$('#ncOverlay').classList.add('open');
 }
 async function ncRender(q){
   await fetchAllUsers();
-  const list=USERS.filter(u=>u.id!==ME.id&&((u.username||'').toLowerCase().includes(q)||(u.display_name||'').toLowerCase().includes(q)));
+  const query=(q||'').trim().toLowerCase();
+  if(query.length<2){
+    $('#ncList').innerHTML='<div class="empty-note">🔎 Введи юзернейм, чтобы найти человека<br>(минимум 2 символа)</div>';
+    return;
+  }
+  const list=USERS.filter(u=>u.id!==ME.id&&((u.username||'').toLowerCase().includes(query)||(u.display_name||'').toLowerCase().includes(query)));
   $('#ncList').innerHTML=list.map(u=>`
     <div class="pick-row" data-uid="${u.id}">
       <div class="ava-wrap">${avatarHTML(u,'s')}<span class="dot ${isOnline(u)?'on':''}"></span></div>
-      <div style="min-width:0"><div class="pick-name">${esc(u.display_name||u.username)}</div><div class="pick-sub">@${esc(u.username)}</div></div></div>`).join('')||'<div class="empty-note">Никого не нашлось</div>';
+      <div style="min-width:0"><div class="pick-name">${esc(u.display_name||u.username)}</div><div class="pick-sub">@${esc(u.username)}</div></div></div>`).join('')||'<div class="empty-note">Никого не нашлось по запросу «'+esc(q)+'»</div>';
   $('#ncList').querySelectorAll('.pick-row').forEach(r=>r.onclick=async()=>{
     $('#ncOverlay').classList.remove('open');await openDirectWith(r.dataset.uid);});
 }
-$('#ncSearch').oninput=e=>ncRender(e.target.value.trim().toLowerCase());
+$('#ncSearch').oninput=e=>ncRender(e.target.value);
 $('#btnNewChat').onclick=openNewChatModal;
 $('#emptyNewChat').onclick=openNewChatModal;
 
@@ -840,6 +846,7 @@ async function openDirectWith(uid){
   if(chat)openChat(chat.id);
 }
 
+/* ===== АДМИН-ПАНЕЛЬ (+ назначение админов) ===== */
 $('#btnAdmin').onclick=async()=>{
   if(!ME.is_admin)return;
   $('#admTabU').classList.add('active');$('#admTabH').classList.remove('active');
@@ -866,6 +873,7 @@ async function refreshAdminUsers(){
         <button class="mini" data-a="m1440" title="Мут 24 часа">🔇24ч</button>
         <button class="mini" data-a="unmute">✖ мут</button>
         <button class="mini ${u.is_banned?'unban':'ban'}" data-a="ban">${u.is_banned?'✔ Разбанить':'⛔ Бан'}</button>
+        <button class="mini ${u.is_admin?'ban':'unban'}" data-a="toggleadmin">${u.is_admin?'🚫 Снять админа':'⚡ Сделать админом'}</button>
       </div></div>`;
   }).join('');
 }
@@ -876,10 +884,15 @@ $('#admUserList').addEventListener('click',async e=>{
   let upd=null;
   if(btn.dataset.a==='ban')upd={is_banned:!u.is_banned};
   else if(btn.dataset.a==='unmute')upd={muted_until:null};
+  else if(btn.dataset.a==='toggleadmin'){
+    if(uid===ME.id){toast('Нельзя снять админку с самого себя');return;}
+    upd={is_admin:!u.is_admin};
+  }
   else upd={muted_until:new Date(Date.now()+{m10:10,m60:60,m1440:1440}[btn.dataset.a]*60000).toISOString()};
   const {error}=await sb.from('profiles').update(upd).eq('id',uid);
   if(error)return toast(ru(error.message),'red');
-  toast('Готово ✔');await refreshAdminUsers();
+  toast(btn.dataset.a==='toggleadmin'?(u.is_admin?'Админка снята':'Назначен админом ⚡'):'Готово ✔');
+  await refreshAdminUsers();
 });
 
 $('#btnLogout').onclick=async()=>{
