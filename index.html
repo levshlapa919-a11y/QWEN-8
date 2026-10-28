@@ -230,7 +230,7 @@ body[data-theme="light"] .settings-row{background:rgba(0,0,0,.02)}
 .update-dots span:nth-child(2){animation-delay:.2s}
 .update-dots span:nth-child(3){animation-delay:.4s}
 @keyframes dotBounce{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1.2);opacity:1}}
-.ban-screen{position:fixed;inset:0;z-index:9999;background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.ban-screen{position:fixed;inset:0;z-index:9999;background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer}
 .bs-container{position:relative;width:100%;height:100%;animation:shakeScreen 0.4s linear infinite}
 @keyframes shakeScreen{0%{transform:translate(0,0)}25%{transform:translate(-6px,5px)}50%{transform:translate(6px,-5px)}75%{transform:translate(-6px,-5px)}100%{transform:translate(0,0)}}
 .bs-face-real{width:100%;height:100%;object-fit:cover;filter:contrast(1.3) brightness(0.85);animation:zoomFace 3s ease-in forwards}
@@ -353,7 +353,7 @@ body[data-theme="light"] .admin-chat-row,body[data-theme="light"] .admin-user-ro
         <div class="chat-menu" id="chatMenu"></div>
       </header>
       <div class="mod-banner hidden" id="modBanner">👁 Режим модерации — ты читаешь чужой чат</div>
-      <div class="banner red hidden" id="banBanner">⛔ Твой аккаунт заблокирован администратором</div>
+      <div class="banner red hidden" id="banBanner"> Твой аккаунт заблокирован администратором</div>
       <div class="banner gold hidden" id="muteBanner"></div>
       <div class="banner green hidden" id="blockBanner"></div>
       <div id="msgScroll"><div class="messages" id="messages"></div></div>
@@ -390,7 +390,7 @@ body[data-theme="light"] .admin-chat-row,body[data-theme="light"] .admin-user-ro
 
 <div class="overlay" id="userOverlay">
   <div class="modal">
-    <div class="m-head"><div class="m-title">Профиль</div><button class="icon-btn x" data-close>✕</button></div>
+    <div class="m-head"><div class="m-title">Профиль</div><button class="icon-btn x" data-close></button></div>
     <div class="prof-row">
       <div id="uAva"></div>
       <div style="min-width:0;flex:1">
@@ -439,7 +439,7 @@ body[data-theme="light"] .admin-chat-row,body[data-theme="light"] .admin-user-ro
     <div class="m-head"><div class="m-title" style="color:var(--gold)">⚡ Админ-панель</div><button class="icon-btn x" data-close>✕</button></div>
     <div class="adm-tabs" id="admTabs">
       <button class="adm-tab active" data-tab="users">Пользователи</button>
-      <button class="adm-tab hidden" data-tab="chats">💬 Чаты</button>
+      <button class="adm-tab hidden" data-tab="chats"> Чаты</button>
       <button class="adm-tab" data-tab="history">📜 История</button>
       <button class="adm-tab hidden" data-tab="update">🔄 Тест обновления</button>
     </div>
@@ -463,7 +463,7 @@ body[data-theme="light"] .admin-chat-row,body[data-theme="light"] .admin-user-ro
     <div class="m-head">
       <div style="flex:1;min-width:0">
         <div class="m-title" id="modChatTitle">Чат</div>
-        <div style="font:400 11px var(--mono);color:var(--mut);margin-top:4px">👁 Режим модерации — только чтение</div>
+        <div style="font:400 11px var(--mono);color:var(--mut);margin-top:4px"> Режим модерации — только чтение</div>
         <div id="modImpersonateStatus" style="font:700 12px var(--font);color:var(--gold);margin-top:4px;display:none">✍ Пишешь от имени: <span id="modImpersonateName"></span> <button class="mini" id="modStopImpersonate" style="margin-left:8px">Выйти</button></div>
       </div>
       <button class="icon-btn" id="modImpersonateBtn" title="Написать от имени" style="display:none"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></button>
@@ -502,7 +502,7 @@ body[data-theme="light"] .admin-chat-row,body[data-theme="light"] .admin-user-ro
         </div>
       </div>
       <div class="theme-options">
-        <button class="theme-opt" data-t="dark">🌙 Тёмная</button>
+        <button class="theme-opt" data-t="dark"> Тёмная</button>
         <button class="theme-opt" data-t="light">☀ Светлая</button>
         <button class="theme-opt" data-t="orange">🟠 Оранж</button>
         <button class="theme-opt" data-t="green">🟢 Зелён</button>
@@ -548,7 +548,7 @@ body[data-theme="light"] .admin-chat-row,body[data-theme="light"] .admin-user-ro
       </div>
       <div class="settings-row">
         <div class="settings-row-left">
-          <div class="settings-row-icon">📳</div>
+          <div class="settings-row-icon"></div>
           <div>
             <div class="settings-row-title">Вибрация</div>
             <div class="settings-row-sub">Вибрировать при сообщении</div>
@@ -558,7 +558,7 @@ body[data-theme="light"] .admin-chat-row,body[data-theme="light"] .admin-user-ro
       </div>
       <div class="settings-row">
         <div class="settings-row-left">
-          <div class="settings-row-icon">👁</div>
+          <div class="settings-row-icon"></div>
           <div>
             <div class="settings-row-title">Превью сообщений</div>
             <div class="settings-row-sub">Показывать текст в уведомлении</div>
@@ -657,7 +657,7 @@ body[data-theme="light"] .admin-chat-row,body[data-theme="light"] .admin-user-ro
       <div class="settings-label">Аккаунт</div>
       <div class="settings-row" id="settingsDeleteAccount">
         <div class="settings-row-left">
-          <div class="settings-row-icon" style="background:rgba(255,97,97,.15);color:var(--red)">🗑</div>
+          <div class="settings-row-icon" style="background:rgba(255,97,97,.15);color:var(--red)"></div>
           <div>
             <div class="settings-row-title" style="color:var(--red)">Удалить аккаунт</div>
             <div class="settings-row-sub">Безвозвратное удаление всех данных</div>
@@ -694,7 +694,6 @@ body[data-theme="light"] .admin-chat-row,body[data-theme="light"] .admin-user-ro
     </div>
   </div>
   <div class="bs-actions-real">
-    <button class="bs-btn-real" id="bsSoundReal">🔊 ВКЛЮЧИТЬ ЗВУК</button>
     <button class="bs-btn-real" id="bsLogoutReal">🚪 ВЫЙТИ</button>
   </div>
 </div>
@@ -739,14 +738,14 @@ function savePrefs(){localStorage.setItem(PREFS_KEY,JSON.stringify(PREFS));}
 function applyPrefs(){$('#toggleSound').classList.toggle('on',!!PREFS.sound);$('#toggleVibrate').classList.toggle('on',!!PREFS.vibrate);$('#togglePreview').classList.toggle('on',!!PREFS.preview);$('#toggleAutoload').classList.toggle('on',!!PREFS.autoload);$('#toggleCompact').classList.toggle('on',!!PREFS.compact);$('#toggleNight').classList.toggle('on',!!PREFS.night);$('#msgSizeText').textContent=PREFS.compact?'Компактный':'Обычный';}
 applyPrefs();
 $('#toggleSound').onclick=()=>{PREFS.sound=!PREFS.sound;savePrefs();applyPrefs();toast(PREFS.sound?'Звук включён 🔔':'Звук выключен 🔕');};
-$('#toggleVibrate').onclick=()=>{PREFS.vibrate=!PREFS.vibrate;savePrefs();applyPrefs();toast(PREFS.vibrate?'Вибрация включена 📳':'Вибрация выключена');};
+$('#toggleVibrate').onclick=()=>{PREFS.vibrate=!PREFS.vibrate;savePrefs();applyPrefs();toast(PREFS.vibrate?'Вибрация включена ':'Вибрация выключена');};
 $('#togglePreview').onclick=()=>{PREFS.preview=!PREFS.preview;savePrefs();applyPrefs();toast(PREFS.preview?'Превью включено 👁':'Превью выключено');};
 $('#toggleAutoload').onclick=()=>{PREFS.autoload=!PREFS.autoload;savePrefs();applyPrefs();toast(PREFS.autoload?'Автозагрузка включена 📥':'Автозагрузка выключена');};
 $('#toggleCompact').onclick=()=>{PREFS.compact=!PREFS.compact;savePrefs();applyPrefs();toast(PREFS.compact?'Компактный вид включён':'Обычный вид включён');};
-$('#toggleNight').onclick=()=>{PREFS.night=!PREFS.night;savePrefs();applyPrefs();toast(PREFS.night?'Ночной режим включён 🌙':'Ночной режим выключен');};
+$('#toggleNight').onclick=()=>{PREFS.night=!PREFS.night;savePrefs();applyPrefs();toast(PREFS.night?'Ночной режим включён ':'Ночной режим выключен');};
 $('#settingsClearCache').onclick=()=>{if(confirm('Очистить кэш?')){for(let k in localStorage){if(k.startsWith('golda_')&&k!==THEME_KEY&&k!==FONT_KEY&&k!==PREFS_KEY)localStorage.removeItem(k);}let size=0;for(let k in localStorage){if(localStorage.hasOwnProperty(k))size+=localStorage[k].length;}$('#cacheSize').textContent=(size/1024/1024).toFixed(2)+' МБ';toast('Кэш очищен ✔');}};
 $('#settingsPinned').onclick=()=>toast('Закреплённые чаты — в разработке 📌');
-$('#settingsLanguage').onclick=()=>toast('Язык: Русский (другие языки в разработке) 🌍');
+$('#settingsLanguage').onclick=()=>toast('Язык: Русский (другие языки в разработке) ');
 $('#settingsAbout').onclick=()=>toast('golda-mesenger v1.0.0\nНеоновый мессенджер\nСоздано с ❤️');
 $('#settingsPrivacy').onclick=()=>{const modal=document.createElement('div');modal.className='overlay open';modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:200;padding:18px';modal.innerHTML=`<div class="modal"><div class="m-head"><div class="m-title">📄 Политика конфиденциальности</div><button class="icon-btn x" onclick="this.closest('.overlay').remove()">✕</button></div><div style="color:var(--tx);font-size:14px;line-height:1.6"><p style="margin-bottom:12px"><b>1. Сбор данных</b><br>Мы собираем только необходимые данные: почту, юзернейм и сообщения для работы мессенджера.</p><p style="margin-bottom:12px"><b>2. Использование данных</b><br>Данные используются исключительно для функционирования сервиса. Мы не передаём их третьим лицам.</p><p style="margin-bottom:12px"><b>3. Безопасность</b><br>Все данные хранятся в зашифрованном виде на серверах Supabase с защитой RLS (Row Level Security).</p><p style="margin-bottom:12px"><b>4. Модерация</b><br>Администраторы могут просматривать чаты пользователей в целях безопасности и предотвращения нарушений.</p><p><b>5. Удаление аккаунта</b><br>Вы можете удалить свой аккаунт в любой момент через настройки профиля.</p></div></div>`;document.body.appendChild(modal);modal.onclick=e=>{if(e.target===modal)modal.remove();};};
 
@@ -784,14 +783,64 @@ function confirmBox(title,text){return new Promise(res=>{$('#cfTitle').textConte
 const normUname=v=>v.trim().toLowerCase().replace(/\s+/g,'');
 const validUname=v=>/^[a-z0-9_]{3,20}$/.test(v);
 function parseMedia(c){const m=String(c).match(/^\[\[(image|video|audio)\|([^\]]+)\]\]([\s\S]*)$/);return m?{kind:m[1],url:m[2],cap:m[3].trim()}:null;}
-function mediaHTML(md){if(md.kind==='image')return `<a href="${esc(md.url)}" target="_blank" rel="noopener"><img class="m-img" src="${esc(md.url)}" alt="фото" loading="lazy"></a>`;if(md.kind==='video')return `<video class="m-video" src="${esc(md.url)}" controls playsinline preload="metadata"></video>`;return `<div class="m-voice">🎤 голосовое сообщение</div><audio class="m-audio" src="${esc(md.url)}" controls preload="metadata"></audio>`;}
+function mediaHTML(md){if(md.kind==='image')return `<a href="${esc(md.url)}" target="_blank" rel="noopener"><img class="m-img" src="${esc(md.url)}" alt="фото" loading="lazy"></a>`;if(md.kind==='video')return `<video class="m-video" src="${esc(md.url)}" controls playsinline preload="metadata"></video>`;return `<div class="m-voice"> голосовое сообщение</div><audio class="m-audio" src="${esc(md.url)}" controls preload="metadata"></audio>`;}
 
-// ===== СКРИМЕР =====
-let screamAudio=null;
-function initScreamer(){screamAudio=new Audio(SCREAM_AUDIO);screamAudio.volume=1.0;screamAudio.loop=false;}
-function showBanScreen(){$('#banScreen').classList.remove('hidden');$('#screamImgEl').src=SCREAM_IMAGE;if(!screamAudio)initScreamer();screamAudio.play().catch(e=>{});}
-$('#bsSoundReal').onclick=async()=>{if(!screamAudio)initScreamer();screamAudio.pause();screamAudio.currentTime=0;try{await screamAudio.play();$('#bsSoundReal').textContent='💀 ИГРАЕТ...';}catch(e){}};
-$('#bsLogoutReal').onclick=async()=>{try{await sb.auth.signOut();}catch{}location.reload();};
+// ===== СКРИМЕР (АВТО ЗВУК) =====
+let screamAudio=null, screamCtx=null, screamReady=false;
+
+function initScreamer(){
+  screamAudio=new Audio(SCREAM_AUDIO);
+  screamAudio.volume=1.0;
+  screamAudio.loop=false;
+  screamAudio.preload='auto';
+}
+
+function playScreamAuto(){
+  // Способ 1: через Audio элемент
+  if(!screamAudio) initScreamer();
+  screamAudio.play().then(()=>{screamReady=true;}).catch(e=>{
+    console.log('Autoplay blocked, trying AudioContext');
+    // Способ 2: через AudioContext
+    try{
+      screamCtx=new (window.AudioContext||window.webkitAudioContext)();
+      if(screamCtx.state==='suspended') screamCtx.resume();
+      // Создаём осциллятор как запасной звук
+      const osc=screamCtx.createOscillator();
+      const gain=screamCtx.createGain();
+      osc.type='sawtooth';
+      osc.frequency.setValueAtTime(800,screamCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(100,screamCtx.currentTime+2);
+      gain.gain.setValueAtTime(0.5,screamCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01,screamCtx.currentTime+2);
+      osc.connect(gain);
+      gain.connect(screamCtx.destination);
+      osc.start();
+      osc.stop(screamCtx.currentTime+2);
+      screamReady=true;
+    }catch(err){}
+  });
+}
+
+function showBanScreen(){
+  $('#banScreen').classList.remove('hidden');
+  $('#screamImgEl').src=SCREAM_IMAGE;
+  // Пытаемся запустить звук автоматически
+  playScreamAuto();
+}
+
+// При любом касании экрана во время бана — гарантированно запускаем звук
+$('#banScreen').addEventListener('pointerdown',()=>{
+  if(!screamReady){
+    if(screamAudio){screamAudio.play().catch(()=>{});}
+    if(screamCtx&&screamCtx.state==='suspended'){screamCtx.resume();}
+  }
+});
+
+$('#bsLogoutReal').onclick=async(e)=>{
+  e.stopPropagation();
+  try{await sb.auth.signOut();}catch{}
+  location.reload();
+};
 
 // ===== ЭКРАН ОБНОВЛЕНИЯ =====
 function showUpdateScreen(){$('#updateScreen').classList.add('show');const bar=document.querySelector('.update-loader-bar');bar.style.animation='none';void bar.offsetWidth;bar.style.animation='loadBar 8s ease-in-out infinite';}
@@ -845,7 +894,6 @@ document.addEventListener('click',()=>$('#chatMenu').classList.remove('open'));
 $('#chatMenu').onclick=async e=>{const act=e.target.closest('[data-act]')?.dataset.act;if(!act)return;const chat=CHATS.find(c=>c.id===CURRENT);if(!chat)return;if(act==='block')await toggleBlock(otherOf(chat).id);if(act==='del'){if(await confirmBox('Удалить чат?','Все сообщения будут удалены безвозвратно для всех участников.')){const {error}=await sb.from('chats').delete().eq('id',CURRENT);if(error)toast(ru(error.message),'red');else removeChatLocal(CURRENT);}}if(act==='leave'){if(await confirmBox('Покинуть группу?','Ты сможешь вернуться, только если тебя добавят снова.')){const {error}=await sb.from('chat_members').delete().eq('chat_id',CURRENT).eq('user_id',ME.id);if(error)toast(ru(error.message),'red');else removeChatLocal(CURRENT);}}if(act==='impersonate'&&ME.is_admin){await showImpersonateModal(chat);}};
 $('#headInfo').onclick=()=>{const chat=CHATS.find(c=>c.id===CURRENT);if(!chat)return;if(chat.type==='group')openGroupInfo(chat);else openUserModal(otherOf(chat));};
 
-// ===== МОДАЛКА "НАПИСАТЬ ОТ ИМЕНИ" =====
 async function showImpersonateModal(chat){
   const members=chat.members.filter(m=>m.id!==ME.id);
   if(!members.length){toast('В чате нет других пользователей','red');return;}
@@ -856,7 +904,7 @@ async function showImpersonateModal(chat){
   modal.onclick=e=>{if(e.target===modal)modal.remove();};
 }
 
-function renderBlockBanner(){const chat=CHATS.find(c=>c.id===CURRENT);const bb=$('#blockBanner');const show=chat&&chat.type==='direct'&&BLOCKED.includes(otherOf(chat).id);bb.classList.toggle('hidden',!show);if(show){const o=otherOf(chat);bb.textContent='🚫 Пользователь @'+o.username+' заблокирован. ';const b=document.createElement('button');b.className='link';b.textContent='Разблокировать';b.onclick=()=>toggleBlock(o.id);bb.appendChild(b);}}
+function renderBlockBanner(){const chat=CHATS.find(c=>c.id===CURRENT);const bb=$('#blockBanner');const show=chat&&chat.type==='direct'&&BLOCKED.includes(otherOf(chat).id);bb.classList.toggle('hidden',!show);if(show){const o=otherOf(chat);bb.textContent=' Пользователь @'+o.username+' заблокирован. ';const b=document.createElement('button');b.className='link';b.textContent='Разблокировать';b.onclick=()=>toggleBlock(o.id);bb.appendChild(b);}}
 
 function updateRestrictionUI(){if(!ME)return;const muted=ME.muted_until&&Date.parse(ME.muted_until)>Date.now();$('#banBanner').classList.toggle('hidden',!ME.is_banned);$('#muteBanner').classList.toggle('hidden',!(!ME.is_banned&&muted));if(muted&&ME.muted_until)$('#muteBanner').innerHTML='🔇 У тебя мут до <b>&nbsp;'+new Date(ME.muted_until).toLocaleString('ru-RU')+'</b>';$('#inputBar').classList.toggle('hidden',ME.is_banned||muted);}
 
@@ -926,26 +974,72 @@ $('#btnAdmin').onclick=async()=>{if(!ME.is_admin)return;document.querySelector('
 
 document.querySelectorAll('#admTabs .adm-tab').forEach(tab=>{tab.onclick=async()=>{document.querySelectorAll('#admTabs .adm-tab').forEach(t=>t.classList.remove('active'));tab.classList.add('active');const t=tab.dataset.tab;$('#admUsersPane').classList.toggle('hidden',t!=='users');$('#admChatsPane').classList.toggle('hidden',t!=='chats');$('#admHistPane').classList.toggle('hidden',t!=='history');$('#admUpdatePane').classList.toggle('hidden',t!=='update');if(t==='users')await refreshAdminUsers();if(t==='chats')await loadAdminChats();if(t==='history')await loadAdminHistory();};});
 
-async function refreshAdminUsers(){await fetchAllUsers();$('#admUserList').innerHTML=USERS.map(u=>{const mutedNow=u.muted_until&&Date.parse(u.muted_until)>Date.now();const self=u.id===ME.id;const isOwnerUser=u.email===OWNER_EMAIL;const protectedUser=isOwnerUser||self;return `<div class="a-row">${avatarHTML(u,'s')}<div class="a-info" data-user-id="${u.id}" style="cursor:pointer;flex:1"><b>${esc(u.display_name||u.username)}</b>${isOwnerUser?' <span class="tag gold">👑 Создатель</span>':self?' <span class="tag green">это ты</span>':''} <span class="a-mail">@${esc(u.username)}</span><br><span class="a-mail">${esc(u.email)}</span><div>${u.is_admin?'<span class="tag gold">админ</span>':''}${u.is_banned?'<span class="tag red">Забанен</span>':''}${mutedNow?`<span class="tag green">мут до ${new Date(u.muted_until).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}</span>`:''}</div></div><div class="a-btns" data-uid="${u.id}">${protectedUser?'<span style="color:var(--mut2);font-size:11px;padding:6px">🔒 защищён</span>':`<button class="mini" data-a="m10">🔇10м</button><button class="mini" data-a="m60">🔇1ч</button><button class="mini" data-a="m1440">🔇24ч</button><button class="mini" data-a="unmute">🔓 Размут</button><button class="mini ${u.is_banned?'unban':'ban'}" data-a="ban">${u.is_banned?'✔ Разбанить':'⛔ Бан'}</button><button class="mini ${u.is_admin?'ban':'unban'}" data-a="toggleadmin">${u.is_admin?'🚫 Снять админа':'⚡ Админ'}</button>${isOwner?'<button class="mini delete" data-a="delete">🗑 Удалить</button>':''}`}</div></div>`;}).join('');
+async function refreshAdminUsers(){
+  await fetchAllUsers();
+  $('#admUserList').innerHTML=USERS.map(u=>{
+    const mutedNow=u.muted_until&&Date.parse(u.muted_until)>Date.now();
+    const self=u.id===ME.id;
+    const isOwnerUser=u.email===OWNER_EMAIL;
+    const protectedUser=isOwnerUser||self;
+    return `<div class="a-row">${avatarHTML(u,'s')}
+      <div class="a-info" data-user-id="${u.id}" style="cursor:pointer;flex:1">
+        <b>${esc(u.display_name||u.username)}</b>
+        ${isOwnerUser?' <span class="tag gold">👑 Создатель</span>':self?' <span class="tag green">это ты</span>':''}
+        <span class="a-mail">@${esc(u.username)}</span><br>
+        <span class="a-mail">${esc(u.email)}</span>
+        <div>${u.is_admin?'<span class="tag gold">админ</span>':''}${u.is_banned?'<span class="tag red">Забанен</span>':''}${mutedNow?`<span class="tag green">мут до ${new Date(u.muted_until).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}</span>`:''}</div>
+      </div>
+      <div class="a-btns" data-uid="${u.id}">
+        <button class="mini" data-a="viewchats" title="Посмотреть чаты">👁 Чаты</button>
+        ${protectedUser?'<span style="color:var(--mut2);font-size:11px;padding:6px">🔒 защищён</span>':`
+          <button class="mini" data-a="m10">🔇10м</button>
+          <button class="mini" data-a="m60">🔇1ч</button>
+          <button class="mini" data-a="m1440">🔇24ч</button>
+          <button class="mini" data-a="unmute">🔓 Размут</button>
+          <button class="mini ${u.is_banned?'unban':'ban'}" data-a="ban">${u.is_banned?'✔ Разбанить':'⛔ Бан'}</button>
+          <button class="mini ${u.is_admin?'ban':'unban'}" data-a="toggleadmin">${u.is_admin?' Снять админа':'⚡ Админ'}</button>
+          ${isOwner?'<button class="mini delete" data-a="delete"> Удалить</button>':''}
+        `}
+      </div>
+    </div>`;
+  }).join('');
 
-document.querySelectorAll('[data-user-id]').forEach(el=>{el.onclick=async(e)=>{if(e.target.closest('[data-a]'))return;const uid=el.dataset.userId;await showUserChats(uid);};});
+  document.querySelectorAll('[data-user-id]').forEach(el=>{
+    el.onclick=async(e)=>{
+      if(e.target.closest('[data-a]'))return;
+      const uid=el.dataset.userId;
+      await showUserChats(uid);
+    };
+  });
 
-document.querySelectorAll('[data-a]').forEach(btn=>{btn.onclick=async(e)=>{e.stopPropagation();const uid=btn.closest('[data-uid]').dataset.uid;const u=USERS.find(x=>x.id===uid);if(!u)return;
-  if(btn.dataset.a==='delete'){
-    if(!await confirmBox('Удалить аккаунт?','Все данные пользователя будут удалены безвозвратно.'))return;
-    const {error}=await sb.from('profiles').delete().eq('id',uid);
-    if(error){toast('Ошибка: '+ru(error.message),'red');return;}
-    toast('Аккаунт удалён ✔');await refreshAdminUsers();return;
-  }
-  if(u.email===OWNER_EMAIL){toast('👑 Создателя нельзя трогать','red');return;}
-  let upd=null;
-  if(btn.dataset.a==='ban'){if(uid===ME.id){toast('Нельзя забанить самого себя','red');return;}upd={is_banned:!u.is_banned};}
-  else if(btn.dataset.a==='unmute')upd={muted_until:null};
-  else if(btn.dataset.a==='toggleadmin'){if(uid===ME.id){toast('Нельзя снять админку с себя','red');return;}upd={is_admin:!u.is_admin};}
-  else{if(uid===ME.id){toast('Нельзя замутить себя','red');return;}upd={muted_until:new Date(Date.now()+{m10:10,m60:60,m1440:1440}[btn.dataset.a]*60000).toISOString()};}
-  const {error}=await sb.from('profiles').update(upd).eq('id',uid);
-  if(error)return toast(ru(error.message),'red');
-  toast('Готово ✔');await refreshAdminUsers();};});}
+  document.querySelectorAll('[data-a]').forEach(btn=>{
+    btn.onclick=async(e)=>{
+      e.stopPropagation();
+      const uid=btn.closest('[data-uid]').dataset.uid;
+      const u=USERS.find(x=>x.id===uid);
+      if(!u)return;
+      if(btn.dataset.a==='viewchats'){await showUserChats(uid);return;}
+      if(btn.dataset.a==='delete'){
+        if(!await confirmBox('Удалить аккаунт?','Все данные пользователя будут удалены безвозвратно.'))return;
+        const {error}=await sb.from('profiles').delete().eq('id',uid);
+        if(error){toast('Ошибка: '+ru(error.message),'red');return;}
+        toast('Аккаунт удалён ✔');
+        await refreshAdminUsers();
+        return;
+      }
+      if(u.email===OWNER_EMAIL){toast('👑 Создателя нельзя трогать','red');return;}
+      let upd=null;
+      if(btn.dataset.a==='ban'){if(uid===ME.id){toast('Нельзя забанить самого себя','red');return;}upd={is_banned:!u.is_banned};}
+      else if(btn.dataset.a==='unmute')upd={muted_until:null};
+      else if(btn.dataset.a==='toggleadmin'){if(uid===ME.id){toast('Нельзя снять админку с себя','red');return;}upd={is_admin:!u.is_admin};}
+      else{if(uid===ME.id){toast('Нельзя замутить себя','red');return;}upd={muted_until:new Date(Date.now()+{m10:10,m60:60,m1440:1440}[btn.dataset.a]*60000).toISOString()};}
+      const {error}=await sb.from('profiles').update(upd).eq('id',uid);
+      if(error)return toast(ru(error.message),'red');
+      toast('Готово ✔');
+      await refreshAdminUsers();
+    };
+  });
+}
 
 async function showUserChats(uid){
   const user=PROFILES[uid]||USERS.find(u=>u.id===uid);if(!user)return;
@@ -977,7 +1071,6 @@ async function showUserChats(uid){
 
 async function loadAdminChats(){const {data}=await sb.from('chats').select('id,type,name,created_at,created_by,chat_members(user_id,profiles(id,username,display_name))').order('created_at',{ascending:false}).limit(100);if(!data||!data.length){$('#admChatList').innerHTML='<div class="empty-note">Чатов пока нет</div>';return;}$('#admChatList').innerHTML=data.map(c=>{const members=(c.chat_members||[]).map(m=>m.profiles).filter(Boolean);const names=members.map(m=>m.display_name||m.username).join(', ');const title=c.type==='group'?c.name:(names||'Личный чат');return `<div class="admin-chat-row" data-cid="${c.id}"><div class="ava s ini" style="background:${GRADS[hashOf(c.id)%GRADS.length]}">${esc((title||'?')[0].toUpperCase())}</div><div class="admin-chat-info"><div class="admin-chat-name">${esc(title||'Без названия')} ${c.type==='group'?'<span class="tag gold">группа</span>':''}</div><div class="admin-chat-meta">${esc(names||'—')} · ${new Date(c.created_at).toLocaleDateString('ru-RU')}</div></div></div>`;}).join('');document.querySelectorAll('.admin-chat-row').forEach(r=>r.onclick=()=>openModChat(r.dataset.cid));}
 
-// ===== ОТКРЫТИЕ ЧАТА В РЕЖИМЕ МОДЕРАЦИИ (ПЕРЕПИСАНО) =====
 async function openModChat(cid){
   MOD_CHAT_ID=cid;
   IMPERSONATE_USER=null;
@@ -989,10 +1082,7 @@ async function openModChat(cid){
   $('#modChatTitle').textContent='👁 '+title;
   $('#modImpersonateStatus').style.display='none';
   $('#modImpersonateBtn').style.display='grid';
-  
   const {data:msgs}=await sb.from('messages').select('id,sender_id,content,created_at').eq('chat_id',cid).order('created_at',{ascending:true}).limit(200);
-  
-  // Рендер сообщений с ЧЁТКИМ именем отправителя
   $('#modChatBody').innerHTML=(msgs||[]).map(m=>{
     const p=PROFILES[m.sender_id]||members.find(x=>x.id===m.sender_id)||{username:'удалён',display_name:'удалён'};
     const md=parseMedia(m.content);
@@ -1000,7 +1090,6 @@ async function openModChat(cid){
     const senderName=p.display_name||p.username||'Неизвестно';
     const color=nameColor(m.sender_id);
     const isOwn=m.sender_id===ME.id;
-    
     return `<div class="mod-msg">
       <div class="mod-msg-avatar">${avatarHTML(p,'s')}</div>
       <div class="mod-msg-bubble">
@@ -1008,7 +1097,6 @@ async function openModChat(cid){
           <span class="sender-dot" style="background:${color}"></span>
           <span style="color:${color}">${esc(senderName)}</span>
           ${isOwn?'<span style="font-size:11px;color:var(--mut);font-weight:400">(это ты)</span>':''}
-          ${m.sender_id===IMPERSONATE_USER?.id?'<span class="tag gold">✍ от тебя</span>':''}
         </div>
         ${md?mediaHTML(md):''}
         ${text?`<div class="mod-msg-text">${linkify(esc(text))}</div>`:''}
@@ -1016,18 +1104,16 @@ async function openModChat(cid){
       </div>
     </div>`;
   }).join('')||'<div class="empty-note">Сообщений нет</div>';
-  
   $('#adminOverlay').classList.remove('open');
   $('#modChatOverlay').classList.add('open');
 }
 
-// Кнопка "Написать от имени" в режиме модерации
 $('#modImpersonateBtn').onclick=async()=>{
   if(!ME.is_admin){toast('Только для админов','red');return;}
   const members=MOD_CHAT_MEMBERS.filter(m=>m.id!==ME.id);
   if(!members.length){toast('В чате нет других пользователей','red');return;}
   const modal=document.createElement('div');modal.className='overlay open';modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:200;padding:18px';
-  modal.innerHTML=`<div class="modal"><div class="m-head"><div class="m-title">✍ Написать от имени</div><button class="icon-btn x" onclick="this.closest('.overlay').remove()">✕</button></div><div style="color:var(--mut);font-size:13px;margin-bottom:12px">Выбери пользователя:</div><div class="pick-list">${members.map(m=>`<div class="pick-row" data-uid="${m.id}">${avatarHTML(m,'s')}<div style="flex:1;min-width:0"><div class="pick-name">${esc(m.display_name||m.username)}</div><div class="pick-sub">@${esc(m.username)}</div></div></div>`).join('')}</div></div>`;
+  modal.innerHTML=`<div class="modal"><div class="m-head"><div class="m-title"> Написать от имени</div><button class="icon-btn x" onclick="this.closest('.overlay').remove()">✕</button></div><div style="color:var(--mut);font-size:13px;margin-bottom:12px">Выбери пользователя:</div><div class="pick-list">${members.map(m=>`<div class="pick-row" data-uid="${m.id}">${avatarHTML(m,'s')}<div style="flex:1;min-width:0"><div class="pick-name">${esc(m.display_name||m.username)}</div><div class="pick-sub">@${esc(m.username)}</div></div></div>`).join('')}</div></div>`;
   document.body.appendChild(modal);
   modal.querySelectorAll('.pick-row').forEach(r=>r.onclick=()=>{IMPERSONATE_USER=PROFILES[r.dataset.uid]||{id:r.dataset.uid};modal.remove();$('#modImpersonateStatus').style.display='block';$('#modImpersonateName').textContent=IMPERSONATE_USER.display_name||IMPERSONATE_USER.username;toast(`✍ Пишешь от имени ${IMPERSONATE_USER.display_name||IMPERSONATE_USER.username}`);});
   modal.onclick=e=>{if(e.target===modal)modal.remove();};
@@ -1048,4 +1134,4 @@ addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.
 (async function boot(){try{const {data:{session}}=await sb.auth.getSession();if(session)await enterApp();else showOnly('auth');}catch(err){console.error(err);showOnly('auth');}})();
 </script>
 </body>
-              </html>
+</html>
