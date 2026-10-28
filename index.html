@@ -441,6 +441,34 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const SCREAM_IMAGE = 'https://i.imgur.com/8QzJk9g.jpeg';
 const SCREAM_AUDIO = 'https://www.myinstants.com/media/sounds/jeff-the-killer-scream.mp3';
 
+// === УВЕДОМЛЕНИЯ ===
+function askNotifPermission(){
+  if('Notification' in window && Notification.permission === 'default'){
+    Notification.requestPermission();
+  }
+}
+
+function showNotif(title, body){
+  if(!('Notification' in window)) return;
+  if(Notification.permission !== 'granted') return;
+  
+  const n = new Notification(title, {
+    body: body,
+    icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🟢</text></svg>',
+    badge: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🟢</text></svg>',
+    tag: 'golda-msg'
+  });
+  
+  n.onclick = () => { window.focus(); n.close(); };
+  
+  // Звук уведомления
+  try{
+    const audio = new Audio('https://www.soundjay.com/misc/sounds/notification-01.mp3');
+    audio.volume = 0.3;
+    audio.play().catch(()=>{});
+  }catch(e){}
+}
+
 const $ = s => document.querySelector(s);
 let ME=null, CHATS=[], BLOCKED=[], PROFILES={}, USERS=[], UNREAD={};
 let CURRENT=null, MSG_IDS=new Set(), rtChannel=null, hbTimer=null;
@@ -581,6 +609,7 @@ async function enterApp(){
   await Promise.all([fetchAllUsers(), loadChats(), loadBlocks()]);
   renderMe(); renderChatList(); updateRestrictionUI();
   if(ME.is_banned) showBanScreen();
+  askNotifPermission();
   subscribeRT(); startHeartbeat();
 }
 
@@ -833,8 +862,24 @@ function bump(c){const i=CHATS.indexOf(c);if(i>0){CHATS.splice(i,1);CHATS.unshif
 function onMsgInsert(m){
   const chat=CHATS.find(c=>c.id===m.chat_id);if(!chat||MSG_IDS.has(m.id))return;
   MSG_IDS.add(m.id);chat.lastMsg=m;bump(chat);
-  if(CURRENT===m.chat_id){appendMsg(m,chat);scrollBottom();}
-  else if(m.sender_id!==ME.id){UNREAD[m.chat_id]=(UNREAD[m.chat_id]||0)+1;}
+  
+  if(CURRENT===m.chat_id){
+    appendMsg(m,chat);scrollBottom();
+  } else {
+    if(m.sender_id!==ME.id){
+      UNREAD[m.chat_id]=(UNREAD[m.chat_id]||0)+1;
+      
+      // === УВЕДОМЛЕНИЕ ===
+      const sender = PROFILES[m.sender_id] || {};
+      const senderName = sender.display_name || sender.username || 'Кто-то';
+      const chatName = titleOf(chat);
+      let text = m.content;
+      const md = parseMedia(text);
+      if(md) text = md.kind==='image'?'📷 Фото':md.kind==='video'?'🎬 Видео':'🎤 Голосовое';
+      
+      showNotif(`${senderName} · ${chatName}`, text);
+    }
+  }
   renderChatList();
 }
 function onMsgDelete(old){document.querySelector(`.msg[data-id="${old.id}"]`)?.remove();}
@@ -1090,4 +1135,4 @@ addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.
 })();
 </script>
 </body>
-</html>
+  </html>
