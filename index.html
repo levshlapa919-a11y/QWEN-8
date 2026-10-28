@@ -203,7 +203,6 @@ textarea.inp{resize:none}
 .toast.out{opacity:0;transform:translateY(8px);transition:.3s}
 @keyframes tIn{from{opacity:0;transform:translateY(10px)}}
 
-/* ===== РЕАЛЬНЫЙ СКРИМЕР ===== */
 .ban-screen{position:fixed;inset:0;z-index:9999;background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .bs-container{position:relative;width:100%;height:100%;animation:shakeScreen 0.4s linear infinite}
 @keyframes shakeScreen{0%{transform:translate(0,0)}25%{transform:translate(-6px,5px)}50%{transform:translate(6px,-5px)}75%{transform:translate(-6px,-5px)}100%{transform:translate(0,0)}}
@@ -360,7 +359,7 @@ textarea.inp{resize:none}
     </div>
     <label class="lbl">О себе</label><div class="about-box" id="uAbout"></div>
     <div class="row-btns">
-      <button class="btn primary" id="uWrite" style="margin-top:0"> Написать</button>
+      <button class="btn primary" id="uWrite" style="margin-top:0">✉ Написать</button>
       <button class="btn ghost" id="uBlock">Заблокировать</button>
     </div>
   </div>
@@ -412,7 +411,6 @@ textarea.inp{resize:none}
   </div>
 </div>
 
-<!-- ===== РЕАЛЬНЫЙ СКРИМЕР С КАРТИНКОЙ И ЗВУКОМ ===== -->
 <div id="banScreen" class="ban-screen hidden">
   <div class="bs-container">
     <img src="https://i.imgur.com/8QzJk9g.jpeg" alt="" class="bs-face-real" id="screamImgEl">
@@ -436,38 +434,10 @@ textarea.inp{resize:none}
 const SUPABASE_URL      = 'https://zuxvcqdttptahwinlnpz.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_crUm-uK9Hs0o_xgD5eVdyg_TaOgO3lH';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const OWNER_EMAIL = 'levshlapa919@gmail.com';
 
-// === ССЫЛКИ НА СКРИМЕР ===
 const SCREAM_IMAGE = 'https://i.imgur.com/8QzJk9g.jpeg';
 const SCREAM_AUDIO = 'https://www.myinstants.com/media/sounds/jeff-the-killer-scream.mp3';
-
-// === УВЕДОМЛЕНИЯ ===
-function askNotifPermission(){
-  if('Notification' in window && Notification.permission === 'default'){
-    Notification.requestPermission();
-  }
-}
-
-function showNotif(title, body){
-  if(!('Notification' in window)) return;
-  if(Notification.permission !== 'granted') return;
-  
-  const n = new Notification(title, {
-    body: body,
-    icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🟢</text></svg>',
-    badge: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🟢</text></svg>',
-    tag: 'golda-msg'
-  });
-  
-  n.onclick = () => { window.focus(); n.close(); };
-  
-  // Звук уведомления
-  try{
-    const audio = new Audio('https://www.soundjay.com/misc/sounds/notification-01.mp3');
-    audio.volume = 0.3;
-    audio.play().catch(()=>{});
-  }catch(e){}
-}
 
 const $ = s => document.querySelector(s);
 let ME=null, CHATS=[], BLOCKED=[], PROFILES={}, USERS=[], UNREAD={};
@@ -506,45 +476,28 @@ function mediaHTML(md){
   return `<div class="m-voice">🎤 голосовое сообщение</div><audio class="m-audio" src="${esc(md.url)}" controls preload="metadata"></audio>`;
 }
 
-/* ===== РЕАЛЬНЫЙ СКРИМЕР ===== */
 let screamAudio = null;
-
 function initScreamer(){
   screamAudio = new Audio(SCREAM_AUDIO);
   screamAudio.volume = 1.0;
   screamAudio.loop = false;
   screamAudio.preload = 'auto';
 }
-
 function showBanScreen(){
   const el = $('#banScreen');
   const img = $('#screamImgEl');
   img.src = SCREAM_IMAGE;
   el.classList.remove('hidden');
-  
-  // Пытаемся запустить звук
   if(!screamAudio) initScreamer();
-  screamAudio.play().catch(e => {
-    console.log('Autoplay blocked, waiting for button click');
-  });
+  screamAudio.play().catch(e => { console.log('Autoplay blocked'); });
 }
-
 $('#bsSoundReal').onclick = async () => {
   if(!screamAudio) initScreamer();
   screamAudio.pause();
   screamAudio.currentTime = 0;
-  try {
-    await screamAudio.play();
-    $('#bsSoundReal').textContent = '💀 ИГРАЕТ...';
-  } catch(e) {
-    alert('Ошибка звука: ' + e.message);
-  }
+  try { await screamAudio.play(); $('#bsSoundReal').textContent = '💀 ИГРАЕТ...'; } catch(e) { alert('Ошибка звука: ' + e.message); }
 };
-
-$('#bsLogoutReal').onclick = async () => {
-  try{await sb.auth.signOut();}catch{}
-  location.reload();
-};
+$('#bsLogoutReal').onclick = async () => { try{await sb.auth.signOut();}catch{} location.reload(); };
 
 function showOnly(screen){
   $('#authScreen').classList.toggle('hidden',screen!=='auth');
@@ -600,16 +553,12 @@ async function enterApp(){
   const {data:{session}}=await sb.auth.getSession();
   if(!session){showOnly('auth');return;}
   const {data:p}=await sb.from('profiles').select('*').eq('id',session.user.id).maybeSingle();
-  if(!p){
-    SETUP_UID=session.user.id; SETUP_EMAIL=session.user.email||'';
-    showOnly('setup'); return;
-  }
+  if(!p){ SETUP_UID=session.user.id; SETUP_EMAIL=session.user.email||''; showOnly('setup'); return; }
   ME=p; PROFILES[p.id]=p; UNREAD={}; CURRENT=null;
   showOnly('app');
   await Promise.all([fetchAllUsers(), loadChats(), loadBlocks()]);
   renderMe(); renderChatList(); updateRestrictionUI();
   if(ME.is_banned) showBanScreen();
-  askNotifPermission();
   subscribeRT(); startHeartbeat();
 }
 
@@ -647,7 +596,7 @@ function renderMe(){
 function previewOf(lm,chat){
   const md=parseMedia(lm.content);
   const who=lm.sender_id===ME.id?'Вы: ':(chat.type==='group'?((PROFILES[lm.sender_id]||{}).username||'')+': ':'');
-  if(md)return (md.kind==='image'?'📎 Фото':md.kind==='video'?'🎬 Видео':' Голосовое')+(md.cap?' · '+esc(md.cap):'');
+  if(md)return (md.kind==='image'?'📎 Фото':md.kind==='video'?'🎬 Видео':'🎤 Голосовое')+(md.cap?' · '+esc(md.cap):'');
   return esc(who+lm.content);
 }
 
@@ -690,7 +639,7 @@ function msgHTML(m,chat){
 function renderMsgList(list,chat){
   let html='',lastDay='';
   for(const m of list){const d=dayLabel(m.created_at);if(d!==lastDay){html+=`<div class="day">${d}</div>`;lastDay=d;}html+=msgHTML(m,chat);}
-  $('#messages').innerHTML=html||'<div class="empty-note">Сообщений пока нет — напиши первым! 💬</div>';
+  $('#messages').innerHTML=html||'<div class="empty-note">Сообщений пока нет — напиши первым! </div>';
 }
 function appendMsg(m,chat){
   const wrap=document.createElement('div');wrap.innerHTML=msgHTML(m,chat);
@@ -766,7 +715,7 @@ function updateRestrictionUI(){
   const muted=ME.muted_until&&Date.parse(ME.muted_until)>Date.now();
   $('#banBanner').classList.toggle('hidden',!ME.is_banned);
   $('#muteBanner').classList.toggle('hidden',!(!ME.is_banned&&muted));
-  if(muted&&ME.muted_until)$('#muteBanner').innerHTML='🔇 У тебя мут до <b>&nbsp;'+new Date(ME.muted_until).toLocaleString('ru-RU')+'</b>';
+  if(muted&&ME.muted_until)$('#muteBanner').innerHTML=' У тебя мут до <b>&nbsp;'+new Date(ME.muted_until).toLocaleString('ru-RU')+'</b>';
   $('#inputBar').classList.toggle('hidden',ME.is_banned||muted);
 }
 
@@ -862,24 +811,8 @@ function bump(c){const i=CHATS.indexOf(c);if(i>0){CHATS.splice(i,1);CHATS.unshif
 function onMsgInsert(m){
   const chat=CHATS.find(c=>c.id===m.chat_id);if(!chat||MSG_IDS.has(m.id))return;
   MSG_IDS.add(m.id);chat.lastMsg=m;bump(chat);
-  
-  if(CURRENT===m.chat_id){
-    appendMsg(m,chat);scrollBottom();
-  } else {
-    if(m.sender_id!==ME.id){
-      UNREAD[m.chat_id]=(UNREAD[m.chat_id]||0)+1;
-      
-      // === УВЕДОМЛЕНИЕ ===
-      const sender = PROFILES[m.sender_id] || {};
-      const senderName = sender.display_name || sender.username || 'Кто-то';
-      const chatName = titleOf(chat);
-      let text = m.content;
-      const md = parseMedia(text);
-      if(md) text = md.kind==='image'?'📷 Фото':md.kind==='video'?'🎬 Видео':'🎤 Голосовое';
-      
-      showNotif(`${senderName} · ${chatName}`, text);
-    }
-  }
+  if(CURRENT===m.chat_id){appendMsg(m,chat);scrollBottom();}
+  else if(m.sender_id!==ME.id){UNREAD[m.chat_id]=(UNREAD[m.chat_id]||0)+1;}
   renderChatList();
 }
 function onMsgDelete(old){document.querySelector(`.msg[data-id="${old.id}"]`)?.remove();}
@@ -984,12 +917,12 @@ function openUserModal(u){
   let tags='';if(u.is_admin)tags+='<span class="tag gold">админ</span>';if(u.is_banned)tags+='<span class="tag red">забанен</span>';
   $('#uTags').innerHTML=tags;
   $('#uAbout').textContent=u.about||'—';
-  $('#uBlock').textContent=BLOCKED.includes(u.id)?'🔓 Разблокировать':'🚫 Заблокировать';
+  $('#uBlock').textContent=BLOCKED.includes(u.id)?' Разблокировать':'🚫 Заблокировать';
   $('#uBlock').style.display=u.id===ME.id?'none':'';
   $('#userOverlay').classList.add('open');
 }
 $('#uWrite').onclick=async()=>{$('#userOverlay').classList.remove('open');await openDirectWith(U_UID);};
-$('#uBlock').onclick=async()=>{await toggleBlock(U_UID);$('#uBlock').textContent=BLOCKED.includes(U_UID)?'🔓 Разблокировать':'🚫 Заблокировать';};
+$('#uBlock').onclick=async()=>{await toggleBlock(U_UID);$('#uBlock').textContent=BLOCKED.includes(U_UID)?'🔓 Разблокировать':' Заблокировать';};
 
 function openGroupInfo(chat){
   $('#giList').innerHTML=chat.members.map(m=>`
@@ -1072,28 +1005,43 @@ $('#admTabH').onclick=async()=>{$('#admTabH').classList.add('active');$('#admTab
   $('#admHistList').innerHTML=(data||[]).map((r,i)=>`
     <div class="h-row"><span class="h-i">${i+1}</span><b>@${esc(r.username)}</b><span class="a-mail">${esc(r.email)}</span><time>${new Date(r.created_at).toLocaleString('ru-RU')}</time></div>`).join('')||'<div class="empty-note">История пуста</div>';
 };
+
+/* ===== АДМИНКА С ЗАЩИТОЙ СОЗДАТЕЛЯ ===== */
 async function refreshAdminUsers(){
   await fetchAllUsers();
   $('#admUserList').innerHTML=USERS.map(u=>{
     const mutedNow=u.muted_until&&Date.parse(u.muted_until)>Date.now();
     const self=u.id===ME.id;
+    const isOwner=u.email===OWNER_EMAIL;
+    const protectedUser=isOwner||self;
     return `<div class="a-row">${avatarHTML(u,'s')}
-      <div class="a-info"><b>${esc(u.display_name||u.username)}</b>${self?' <span class="tag green">это ты</span>':''} <span class="a-mail">@${esc(u.username)}</span><br><span class="a-mail">${esc(u.email)}</span>
+      <div class="a-info"><b>${esc(u.display_name||u.username)}</b>${isOwner?' <span class="tag gold">👑 Создатель</span>':self?' <span class="tag green">это ты</span>':''} <span class="a-mail">@${esc(u.username)}</span><br><span class="a-mail">${esc(u.email)}</span>
         <div>${u.is_admin?'<span class="tag gold">админ</span>':''}${u.is_banned?'<span class="tag red">Забанен</span>':''}${mutedNow?`<span class="tag green">мут до ${new Date(u.muted_until).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}</span>`:''}</div></div>
       <div class="a-btns" data-uid="${u.id}">
-        <button class="mini" data-a="m10" title="Мут 10 минут">🔇10м</button>
-        <button class="mini" data-a="m60" title="Мут 1 час">🔇1ч</button>
-        <button class="mini" data-a="m1440" title="Мут 24 часа">24ч</button>
-        <button class="mini" data-a="unmute">🔓 Размут</button>
-        <button class="mini ${u.is_banned?'unban':'ban'}" data-a="ban">${u.is_banned?'✔ Разбанить':'⛔ Бан'}</button>
-        <button class="mini ${u.is_admin?'ban':'unban'}" data-a="toggleadmin">${u.is_admin?'🚫 Снять админа':'⚡ Сделать админом'}</button>
+        ${protectedUser
+          ? '<span style="color:var(--mut2);font-size:11px;padding:6px">🔒 защищён</span>'
+          : `<button class="mini" data-a="m10" title="Мут 10 минут">🔇10м</button>
+             <button class="mini" data-a="m60" title="Мут 1 час">1ч</button>
+             <button class="mini" data-a="m1440" title="Мут 24 часа">🔇24ч</button>
+             <button class="mini" data-a="unmute">🔓 Размут</button>
+             <button class="mini ${u.is_banned?'unban':'ban'}" data-a="ban">${u.is_banned?'✔ Разбанить':'⛔ Бан'}</button>
+             <button class="mini ${u.is_admin?'ban':'unban'}" data-a="toggleadmin">${u.is_admin?'🚫 Снять админа':'⚡ Сделать админом'}</button>`
+        }
       </div></div>`;
   }).join('');
 }
+
 $('#admUserList').addEventListener('click',async e=>{
   const btn=e.target.closest('[data-a]');if(!btn)return;
   const uid=btn.closest('[data-uid]').dataset.uid;
   const u=USERS.find(x=>x.id===uid);if(!u)return;
+  
+  // 🛡 ЗАЩИТА СОЗДАТЕЛЯ
+  if(u.email===OWNER_EMAIL){
+    toast(' Создателя нельзя банить, мутить или снимать с админки','red');
+    return;
+  }
+  
   let upd=null;
   if(btn.dataset.a==='ban'){
     if(uid===ME.id){toast('Нельзя забанить самого себя 😄');return;}
