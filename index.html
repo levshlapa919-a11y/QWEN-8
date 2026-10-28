@@ -34,6 +34,7 @@ body[data-theme="light"]::before{background:radial-gradient(1000px 640px at 10% 
 body[data-theme="light"] .btn.primary{color:#fff}
 .btn.primary:hover{box-shadow:0 0 36px rgba(61,255,133,.6);transform:translateY(-1px)}
 .btn.ghost{background:transparent;border:1px solid var(--line2);color:var(--neon)}
+.btn.danger{background:linear-gradient(135deg,#ff6161,#d43030);color:#fff}
 .icon-btn{width:38px;height:38px;border-radius:11px;background:transparent;border:1px solid var(--line);color:var(--mut);display:grid;place-items:center;cursor:pointer;transition:.18s;flex:none;touch-action:manipulation}
 .icon-btn:hover{color:var(--neon);border-color:var(--line2);box-shadow:0 0 14px rgba(61,255,133,.25);transform:translateY(-1px)}
 .icon-btn.gold{color:var(--gold);border-color:rgba(255,211,77,.35)}
@@ -179,6 +180,8 @@ body[data-theme="light"] .a-row{background:rgba(0,0,0,.02)}
 .mini:hover{color:var(--neon);border-color:var(--line2)}
 .mini.ban{border-color:rgba(255,97,97,.5);color:#ff9d9d}
 .mini.unban{border-color:var(--line2);color:var(--neon)}
+.mini.delete{border-color:rgba(255,97,97,.5);color:#ff9d9d}
+.mini.delete:hover{background:rgba(255,97,97,.15)}
 .adm-tabs{display:flex;gap:6px;margin:8px 0 4px;flex-wrap:wrap}
 .adm-tab{flex:1;padding:9px;border-radius:10px;border:1px solid var(--line);background:transparent;color:var(--mut);font:700 12.5px var(--font);cursor:pointer;transition:.15s;min-width:100px}
 .adm-tab.active{color:var(--gold);border-color:rgba(255,211,77,.45);box-shadow:0 0 14px rgba(255,211,77,.15)}
@@ -342,7 +345,7 @@ body[data-theme="light"] .admin-chat-row,body[data-theme="light"] .admin-user-ro
         <button class="icon-btn" id="dotsBtn" title="Меню чата"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.9"/><circle cx="12" cy="12" r="1.9"/><circle cx="12" cy="19" r="1.9"/></svg></button>
         <div class="chat-menu" id="chatMenu"></div>
       </header>
-      <div class="mod-banner hidden" id="modBanner">👁 Режим модерации — ты читаешь чужой чат</div>
+      <div class="mod-banner hidden" id="modBanner"> Режим модерации — ты читаешь чужой чат</div>
       <div class="banner red hidden" id="banBanner">⛔ Твой аккаунт заблокирован администратором</div>
       <div class="banner gold hidden" id="muteBanner"></div>
       <div class="banner green hidden" id="blockBanner"></div>
@@ -380,7 +383,7 @@ body[data-theme="light"] .admin-chat-row,body[data-theme="light"] .admin-user-ro
 
 <div class="overlay" id="userOverlay">
   <div class="modal">
-    <div class="m-head"><div class="m-title">Профиль</div><button class="icon-btn x" data-close></button></div>
+    <div class="m-head"><div class="m-title">Профиль</div><button class="icon-btn x" data-close>✕</button></div>
     <div class="prof-row">
       <div id="uAva"></div>
       <div style="min-width:0;flex:1">
@@ -392,7 +395,7 @@ body[data-theme="light"] .admin-chat-row,body[data-theme="light"] .admin-user-ro
     </div>
     <label class="lbl">О себе</label><div class="about-box" id="uAbout"></div>
     <div class="row-btns">
-      <button class="btn primary" id="uWrite" style="margin-top:0">✉ Написать</button>
+      <button class="btn primary" id="uWrite" style="margin-top:0"> Написать</button>
       <button class="btn ghost" id="uBlock">Заблокировать</button>
     </div>
   </div>
@@ -426,7 +429,7 @@ body[data-theme="light"] .admin-chat-row,body[data-theme="light"] .admin-user-ro
 
 <div class="overlay" id="adminOverlay">
   <div class="modal wide">
-    <div class="m-head"><div class="m-title" style="color:var(--gold)">⚡ Админ-панель</div><button class="icon-btn x" data-close></button></div>
+    <div class="m-head"><div class="m-title" style="color:var(--gold)">⚡ Админ-панель</div><button class="icon-btn x" data-close>✕</button></div>
     <div class="adm-tabs" id="admTabs">
       <button class="adm-tab active" data-tab="users">Пользователи</button>
       <button class="adm-tab hidden" data-tab="chats"> Чаты</button>
@@ -493,12 +496,12 @@ body[data-theme="light"] .admin-chat-row,body[data-theme="light"] .admin-user-ro
         <button class="theme-opt" data-t="dark">🌙 Тёмная</button>
         <button class="theme-opt" data-t="light">☀ Светлая</button>
         <button class="theme-opt" data-t="orange">🟠 Оранж</button>
-        <button class="theme-opt" data-t="green">🟢 Зелён</button>
+        <button class="theme-opt" data-t="green"> Зелён</button>
         <button class="theme-opt" data-t="blue">🔵 Синяя</button>
       </div>
       <div class="settings-row" style="cursor:default">
         <div class="settings-row-left">
-          <div class="settings-row-icon">🔤</div>
+          <div class="settings-row-icon"></div>
           <div>
             <div class="settings-row-title">Размер шрифта</div>
             <div class="settings-row-sub" id="currentFontSize">Средний</div>
@@ -512,7 +515,7 @@ body[data-theme="light"] .admin-chat-row,body[data-theme="light"] .admin-user-ro
       </div>
       <div class="settings-row">
         <div class="settings-row-left">
-          <div class="settings-row-icon"></div>
+          <div class="settings-row-icon">🌙</div>
           <div>
             <div class="settings-row-title">Ночной режим</div>
             <div class="settings-row-sub">Автоматически по времени</div>
@@ -570,7 +573,7 @@ body[data-theme="light"] .admin-chat-row,body[data-theme="light"] .admin-user-ro
       </div>
       <div class="settings-row">
         <div class="settings-row-left">
-          <div class="settings-row-icon">📥</div>
+          <div class="settings-row-icon"></div>
           <div>
             <div class="settings-row-title">Автозагрузка медиа</div>
             <div class="settings-row-sub">Wi-Fi и мобильная сеть</div>
@@ -608,7 +611,7 @@ body[data-theme="light"] .admin-chat-row,body[data-theme="light"] .admin-user-ro
       <div class="settings-label">Язык</div>
       <div class="settings-row" id="settingsLanguage">
         <div class="settings-row-left">
-          <div class="settings-row-icon"></div>
+          <div class="settings-row-icon">🌍</div>
           <div>
             <div class="settings-row-title">Язык интерфейса</div>
             <div class="settings-row-sub">Русский</div>
@@ -643,9 +646,18 @@ body[data-theme="light"] .admin-chat-row,body[data-theme="light"] .admin-user-ro
 
     <div class="settings-section">
       <div class="settings-label">Аккаунт</div>
+      <div class="settings-row" id="settingsDeleteAccount">
+        <div class="settings-row-left">
+          <div class="settings-row-icon" style="background:rgba(255,97,97,.15);color:var(--red)">🗑</div>
+          <div>
+            <div class="settings-row-title" style="color:var(--red)">Удалить аккаунт</div>
+            <div class="settings-row-sub">Безвозвратное удаление всех данных</div>
+          </div>
+        </div>
+      </div>
       <div class="settings-row" id="settingsLogout">
         <div class="settings-row-left">
-          <div class="settings-row-icon" style="background:rgba(255,97,97,.15);color:var(--red)"></div>
+          <div class="settings-row-icon" style="background:rgba(255,97,97,.15);color:var(--red)">🚪</div>
           <div>
             <div class="settings-row-title">Выйти из аккаунта</div>
             <div class="settings-row-sub" id="settingsEmail"></div>
@@ -673,8 +685,8 @@ body[data-theme="light"] .admin-chat-row,body[data-theme="light"] .admin-user-ro
     </div>
   </div>
   <div class="bs-actions-real">
-    <button class="bs-btn-real" id="bsSoundReal">🔊 ВКЛЮЧИТЬ ЗВУК</button>
-    <button class="bs-btn-real" id="bsLogoutReal"> ВЫЙТИ</button>
+    <button class="bs-btn-real" id="bsSoundReal"> ВКЛЮЧИТЬ ЗВУК</button>
+    <button class="bs-btn-real" id="bsLogoutReal">🚪 ВЫЙТИ</button>
   </div>
 </div>
 
@@ -703,16 +715,11 @@ function applyTheme(t){document.body.setAttribute('data-theme',t);const colors={
 applyTheme(localStorage.getItem(THEME_KEY)||'dark');
 document.querySelectorAll('.theme-opt').forEach(b=>b.onclick=()=>applyTheme(b.dataset.t));
 
-// ===== РАЗМЕР ШРИФТА (ИСПРАВЛЕНО) =====
+// ===== РАЗМЕР ШРИФТА =====
 const FONT_KEY='golda_font_size';
 const fontNames={small:'Маленький',medium:'Средний',large:'Большой'};
 const fontSizes={small:'12px',medium:'14px',large:'17px'};
-function applyFontSize(size){
-  document.documentElement.style.setProperty('--font-size',fontSizes[size]||'14px');
-  document.querySelectorAll('.font-size-opt').forEach(b=>b.classList.toggle('active',b.dataset.size===size));
-  $('#currentFontSize').textContent=fontNames[size]||size;
-  localStorage.setItem(FONT_KEY,size);
-}
+function applyFontSize(size){document.documentElement.style.setProperty('--font-size',fontSizes[size]||'14px');document.querySelectorAll('.font-size-opt').forEach(b=>b.classList.toggle('active',b.dataset.size===size));$('#currentFontSize').textContent=fontNames[size]||size;localStorage.setItem(FONT_KEY,size);}
 applyFontSize(localStorage.getItem(FONT_KEY)||'medium');
 document.querySelectorAll('.font-size-opt').forEach(b=>b.onclick=()=>applyFontSize(b.dataset.size));
 
@@ -722,17 +729,31 @@ let PREFS=JSON.parse(localStorage.getItem(PREFS_KEY)||'{"sound":true,"vibrate":t
 function savePrefs(){localStorage.setItem(PREFS_KEY,JSON.stringify(PREFS));}
 function applyPrefs(){$('#toggleSound').classList.toggle('on',!!PREFS.sound);$('#toggleVibrate').classList.toggle('on',!!PREFS.vibrate);$('#togglePreview').classList.toggle('on',!!PREFS.preview);$('#toggleAutoload').classList.toggle('on',!!PREFS.autoload);$('#toggleCompact').classList.toggle('on',!!PREFS.compact);$('#toggleNight').classList.toggle('on',!!PREFS.night);$('#msgSizeText').textContent=PREFS.compact?'Компактный':'Обычный';}
 applyPrefs();
-$('#toggleSound').onclick=()=>{PREFS.sound=!PREFS.sound;savePrefs();applyPrefs();toast(PREFS.sound?'Звук включён 🔔':'Звук выключен ');};
+$('#toggleSound').onclick=()=>{PREFS.sound=!PREFS.sound;savePrefs();applyPrefs();toast(PREFS.sound?'Звук включён 🔔':'Звук выключен 🔕');};
 $('#toggleVibrate').onclick=()=>{PREFS.vibrate=!PREFS.vibrate;savePrefs();applyPrefs();toast(PREFS.vibrate?'Вибрация включена 📳':'Вибрация выключена');};
 $('#togglePreview').onclick=()=>{PREFS.preview=!PREFS.preview;savePrefs();applyPrefs();toast(PREFS.preview?'Превью включено 👁':'Превью выключено');};
 $('#toggleAutoload').onclick=()=>{PREFS.autoload=!PREFS.autoload;savePrefs();applyPrefs();toast(PREFS.autoload?'Автозагрузка включена 📥':'Автозагрузка выключена');};
 $('#toggleCompact').onclick=()=>{PREFS.compact=!PREFS.compact;savePrefs();applyPrefs();toast(PREFS.compact?'Компактный вид включён':'Обычный вид включён');};
-$('#toggleNight').onclick=()=>{PREFS.night=!PREFS.night;savePrefs();applyPrefs();toast(PREFS.night?'Ночной режим включён ':'Ночной режим выключен');};
+$('#toggleNight').onclick=()=>{PREFS.night=!PREFS.night;savePrefs();applyPrefs();toast(PREFS.night?'Ночной режим включён 🌙':'Ночной режим выключен');};
 $('#settingsClearCache').onclick=()=>{if(confirm('Очистить кэш?')){for(let k in localStorage){if(k.startsWith('golda_')&&k!==THEME_KEY&&k!==FONT_KEY&&k!==PREFS_KEY)localStorage.removeItem(k);}let size=0;for(let k in localStorage){if(localStorage.hasOwnProperty(k))size+=localStorage[k].length;}$('#cacheSize').textContent=(size/1024/1024).toFixed(2)+' МБ';toast('Кэш очищен ✔');}};
 $('#settingsPinned').onclick=()=>toast('Закреплённые чаты — в разработке 📌');
-$('#settingsLanguage').onclick=()=>toast('Язык: Русский (другие языки в разработке) ');
+$('#settingsLanguage').onclick=()=>toast('Язык: Русский (другие языки в разработке) 🌍');
 $('#settingsAbout').onclick=()=>toast('golda-mesenger v1.0.0\nНеоновый мессенджер\nСоздано с ❤️');
 $('#settingsPrivacy').onclick=()=>{const modal=document.createElement('div');modal.className='overlay open';modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:200;padding:18px';modal.innerHTML=`<div class="modal"><div class="m-head"><div class="m-title">📄 Политика конфиденциальности</div><button class="icon-btn x" onclick="this.closest('.overlay').remove()">✕</button></div><div style="color:var(--tx);font-size:14px;line-height:1.6"><p style="margin-bottom:12px"><b>1. Сбор данных</b><br>Мы собираем только необходимые данные: почту, юзернейм и сообщения для работы мессенджера.</p><p style="margin-bottom:12px"><b>2. Использование данных</b><br>Данные используются исключительно для функционирования сервиса. Мы не передаём их третьим лицам.</p><p style="margin-bottom:12px"><b>3. Безопасность</b><br>Все данные хранятся в зашифрованном виде на серверах Supabase с защитой RLS (Row Level Security).</p><p style="margin-bottom:12px"><b>4. Модерация</b><br>Администраторы могут просматривать чаты пользователей в целях безопасности и предотвращения нарушений.</p><p><b>5. Удаление аккаунта</b><br>Вы можете удалить свой аккаунт в любой момент через настройки профиля.</p></div></div>`;document.body.appendChild(modal);modal.onclick=e=>{if(e.target===modal)modal.remove();};};
+
+// ===== УДАЛЕНИЕ АККАУНТА =====
+$('#settingsDeleteAccount').onclick=async()=>{
+  if(!await confirmBox('Удалить аккаунт?','Все твои данные, сообщения и чаты будут удалены безвозвратно. Это действие нельзя отменить.'))return;
+  if(!await confirmBox('Точно удалить?','Последнее предупреждение! Нажми "Да" для подтверждения.'))return;
+  
+  const {error}=await sb.from('profiles').delete().eq('id',ME.id);
+  if(error){toast('Ошибка: '+ru(error.message),'red');return;}
+  
+  try{await sb.auth.signOut();}catch{}
+  toast('Аккаунт удалён');
+  setTimeout(()=>location.reload(),1500);
+};
+
 $('#btnSettings').onclick=()=>{$('#settingsEmail').textContent=ME?ME.email:'';let size=0;for(let k in localStorage){if(localStorage.hasOwnProperty(k))size+=localStorage[k].length;}$('#cacheSize').textContent=(size/1024/1024).toFixed(2)+' МБ';$('#settingsOverlay').classList.add('open');};
 $('#settingsLogout').onclick=async()=>{$('#settingsOverlay').classList.remove('open');$('#btnLogout').click();};
 
@@ -822,7 +843,7 @@ async function showImpersonateModal(chat){
   const members=chat.members.filter(m=>m.id!==ME.id);
   if(!members.length){toast('В чате нет других пользователей','red');return;}
   const modal=document.createElement('div');modal.className='overlay open';modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:200;padding:18px';
-  modal.innerHTML=`<div class="modal"><div class="m-head"><div class="m-title">✍ Написать от имени</div><button class="icon-btn x" onclick="this.closest('.overlay').remove()"></button></div><div style="color:var(--mut);font-size:13px;margin-bottom:12px">Выбери пользователя, от чьего имени отправить сообщение:</div><div class="pick-list">${members.map(m=>`<div class="pick-row" data-uid="${m.id}">${avatarHTML(m,'s')}<div style="flex:1;min-width:0"><div class="pick-name">${esc(m.display_name||m.username)}</div><div class="pick-sub">@${esc(m.username)}</div></div></div>`).join('')}</div></div>`;
+  modal.innerHTML=`<div class="modal"><div class="m-head"><div class="m-title">✍ Написать от имени</div><button class="icon-btn x" onclick="this.closest('.overlay').remove()">✕</button></div><div style="color:var(--mut);font-size:13px;margin-bottom:12px">Выбери пользователя, от чьего имени отправить сообщение:</div><div class="pick-list">${members.map(m=>`<div class="pick-row" data-uid="${m.id}">${avatarHTML(m,'s')}<div style="flex:1;min-width:0"><div class="pick-name">${esc(m.display_name||m.username)}</div><div class="pick-sub">@${esc(m.username)}</div></div></div>`).join('')}</div></div>`;
   document.body.appendChild(modal);
   modal.querySelectorAll('.pick-row').forEach(r=>r.onclick=()=>{IMPERSONATE_USER=PROFILES[r.dataset.uid]||{id:r.dataset.uid};modal.remove();toast(`✍ Пишешь от имени ${IMPERSONATE_USER.display_name||IMPERSONATE_USER.username}`);$('#modBanner').textContent=`✍ Режим модерации — пишешь от имени ${IMPERSONATE_USER.display_name||IMPERSONATE_USER.username}`;$('#modBanner').classList.remove('hidden');});
   modal.onclick=e=>{if(e.target===modal)modal.remove();};
@@ -898,9 +919,28 @@ $('#btnAdmin').onclick=async()=>{if(!ME.is_admin)return;document.querySelector('
 
 document.querySelectorAll('#admTabs .adm-tab').forEach(tab=>{tab.onclick=async()=>{document.querySelectorAll('#admTabs .adm-tab').forEach(t=>t.classList.remove('active'));tab.classList.add('active');const t=tab.dataset.tab;$('#admUsersPane').classList.toggle('hidden',t!=='users');$('#admChatsPane').classList.toggle('hidden',t!=='chats');$('#admHistPane').classList.toggle('hidden',t!=='history');$('#admUpdatePane').classList.toggle('hidden',t!=='update');if(t==='users')await refreshAdminUsers();if(t==='chats')await loadAdminChats();if(t==='history')await loadAdminHistory();};});
 
-async function refreshAdminUsers(){await fetchAllUsers();$('#admUserList').innerHTML=USERS.map(u=>{const mutedNow=u.muted_until&&Date.parse(u.muted_until)>Date.now();const self=u.id===ME.id;const isOwnerUser=u.email===OWNER_EMAIL;const protectedUser=isOwnerUser||self;return `<div class="a-row" data-uid="${u.id}">${avatarHTML(u,'s')}<div class="a-info" style="cursor:pointer" data-user-click="${u.id}"><b>${esc(u.display_name||u.username)}</b>${isOwnerUser?' <span class="tag gold">👑 Создатель</span>':self?' <span class="tag green">это ты</span>':''} <span class="a-mail">@${esc(u.username)}</span><br><span class="a-mail">${esc(u.email)}</span><div>${u.is_admin?'<span class="tag gold">админ</span>':''}${u.is_banned?'<span class="tag red">Забанен</span>':''}${mutedNow?`<span class="tag green">мут до ${new Date(u.muted_until).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}</span>`:''}</div></div><div class="a-btns" data-uid="${u.id}">${protectedUser?'<span style="color:var(--mut2);font-size:11px;padding:6px">🔒 защищён</span>':`<button class="mini" data-a="m10">🔇10м</button><button class="mini" data-a="m60">🔇1ч</button><button class="mini" data-a="m1440">🔇24ч</button><button class="mini" data-a="unmute"> Размут</button><button class="mini ${u.is_banned?'unban':'ban'}" data-a="ban">${u.is_banned?'✔ Разбанить':'⛔ Бан'}</button><button class="mini ${u.is_admin?'ban':'unban'}" data-a="toggleadmin">${u.is_admin?'🚫 Снять админа':'⚡ Админ'}</button>`}</div></div>`;}).join('');
+async function refreshAdminUsers(){await fetchAllUsers();$('#admUserList').innerHTML=USERS.map(u=>{const mutedNow=u.muted_until&&Date.parse(u.muted_until)>Date.now();const self=u.id===ME.id;const isOwnerUser=u.email===OWNER_EMAIL;const protectedUser=isOwnerUser||self;return `<div class="a-row">${avatarHTML(u,'s')}<div class="a-info" data-user-id="${u.id}" style="cursor:pointer;flex:1"><b>${esc(u.display_name||u.username)}</b>${isOwnerUser?' <span class="tag gold">👑 Создатель</span>':self?' <span class="tag green">это ты</span>':''} <span class="a-mail">@${esc(u.username)}</span><br><span class="a-mail">${esc(u.email)}</span><div>${u.is_admin?'<span class="tag gold">админ</span>':''}${u.is_banned?'<span class="tag red">Забанен</span>':''}${mutedNow?`<span class="tag green">мут до ${new Date(u.muted_until).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}</span>`:''}</div></div><div class="a-btns" data-uid="${u.id}">${protectedUser?'<span style="color:var(--mut2);font-size:11px;padding:6px">🔒 защищён</span>':`<button class="mini" data-a="m10">🔇10м</button><button class="mini" data-a="m60">🔇1ч</button><button class="mini" data-a="m1440">🔇24ч</button><button class="mini" data-a="unmute">🔓 Размут</button><button class="mini ${u.is_banned?'unban':'ban'}" data-a="ban">${u.is_banned?'✔ Разбанить':'⛔ Бан'}</button><button class="mini ${u.is_admin?'ban':'unban'}" data-a="toggleadmin">${u.is_admin?'🚫 Снять админа':'⚡ Админ'}</button>${isOwner?'<button class="mini delete" data-a="delete">🗑 Удалить</button>':''}`}</div></div>`;}).join('');
+
 // Клик на имя пользователя — показать все его чаты
-document.querySelectorAll('[data-user-click]').forEach(el=>{el.onclick=async(e)=>{e.stopPropagation();const uid=el.dataset.userClick;await showUserChats(uid);};});}
+document.querySelectorAll('[data-user-id]').forEach(el=>{el.onclick=async(e)=>{if(e.target.closest('[data-a]'))return;const uid=el.dataset.userId;await showUserChats(uid);};});
+
+// Клик на кнопки действий
+document.querySelectorAll('[data-a]').forEach(btn=>{btn.onclick=async(e)=>{e.stopPropagation();const uid=btn.closest('[data-uid]').dataset.uid;const u=USERS.find(x=>x.id===uid);if(!u)return;
+  if(btn.dataset.a==='delete'){
+    if(!await confirmBox('Удалить аккаунт?','Все данные пользователя будут удалены безвозвратно.'))return;
+    const {error}=await sb.from('profiles').delete().eq('id',uid);
+    if(error){toast('Ошибка: '+ru(error.message),'red');return;}
+    toast('Аккаунт удалён ✔');await refreshAdminUsers();return;
+  }
+  if(u.email===OWNER_EMAIL){toast('👑 Создателя нельзя трогать','red');return;}
+  let upd=null;
+  if(btn.dataset.a==='ban'){if(uid===ME.id){toast('Нельзя забанить самого себя','red');return;}upd={is_banned:!u.is_banned};}
+  else if(btn.dataset.a==='unmute')upd={muted_until:null};
+  else if(btn.dataset.a==='toggleadmin'){if(uid===ME.id){toast('Нельзя снять админку с себя','red');return;}upd={is_admin:!u.is_admin};}
+  else{if(uid===ME.id){toast('Нельзя замутить себя','red');return;}upd={muted_until:new Date(Date.now()+{m10:10,m60:60,m1440:1440}[btn.dataset.a]*60000).toISOString()};}
+  const {error}=await sb.from('profiles').update(upd).eq('id',uid);
+  if(error)return toast(ru(error.message),'red');
+  toast('Готово ✔');await refreshAdminUsers();};});}
 
 // ===== ПОКАЗАТЬ ВСЕ ЧАТЫ ПОЛЬЗОВАТЕЛЯ =====
 async function showUserChats(uid){
@@ -921,7 +961,6 @@ async function showUserChats(uid){
     const members=(c.chat_members||[]).map(m=>m.profiles).filter(Boolean);
     const otherMembers=members.filter(m=>m.id!==uid);
     const title=c.type==='group'?c.name:(otherMembers.map(m=>m.display_name||m.username).join(', ')||'Личный чат');
-    const lastMsg=c.lastMsg||null;
     return `<div class="user-chat-item" data-cid="${c.id}">
       <div class="ava s ini" style="background:${GRADS[hashOf(c.id)%GRADS.length]}">${esc((title||'?')[0].toUpperCase())}</div>
       <div style="flex:1;min-width:0">
@@ -957,4 +996,4 @@ addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.
 (async function boot(){try{const {data:{session}}=await sb.auth.getSession();if(session)await enterApp();else showOnly('auth');}catch(err){console.error(err);showOnly('auth');}})();
 </script>
 </body>
-  </html>
+</html>
