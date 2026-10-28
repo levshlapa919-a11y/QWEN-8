@@ -203,15 +203,19 @@ textarea.inp{resize:none}
 .toast.out{opacity:0;transform:translateY(8px);transition:.3s}
 @keyframes tIn{from{opacity:0;transform:translateY(10px)}}
 
-/* ===== СКРИМЕР БАНА ===== */
+/* ===== СКРИМЕР БАНА (JEFF STYLE) ===== */
 .ban-screen{position:fixed;inset:0;z-index:9999;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;padding:20px;
-  background:radial-gradient(circle at 50% 45%,#300000 0%,#000 72%);
-  animation:bsFlick 1.4s steps(2) infinite,bsQuake .45s linear 8}
-@keyframes bsFlick{0%,100%{filter:brightness(1)}50%{filter:brightness(1.3)}}
+  animation:bsQuake .45s linear 8}
 @keyframes bsQuake{0%{transform:translate(0,0)}25%{transform:translate(-7px,4px)}50%{transform:translate(6px,-6px)}75%{transform:translate(-4px,-3px)}100%{transform:translate(0,0)}}
-.bs-face{font-size:clamp(120px,45vmin,420px);line-height:1;filter:drop-shadow(0 0 70px rgba(255,0,0,.85)) saturate(2.2) contrast(1.3);
-  animation:bsJump .45s cubic-bezier(.2,1.5,.4,1) 1,bsTremor .12s linear infinite}
-@keyframes bsJump{0%{transform:scale(.1);opacity:0}60%{transform:scale(1.4);opacity:1}100%{transform:scale(1)}}
+.bs-face{
+  font-size:clamp(120px,45vmin,420px);
+  line-height:1;
+  /* Магия фильтров для эффекта Jeff The Killer */
+  filter: grayscale(100%) brightness(2.5) contrast(3) sepia(1) hue-rotate(-50deg) saturate(5) drop-shadow(0 0 20px rgba(255,0,0,0.8));
+  transform: scaleX(-1); /* Зеркалирование лица */
+  animation: bsJump .45s cubic-bezier(.2,1.5,.4,1) 1, bsTremor .12s linear infinite;
+}
+@keyframes bsJump{0%{transform:scale(.1) scaleX(-1);opacity:0}60%{transform:scale(1.4) scaleX(-1);opacity:1}100%{transform:scale(1) scaleX(-1)}}
 @keyframes bsTremor{0%{margin-left:0}25%{margin-left:5px}50%{margin-left:-4px}75%{margin-left:3px}100%{margin-left:0}}
 .bs-title{font:800 clamp(30px,9vw,110px) var(--disp);color:#ff1a1a;animation:bsGlitch .8s steps(3) infinite}
 @keyframes bsGlitch{0%{text-shadow:0 0 34px rgba(255,0,0,.95),3px 0 #0ff,-3px 0 #f0f;transform:skewX(0)}33%{text-shadow:0 0 34px rgba(255,0,0,.95),-5px 0 #0ff,5px 0 #f0f;transform:skewX(-4deg)}66%{text-shadow:0 0 44px rgba(255,0,0,.95),3px 3px #0ff,-3px -3px #f0f;transform:skewX(3deg)}}
@@ -415,7 +419,7 @@ textarea.inp{resize:none}
   </div>
 </div>
 
-<!-- ===== СКРИМЕР БАНА (теперь с кнопками выхода и звука) ===== -->
+<!-- ===== СКРИМЕР БАНА (JEFF STYLE) ===== -->
 <div id="banScreen" class="ban-screen hidden">
   <div class="bs-face">👹</div>
   <div class="bs-title">ВЫ ЗАБАНЕНЫ</div>
@@ -475,42 +479,52 @@ function mediaHTML(md){
   return `<div class="m-voice">🎤 голосовое сообщение</div><audio class="m-audio" src="${esc(md.url)}" controls preload="metadata"></audio>`;
 }
 
-/* ===== ЗВУК СКРИМЕРА ===== */
+/* ===== ЗВУК СКРИМЕРА (HORROR SCREAM GENERATOR) ===== */
 let screamCtx=null, screamBuilt=false;
 function buildScream(ctx){
   const t=ctx.currentTime;
+  
+  // Мастер гейн (очень громко!)
   const master=ctx.createGain();
   master.gain.setValueAtTime(0.0001,t);
-  master.gain.exponentialRampToValueAtTime(1.0,t+0.03);
-  master.gain.setValueAtTime(1.0,t+1.6);
-  master.gain.exponentialRampToValueAtTime(0.0001,t+3.4);
+  master.gain.exponentialRampToValueAtTime(1.0,t+0.02); // Резкий взрыв
+  master.gain.setValueAtTime(1.0,t+1.5);
+  master.gain.exponentialRampToValueAtTime(0.0001,t+3.0);
   master.connect(ctx.destination);
+
+  // Искажение (Distortion)
   const dist=ctx.createWaveShaper();
   const curve=new Float32Array(256);
-  for(let i=0;i<256;i++){const x=i*2/256-1;curve[i]=Math.tanh(8*x);}
+  for(let i=0;i<256;i++){const x=i*2/256-1;curve[i]=Math.tanh(10*x);} // Сильный перегруз
   dist.curve=curve;dist.connect(master);
+
+  // Осциллятор 1: Низкий рык (Bass Growl)
   const o1=ctx.createOscillator();o1.type='sawtooth';
-  o1.frequency.setValueAtTime(1150,t);o1.frequency.exponentialRampToValueAtTime(65,t+2.2);
-  const vib=ctx.createOscillator();vib.type='sine';vib.frequency.value=27;
-  const vg=ctx.createGain();vg.gain.value=95;vib.connect(vg);vg.connect(o1.frequency);
-  const g1=ctx.createGain();g1.gain.value=0.5;o1.connect(g1);g1.connect(dist);
+  o1.frequency.setValueAtTime(80,t); // Очень низко
+  o1.frequency.exponentialRampToValueAtTime(40,t+2.0);
+  const g1=ctx.createGain();g1.gain.value=0.8;o1.connect(g1);g1.connect(dist);
+
+  // Осциллятор 2: Высокий визг (High Pitch Screech)
   const o2=ctx.createOscillator();o2.type='square';
-  o2.frequency.setValueAtTime(666,t);o2.frequency.exponentialRampToValueAtTime(48,t+2.0);
-  const g2=ctx.createGain();g2.gain.value=0.22;o2.connect(g2);g2.connect(dist);
-  const len=Math.floor(ctx.sampleRate*1.8);
+  o2.frequency.setValueAtTime(1200,t); // Пронзительно высоко
+  o2.frequency.exponentialRampToValueAtTime(600,t+1.5);
+  const vib=ctx.createOscillator();vib.type='sine';vib.frequency.value=30; // Быстрая вибрация
+  const vg=ctx.createGain();vg.gain.value=150;vib.connect(vg);vg.connect(o2.frequency);
+  const g2=ctx.createGain();g2.gain.value=0.6;o2.connect(g2);g2.connect(dist);
+
+  // Белый шум (Static Noise) для эффекта помех радио
+  const len=Math.floor(ctx.sampleRate*2);
   const buf=ctx.createBuffer(1,len,ctx.sampleRate);
   const d=buf.getChannelData(0);
-  for(let i=0;i<len;i++){d[i]=(Math.random()*2-1)*Math.pow(1-i/len,1.4);}
+  for(let i=0;i<len;i++){d[i]=(Math.random()*2-1)*0.5;}
   const nz=ctx.createBufferSource();nz.buffer=buf;
-  const nf=ctx.createBiquadFilter();nf.type='bandpass';nf.frequency.value=1900;nf.Q.value=0.7;
-  const ng=ctx.createGain();ng.gain.value=0.6;
+  const nf=ctx.createBiquadFilter();nf.type='highpass';nf.frequency.value=2000;
+  const ng=ctx.createGain();ng.gain.value=0.4;
   nz.connect(nf);nf.connect(ng);ng.connect(dist);
-  const dr=ctx.createOscillator();dr.type='sine';dr.frequency.value=42;
-  const dg=ctx.createGain();
-  dg.gain.setValueAtTime(0.0001,t+1.6);dg.gain.exponentialRampToValueAtTime(0.45,t+2.3);dg.gain.exponentialRampToValueAtTime(0.0001,t+7);
-  dr.connect(dg);dg.connect(ctx.destination);
-  o1.start(t);o2.start(t);vib.start(t);nz.start(t);dr.start(t+1.6);
-  o1.stop(t+3.2);o2.stop(t+3.2);vib.stop(t+3.2);nz.stop(t+2);dr.stop(t+7.2);
+
+  // Запуск всего вместе
+  o1.start(t);o2.start(t);vib.start(t);nz.start(t);
+  o1.stop(t+2.5);o2.stop(t+2.5);vib.stop(t+2.5);nz.stop(t+2);
 }
 function tryBuildScream(){if(screamBuilt||!screamCtx||screamCtx.state!=='running')return;screamBuilt=true;buildScream(screamCtx);}
 function playScream(){
@@ -1110,4 +1124,4 @@ addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.
 })();
 </script>
 </body>
-  </html>
+</html>
