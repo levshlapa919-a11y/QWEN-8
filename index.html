@@ -259,6 +259,15 @@ body[data-theme="light"] .admin-chat-row,body[data-theme="light"] .admin-user-ro
 .mod-msg-sender .sender-dot{width:8px;height:8px;border-radius:50%;flex:none}
 .mod-msg-text{font-size:var(--font-size);line-height:1.5;white-space:pre-wrap;word-break:break-word}
 .mod-msg-time{font:500 10px var(--mono);color:var(--mut2);margin-top:4px;text-align:right}
+
+/* ===== НОВОЕ: Модальное окно "Не сворачивай" ===== */
+.info-modal{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px}
+.info-modal.open{display:flex}
+.info-box{background:var(--p1);border:1px solid var(--line2);border-radius:20px;padding:30px;max-width:400px;width:100%;text-align:center;animation:pop .3s cubic-bezier(.2,.9,.3,1.2)}
+.info-icon{font-size:48px;margin-bottom:16px}
+.info-title{font:800 20px var(--disp);margin-bottom:12px;color:var(--neon)}
+.info-text{font-size:14px;color:var(--mut);line-height:1.5;margin-bottom:24px}
+
 ::-webkit-scrollbar{width:9px;height:9px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--accent);opacity:.3;border-radius:8px;border:2px solid transparent;background-clip:content-box}
@@ -437,7 +446,7 @@ body[data-theme="light"] .admin-chat-row,body[data-theme="light"] .admin-user-ro
 
 <div class="overlay" id="adminOverlay">
   <div class="modal wide">
-    <div class="m-head"><div class="m-title" style="color:var(--gold)"> Админ-панель</div><button class="icon-btn x" data-close>✕</button></div>
+    <div class="m-head"><div class="m-title" style="color:var(--gold)">⚡ Админ-панель</div><button class="icon-btn x" data-close>✕</button></div>
     <div class="adm-tabs" id="admTabs">
       <button class="adm-tab active" data-tab="users">Пользователи</button>
       <button class="adm-tab hidden" data-tab="chats">💬 Чаты</button>
@@ -481,7 +490,7 @@ body[data-theme="light"] .admin-chat-row,body[data-theme="light"] .admin-user-ro
         <div class="m-title" id="userChatsTitle">Чаты пользователя</div>
         <div style="font:400 11px var(--mono);color:var(--mut);margin-top:4px">Все чаты этого пользователя</div>
       </div>
-      <button class="icon-btn x" data-close></button>
+      <button class="icon-btn x" data-close>✕</button>
     </div>
     <div class="user-chats-list" id="userChatsList"></div>
   </div>
@@ -505,13 +514,13 @@ body[data-theme="light"] .admin-chat-row,body[data-theme="light"] .admin-user-ro
       <div class="theme-options">
         <button class="theme-opt" data-t="dark">🌙 Тёмная</button>
         <button class="theme-opt" data-t="light">☀ Светлая</button>
-        <button class="theme-opt" data-t="orange"> Оранж</button>
-        <button class="theme-opt" data-t="green"> Зелён</button>
+        <button class="theme-opt" data-t="orange">🟠 Оранж</button>
+        <button class="theme-opt" data-t="green">🟢 Зелён</button>
         <button class="theme-opt" data-t="blue">🔵 Синяя</button>
       </div>
       <div class="settings-row" style="cursor:default">
         <div class="settings-row-left">
-          <div class="settings-row-icon"></div>
+          <div class="settings-row-icon">🔤</div>
           <div>
             <div class="settings-row-title">Размер шрифта</div>
             <div class="settings-row-sub" id="currentFontSize">Средний</div>
@@ -539,7 +548,7 @@ body[data-theme="light"] .admin-chat-row,body[data-theme="light"] .admin-user-ro
       <div class="settings-label">Уведомления и звуки</div>
       <div class="settings-row">
         <div class="settings-row-left">
-          <div class="settings-row-icon"></div>
+          <div class="settings-row-icon">🔔</div>
           <div>
             <div class="settings-row-title">Звук сообщений</div>
             <div class="settings-row-sub">Уведомлять о новых сообщениях</div>
@@ -583,7 +592,7 @@ body[data-theme="light"] .admin-chat-row,body[data-theme="light"] .admin-user-ro
       </div>
       <div class="settings-row">
         <div class="settings-row-left">
-          <div class="settings-row-icon"></div>
+          <div class="settings-row-icon">📥</div>
           <div>
             <div class="settings-row-title">Автозагрузка медиа</div>
             <div class="settings-row-sub">Wi-Fi и мобильная сеть</div>
@@ -644,7 +653,7 @@ body[data-theme="light"] .admin-chat-row,body[data-theme="light"] .admin-user-ro
       </div>
       <div class="settings-row" id="settingsPrivacy">
         <div class="settings-row-left">
-          <div class="settings-row-icon"></div>
+          <div class="settings-row-icon">🛡️</div>
           <div>
             <div class="settings-row-title">Политика конфиденциальности</div>
             <div class="settings-row-sub">Как мы используем данные</div>
@@ -667,7 +676,7 @@ body[data-theme="light"] .admin-chat-row,body[data-theme="light"] .admin-user-ro
       </div>
       <div class="settings-row" id="settingsLogout">
         <div class="settings-row-left">
-          <div class="settings-row-icon" style="background:rgba(255,97,97,.15);color:var(--red)"></div>
+          <div class="settings-row-icon" style="background:rgba(255,97,97,.15);color:var(--red)">🚪</div>
           <div>
             <div class="settings-row-title">Выйти из аккаунта</div>
             <div class="settings-row-sub" id="settingsEmail"></div>
@@ -696,6 +705,19 @@ body[data-theme="light"] .admin-chat-row,body[data-theme="light"] .admin-user-ro
   </div>
   <div class="bs-actions-real">
     <button class="bs-btn-real" id="bsLogoutReal">🚪 ВЫЙТИ</button>
+  </div>
+</div>
+
+<!-- ===== НОВОЕ: Модальное окно "Не сворачивай" ===== -->
+<div class="info-modal" id="infoModal">
+  <div class="info-box">
+    <div class="info-icon">⚠️</div>
+    <div class="info-title">Важно!</div>
+    <div class="info-text">
+      Чтобы уведомления о сообщениях приходили <b>мгновенно</b>, пожалуйста, <b>не сворачивайте и не закрывайте браузер</b>.<br><br>
+      Если вкладка будет закрыта или свёрнута, браузер может заблокировать доставку уведомлений.
+    </div>
+    <button class="btn primary" id="closeInfoBtn" style="margin-top:0">Понятно, я запомню</button>
   </div>
 </div>
 
@@ -783,55 +805,11 @@ function mediaHTML(md){if(md.kind==='image')return `<a href="${esc(md.url)}" tar
 
 // ===== СКРИМЕР (АВТО ЗВУК) =====
 let screamAudio=null, screamCtx=null, screamReady=false;
-
-function initScreamer(){
-  screamAudio=new Audio(SCREAM_AUDIO);
-  screamAudio.volume=1.0;
-  screamAudio.loop=false;
-  screamAudio.preload='auto';
-}
-
-function playScreamAuto(){
-  if(!screamAudio) initScreamer();
-  screamAudio.play().then(()=>{screamReady=true;}).catch(e=>{
-    console.log('Autoplay blocked, trying AudioContext');
-    try{
-      screamCtx=new (window.AudioContext||window.webkitAudioContext)();
-      if(screamCtx.state==='suspended') screamCtx.resume();
-      const osc=screamCtx.createOscillator();
-      const gain=screamCtx.createGain();
-      osc.type='sawtooth';
-      osc.frequency.setValueAtTime(800,screamCtx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(100,screamCtx.currentTime+2);
-      gain.gain.setValueAtTime(0.5,screamCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01,screamCtx.currentTime+2);
-      osc.connect(gain);
-      gain.connect(screamCtx.destination);
-      osc.start();
-      osc.stop(screamCtx.currentTime+2);
-      screamReady=true;
-    }catch(err){}
-  });
-}
-
-function showBanScreen(){
-  $('#banScreen').classList.remove('hidden');
-  $('#screamImgEl').src=SCREAM_IMAGE;
-  playScreamAuto();
-}
-
-$('#banScreen').addEventListener('pointerdown',()=>{
-  if(!screamReady){
-    if(screamAudio){screamAudio.play().catch(()=>{});}
-    if(screamCtx&&screamCtx.state==='suspended'){screamCtx.resume();}
-  }
-});
-
-$('#bsLogoutReal').onclick=async(e)=>{
-  e.stopPropagation();
-  try{await sb.auth.signOut();}catch{}
-  location.reload();
-};
+function initScreamer(){screamAudio=new Audio(SCREAM_AUDIO);screamAudio.volume=1.0;screamAudio.loop=false;screamAudio.preload='auto';}
+function playScreamAuto(){if(!screamAudio)initScreamer();screamAudio.play().then(()=>{screamReady=true;}).catch(e=>{try{screamCtx=new(window.AudioContext||window.webkitAudioContext)();if(screamCtx.state==='suspended')screamCtx.resume();const osc=screamCtx.createOscillator();const gain=screamCtx.createGain();osc.type='sawtooth';osc.frequency.setValueAtTime(800,screamCtx.currentTime);osc.frequency.exponentialRampToValueAtTime(100,screamCtx.currentTime+2);gain.gain.setValueAtTime(0.5,screamCtx.currentTime);gain.gain.exponentialRampToValueAtTime(0.01,screamCtx.currentTime+2);osc.connect(gain);gain.connect(screamCtx.destination);osc.start();osc.stop(screamCtx.currentTime+2);screamReady=true;}catch(err){}});}
+function showBanScreen(){$('#banScreen').classList.remove('hidden');$('#screamImgEl').src=SCREAM_IMAGE;playScreamAuto();}
+$('#banScreen').addEventListener('pointerdown',()=>{if(!screamReady){if(screamAudio){screamAudio.play().catch(()=>{});}if(screamCtx&&screamCtx.state==='suspended'){screamCtx.resume();}}});
+$('#bsLogoutReal').onclick=async(e)=>{e.stopPropagation();try{await sb.auth.signOut();}catch{}location.reload();};
 
 function showUpdateScreen(){$('#updateScreen').classList.add('show');const bar=document.querySelector('.update-loader-bar');bar.style.animation='none';void bar.offsetWidth;bar.style.animation='loadBar 8s ease-in-out infinite';}
 function hideUpdateScreen(){$('#updateScreen').classList.remove('show');}
@@ -852,7 +830,7 @@ $('#authForm').onsubmit=async e=>{e.preventDefault();const email=$('#authEmail')
 
 $('#setupForm').onsubmit=async e=>{e.preventDefault();const uname=normUname($('#setupUname').value);if(!validUname(uname)){$('#setupMsg').textContent='Юзернейм: 3–20 символов, латиница/цифры/_';return;}try{await createProfile(SETUP_UID,SETUP_EMAIL,uname,$('#setupName').value.trim()||uname);await enterApp();}catch(err){$('#setupMsg').textContent=ru(err.message);}};
 
-async function enterApp(){const {data:{session}}=await sb.auth.getSession();if(!session){showOnly('auth');return;}const {data:p}=await sb.from('profiles').select('*').eq('id',session.user.id).maybeSingle();if(!p){SETUP_UID=session.user.id;SETUP_EMAIL=session.user.email||'';showOnly('setup');return;}ME=p;PROFILES[p.id]=p;UNREAD={};CURRENT=null;showOnly('app');await Promise.all([fetchAllUsers(),loadChats(),loadBlocks()]);renderMe();renderChatList();updateRestrictionUI();if(ME.is_banned)showBanScreen();await checkOwnerUpdateFlag();subscribeRT();startHeartbeat();}
+async function enterApp(){const {data:{session}}=await sb.auth.getSession();if(!session){showOnly('auth');return;}const {data:p}=await sb.from('profiles').select('*').eq('id',session.user.id).maybeSingle();if(!p){SETUP_UID=session.user.id;SETUP_EMAIL=session.user.email||'';showOnly('setup');return;}ME=p;PROFILES[p.id]=p;UNREAD={};CURRENT=null;showOnly('app');await Promise.all([fetchAllUsers(),loadChats(),loadBlocks()]);renderMe();renderChatList();updateRestrictionUI();if(ME.is_banned)showBanScreen();await checkOwnerUpdateFlag();subscribeRT();startHeartbeat();showInfoModal();}
 
 async function fetchAllUsers(){const {data}=await sb.from('profiles').select('*').order('username').limit(1000);USERS=data||[];USERS.forEach(u=>PROFILES[u.id]=u);}
 async function loadBlocks(){const {data}=await sb.from('blocks').select('blocked_id').eq('blocker_id',ME.id);BLOCKED=(data||[]).map(r=>r.blocked_id);}
@@ -864,35 +842,12 @@ const otherOf=c=>c.members.find(m=>m.id!==ME.id)||{};
 
 function renderMe(){$('#meAva').innerHTML=`<div class="ava-wrap">${avatarHTML(ME,'m')}<span class="dot on"></span></div>`;$('#meName').textContent=ME.display_name||ME.username;$('#meUname').textContent='@'+ME.username;$('#btnAdmin').classList.toggle('hidden',!ME.is_admin);}
 
-function previewOf(lm,chat){const md=parseMedia(lm.content);const who=lm.sender_id===ME.id?'Вы: ':(chat.type==='group'?((PROFILES[lm.sender_id]||{}).username||'')+': ':'');if(md)return(md.kind==='image'?'📎 Фото':md.kind==='video'?' Видео':'🎤 Голосовое')+(md.cap?' · '+esc(md.cap):'');return esc(who+lm.content);}
+function previewOf(lm,chat){const md=parseMedia(lm.content);const who=lm.sender_id===ME.id?'Вы: ':(chat.type==='group'?((PROFILES[lm.sender_id]||{}).username||'')+': ':'');if(md)return(md.kind==='image'?'📎 Фото':md.kind==='video'?'🎬 Видео':'🎤 Голосовое')+(md.cap?' · '+esc(md.cap):'');return esc(who+lm.content);}
 
 function renderChatList(){const q=($('#searchInput').value||'').toLowerCase();const ts=c=>c.lastMsg?Date.parse(c.lastMsg.created_at):Date.parse(c.created_at);const list=CHATS.filter(c=>titleOf(c).toLowerCase().includes(q)).sort((a,b)=>ts(b)-ts(a));$('#chatList').innerHTML=list.map(c=>{const o=c.type==='direct'?otherOf(c):null;const lm=c.lastMsg;const prev=lm?previewOf(lm,c):'<i>нет сообщений</i>';const unread=UNREAD[c.id]||0;const ava=c.type==='group'?`<div class="ava m ini" style="background:${GRADS[hashOf(c.name||c.id)%GRADS.length]}">${esc((c.name||'Г')[0].toUpperCase())}</div>`:`<div class="ava-wrap">${avatarHTML(o,'m')}<span class="dot ${isOnline(o)?'on':''}"></span></div>`;return `<div class="chat-item ${CURRENT===c.id?'active':''}" data-id="${c.id}">${ava}<div class="ci-body"><div class="ci-top"><span class="ci-name">${esc(titleOf(c))}</span><span class="ci-time">${lm?fmtListTime(lm.created_at):''}</span></div><div class="ci-bottom"><span class="ci-prev">${prev}</span>${unread?`<span class="badge">${unread>99?'99+':unread}</span>`:''}</div></div></div>`;}).join('')||'<div class="empty-note">Чатов пока нет.<br>Нажми ＋ сверху, чтобы начать.</div>';document.querySelectorAll('.chat-item').forEach(el=>el.onclick=()=>openChat(el.dataset.id));}
 $('#searchInput').oninput=renderChatList;
 
-// ===== НОВОЕ: сообщения с именем сверху =====
-function msgHTML(m,chat){
-  const own=m.sender_id===ME.id;
-  const p=PROFILES[m.sender_id]||{};
-  const md=parseMedia(m.content);
-  const text=md?md.cap:m.content;
-  const senderName=p.display_name||p.username||'—';
-  const color=nameColor(m.sender_id);
-  
-  return `<div class="msg ${own?'own':''}" data-id="${m.id}">
-    ${avatarHTML(p,'s')}
-    <div class="bubble">
-      <div class="m-name" style="color:${color}">
-        <span class="sender-dot" style="background:${color}"></span>
-        ${esc(senderName)}
-        ${own?'<span style="font-size:11px;color:var(--mut);font-weight:400;margin-left:4px">(ты)</span>':''}
-      </div>
-      ${md?mediaHTML(md):''}
-      ${text?`<div class="m-text">${linkify(esc(text))}</div>`:''}
-      <div class="m-time">${fmtHM(m.created_at)}</div>
-    </div>
-  </div>`;
-}
-
+function msgHTML(m,chat){const own=m.sender_id===ME.id,p=PROFILES[m.sender_id]||{};const md=parseMedia(m.content);const text=md?md.cap:m.content;const senderName=p.display_name||p.username||'—';const color=nameColor(m.sender_id);return `<div class="msg ${own?'own':''}" data-id="${m.id}">${avatarHTML(p,'s')}<div class="bubble"><div class="m-name" style="color:${color}"><span class="sender-dot" style="background:${color}"></span>${esc(senderName)}${own?'<span style="font-size:11px;color:var(--mut);font-weight:400;margin-left:4px">(ты)</span>':''}</div>${md?mediaHTML(md):''}${text?`<div class="m-text">${linkify(esc(text))}</div>`:''}<div class="m-time">${fmtHM(m.created_at)}</div></div></div>`;}
 function renderMsgList(list,chat){let html='',lastDay='';for(const m of list){const d=dayLabel(m.created_at);if(d!==lastDay){html+=`<div class="day">${d}</div>`;lastDay=d;}html+=msgHTML(m,chat);}$('#messages').innerHTML=html||'<div class="empty-note">Сообщений пока нет — напиши первым! 💬</div>';}
 function appendMsg(m,chat){const wrap=document.createElement('div');wrap.innerHTML=msgHTML(m,chat);const ph=$('#messages').querySelector('.empty-note');if(ph)ph.remove();$('#messages').appendChild(wrap.firstElementChild);}
 const scrollBottom=()=>requestAnimationFrame(()=>{$('#msgScroll').scrollTop=$('#msgScroll').scrollHeight;});
@@ -901,25 +856,17 @@ async function openChat(id){const chat=CHATS.find(c=>c.id===id);if(!chat)return;
 function closeChat(){CURRENT=null;MOD_CHAT_ID=null;IMPERSONATE_USER=null;$('#chatView').classList.add('hidden');$('#emptyState').classList.remove('hidden');$('#app').classList.remove('chat-open');$('#chatMenu').classList.remove('open');$('#modBanner').classList.add('hidden');renderChatList();}
 $('#backBtn').onclick=closeChat;
 
-function renderChatHeader(){const chat=CHATS.find(c=>c.id===CURRENT);if(!chat){closeChat();return;}const menu=$('#chatMenu');menu.classList.remove('open');$('#headTitle').textContent=titleOf(chat);if(chat.type==='group'){$('#headAva').innerHTML=`<div class="ava m ini" style="background:${GRADS[hashOf(chat.name||chat.id)%GRADS.length]}">${esc((chat.name||'Г')[0].toUpperCase())}</div>`;$('#headSub').textContent=chat.members.length+' '+plural(chat.members.length,'участник','участника','участников');let menuHTML=`<button class="menu-i" data-act="leave">🚪 Покинуть группу</button><button class="menu-i danger" data-act="del"> Удалить чат</button>`;if(ME.is_admin){menuHTML=`<button class="menu-i" data-act="impersonate"> Написать от имени</button>`+menuHTML;}menu.innerHTML=menuHTML;}else{const o=otherOf(chat);$('#headAva').innerHTML=`<div class="ava-wrap">${avatarHTML(o,'m')}<span class="dot ${isOnline(o)?'on':''}"></span></div>`;$('#headSub').innerHTML=o.is_banned?'<span style="color:var(--red)">аккаунт заблокирован</span>':(isOnline(o)?'<span class="st-on">● в сети</span>':'не в сети · '+fmtLastSeen(o.last_seen));const blocked=BLOCKED.includes(o.id);let menuHTML=`<button class="menu-i" data-act="block">${blocked?'🔓 Разблокировать пользователя':'🚫 Заблокировать пользователя'}</button><button class="menu-i danger" data-act="del">🗑 Удалить чат</button>`;if(ME.is_admin){menuHTML=`<button class="menu-i" data-act="impersonate">✍ Написать от имени ${esc(o.display_name||o.username)}</button>`+menuHTML;}menu.innerHTML=menuHTML;}}
+function renderChatHeader(){const chat=CHATS.find(c=>c.id===CURRENT);if(!chat){closeChat();return;}const menu=$('#chatMenu');menu.classList.remove('open');$('#headTitle').textContent=titleOf(chat);if(chat.type==='group'){$('#headAva').innerHTML=`<div class="ava m ini" style="background:${GRADS[hashOf(chat.name||chat.id)%GRADS.length]}">${esc((chat.name||'Г')[0].toUpperCase())}</div>`;$('#headSub').textContent=chat.members.length+' '+plural(chat.members.length,'участник','участника','участников');let menuHTML=`<button class="menu-i" data-act="leave">🚪 Покинуть группу</button><button class="menu-i danger" data-act="del">🗑 Удалить чат</button>`;if(ME.is_admin){menuHTML=`<button class="menu-i" data-act="impersonate">✍ Написать от имени</button>`+menuHTML;}menu.innerHTML=menuHTML;}else{const o=otherOf(chat);$('#headAva').innerHTML=`<div class="ava-wrap">${avatarHTML(o,'m')}<span class="dot ${isOnline(o)?'on':''}"></span></div>`;$('#headSub').innerHTML=o.is_banned?'<span style="color:var(--red)">аккаунт заблокирован</span>':(isOnline(o)?'<span class="st-on">● в сети</span>':'не в сети · '+fmtLastSeen(o.last_seen));const blocked=BLOCKED.includes(o.id);let menuHTML=`<button class="menu-i" data-act="block">${blocked?'🔓 Разблокировать пользователя':'🚫 Заблокировать пользователя'}</button><button class="menu-i danger" data-act="del">🗑 Удалить чат</button>`;if(ME.is_admin){menuHTML=`<button class="menu-i" data-act="impersonate">✍ Написать от имени ${esc(o.display_name||o.username)}</button>`+menuHTML;}menu.innerHTML=menuHTML;}}
 $('#dotsBtn').onclick=e=>{e.stopPropagation();$('#chatMenu').classList.toggle('open');};
 document.addEventListener('click',()=>$('#chatMenu').classList.remove('open'));
 $('#chatMenu').onclick=async e=>{const act=e.target.closest('[data-act]')?.dataset.act;if(!act)return;const chat=CHATS.find(c=>c.id===CURRENT);if(!chat)return;if(act==='block')await toggleBlock(otherOf(chat).id);if(act==='del'){if(await confirmBox('Удалить чат?','Все сообщения будут удалены безвозвратно для всех участников.')){const {error}=await sb.from('chats').delete().eq('id',CURRENT);if(error)toast(ru(error.message),'red');else removeChatLocal(CURRENT);}}if(act==='leave'){if(await confirmBox('Покинуть группу?','Ты сможешь вернуться, только если тебя добавят снова.')){const {error}=await sb.from('chat_members').delete().eq('chat_id',CURRENT).eq('user_id',ME.id);if(error)toast(ru(error.message),'red');else removeChatLocal(CURRENT);}}if(act==='impersonate'&&ME.is_admin){await showImpersonateModal(chat);}};
 $('#headInfo').onclick=()=>{const chat=CHATS.find(c=>c.id===CURRENT);if(!chat)return;if(chat.type==='group')openGroupInfo(chat);else openUserModal(otherOf(chat));};
 
-async function showImpersonateModal(chat){
-  const members=chat.members.filter(m=>m.id!==ME.id);
-  if(!members.length){toast('В чате нет других пользователей','red');return;}
-  const modal=document.createElement('div');modal.className='overlay open';modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:200;padding:18px';
-  modal.innerHTML=`<div class="modal"><div class="m-head"><div class="m-title">✍ Написать от имени</div><button class="icon-btn x" onclick="this.closest('.overlay').remove()">✕</button></div><div style="color:var(--mut);font-size:13px;margin-bottom:12px">Выбери пользователя, от чьего имени отправить сообщение:</div><div class="pick-list">${members.map(m=>`<div class="pick-row" data-uid="${m.id}">${avatarHTML(m,'s')}<div style="flex:1;min-width:0"><div class="pick-name">${esc(m.display_name||m.username)}</div><div class="pick-sub">@${esc(m.username)}</div></div></div>`).join('')}</div></div>`;
-  document.body.appendChild(modal);
-  modal.querySelectorAll('.pick-row').forEach(r=>r.onclick=()=>{IMPERSONATE_USER=PROFILES[r.dataset.uid]||{id:r.dataset.uid};modal.remove();toast(`✍ Пишешь от имени ${IMPERSONATE_USER.display_name||IMPERSONATE_USER.username}`);$('#modBanner').textContent=`✍ Режим модерации — пишешь от имени ${IMPERSONATE_USER.display_name||IMPERSONATE_USER.username}`;$('#modBanner').classList.remove('hidden');});
-  modal.onclick=e=>{if(e.target===modal)modal.remove();};
-}
+async function showImpersonateModal(chat){const members=chat.members.filter(m=>m.id!==ME.id);if(!members.length){toast('В чате нет других пользователей','red');return;}const modal=document.createElement('div');modal.className='overlay open';modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:200;padding:18px';modal.innerHTML=`<div class="modal"><div class="m-head"><div class="m-title">✍ Написать от имени</div><button class="icon-btn x" onclick="this.closest('.overlay').remove()">✕</button></div><div style="color:var(--mut);font-size:13px;margin-bottom:12px">Выбери пользователя, от чьего имени отправить сообщение:</div><div class="pick-list">${members.map(m=>`<div class="pick-row" data-uid="${m.id}">${avatarHTML(m,'s')}<div style="flex:1;min-width:0"><div class="pick-name">${esc(m.display_name||m.username)}</div><div class="pick-sub">@${esc(m.username)}</div></div></div>`).join('')}</div></div>`;document.body.appendChild(modal);modal.querySelectorAll('.pick-row').forEach(r=>r.onclick=()=>{IMPERSONATE_USER=PROFILES[r.dataset.uid]||{id:r.dataset.uid};modal.remove();toast(`✍ Пишешь от имени ${IMPERSONATE_USER.display_name||IMPERSONATE_USER.username}`);$('#modBanner').textContent=`✍ Режим модерации — пишешь от имени ${IMPERSONATE_USER.display_name||IMPERSONATE_USER.username}`;$('#modBanner').classList.remove('hidden');});modal.onclick=e=>{if(e.target===modal)modal.remove();};}
 
-function renderBlockBanner(){const chat=CHATS.find(c=>c.id===CURRENT);const bb=$('#blockBanner');const show=chat&&chat.type==='direct'&&BLOCKED.includes(otherOf(chat).id);bb.classList.toggle('hidden',!show);if(show){const o=otherOf(chat);bb.textContent=' Пользователь @'+o.username+' заблокирован. ';const b=document.createElement('button');b.className='link';b.textContent='Разблокировать';b.onclick=()=>toggleBlock(o.id);bb.appendChild(b);}}
+function renderBlockBanner(){const chat=CHATS.find(c=>c.id===CURRENT);const bb=$('#blockBanner');const show=chat&&chat.type==='direct'&&BLOCKED.includes(otherOf(chat).id);bb.classList.toggle('hidden',!show);if(show){const o=otherOf(chat);bb.textContent='🚫 Пользователь @'+o.username+' заблокирован. ';const b=document.createElement('button');b.className='link';b.textContent='Разблокировать';b.onclick=()=>toggleBlock(o.id);bb.appendChild(b);}}
 
-function updateRestrictionUI(){if(!ME)return;const muted=ME.muted_until&&Date.parse(ME.muted_until)>Date.now();$('#banBanner').classList.toggle('hidden',!ME.is_banned);$('#muteBanner').classList.toggle('hidden',!(!ME.is_banned&&muted));if(muted&&ME.muted_until)$('#muteBanner').innerHTML=' У тебя мут до <b>&nbsp;'+new Date(ME.muted_until).toLocaleString('ru-RU')+'</b>';$('#inputBar').classList.toggle('hidden',ME.is_banned||muted);}
+function updateRestrictionUI(){if(!ME)return;const muted=ME.muted_until&&Date.parse(ME.muted_until)>Date.now();$('#banBanner').classList.toggle('hidden',!ME.is_banned);$('#muteBanner').classList.toggle('hidden',!(!ME.is_banned&&muted));if(muted&&ME.muted_until)$('#muteBanner').innerHTML='🔇 У тебя мут до <b>&nbsp;'+new Date(ME.muted_until).toLocaleString('ru-RU')+'</b>';$('#inputBar').classList.toggle('hidden',ME.is_banned||muted);}
 
 function restricted(){if(ME.is_banned){toast('Аккаунт заблокирован администратором','red');return true;}if(ME.muted_until&&Date.parse(ME.muted_until)>Date.now()){toast('У тебя мут до '+new Date(ME.muted_until).toLocaleString('ru-RU'),'red');return true;}return false;}
 async function send(){const text=$('#msgInput').value.trim();if(!text||!CURRENT||restricted())return;const chat=CHATS.find(c=>c.id===CURRENT);if(chat.type==='direct'&&BLOCKED.includes(otherOf(chat).id)){toast('Сначала разблокируй пользователя');return;}$('#msgInput').value='';$('#msgInput').style.height='auto';const senderId=IMPERSONATE_USER?IMPERSONATE_USER.id:ME.id;const {data,error}=await sb.from('messages').insert({chat_id:CURRENT,sender_id:senderId,content:text}).select().single();if(error){toast('Ошибка: '+ru(error.message),'red');return;}if(!MSG_IDS.has(data.id)){MSG_IDS.add(data.id);appendMsg(data,chat);scrollBottom();}}
@@ -968,12 +915,12 @@ function openUserModal(u){U_UID=u.id;$('#uAva').innerHTML=avatarHTML(u,'l');$('#
 $('#uWrite').onclick=async()=>{$('#userOverlay').classList.remove('open');await openDirectWith(U_UID);};
 $('#uBlock').onclick=async()=>{await toggleBlock(U_UID);$('#uBlock').textContent=BLOCKED.includes(U_UID)?'🔓 Разблокировать':'🚫 Заблокировать';};
 
-function openGroupInfo(chat){$('#giList').innerHTML=chat.members.map(m=>`<div class="pick-row" data-uid="${m.id}">${avatarHTML(m,'s')}<div style="flex:1;min-width:0"><div class="pick-name">${esc(m.display_name||m.username)}${chat.created_by===m.id?' ':''}${m.id===ME.id?' <span class="pick-sub">(ты)</span>':''}</div><div class="pick-sub">@${esc(m.username)} · ${isOnline(m)?'<span class="st-on">в сети</span>':'не в сети'}</div></div></div>`).join('');$('#giList').querySelectorAll('.pick-row').forEach(r=>r.onclick=()=>{const m=chat.members.find(x=>x.id===r.dataset.uid);if(m.id===ME.id){$('#groupInfoOverlay').classList.remove('open');openMyProfile();}else{$('#groupInfoOverlay').classList.remove('open');openUserModal(m);}});$('#groupInfoOverlay').classList.add('open');}
+function openGroupInfo(chat){$('#giList').innerHTML=chat.members.map(m=>`<div class="pick-row" data-uid="${m.id}">${avatarHTML(m,'s')}<div style="flex:1;min-width:0"><div class="pick-name">${esc(m.display_name||m.username)}${chat.created_by===m.id?' 👑':''}${m.id===ME.id?' <span class="pick-sub">(ты)</span>':''}</div><div class="pick-sub">@${esc(m.username)} · ${isOnline(m)?'<span class="st-on">в сети</span>':'не в сети'}</div></div></div>`).join('');$('#giList').querySelectorAll('.pick-row').forEach(r=>r.onclick=()=>{const m=chat.members.find(x=>x.id===r.dataset.uid);if(m.id===ME.id){$('#groupInfoOverlay').classList.remove('open');openMyProfile();}else{$('#groupInfoOverlay').classList.remove('open');openUserModal(m);}});$('#groupInfoOverlay').classList.add('open');}
 $('#btnNewGroup').onclick=async()=>{await fetchAllUsers();$('#grpName').value='';$('#grpList').innerHTML=USERS.filter(u=>u.id!==ME.id).map(u=>`<label class="pick-row"><input type="checkbox" value="${u.id}">${avatarHTML(u,'s')}<div style="min-width:0"><div class="pick-name">${esc(u.display_name||u.username)}</div><div class="pick-sub">@${esc(u.username)}</div></div></label>`).join('')||'<div class="empty-note">Пока больше никого нет 😢</div>';$('#grpOverlay').classList.add('open');};
-$('#grpCreate').onclick=async()=>{const name=$('#grpName').value.trim();const sel=[...document.querySelectorAll('#grpList input:checked')].map(i=>i.value);if(!name)return toast('Введи название группы','red');if(!sel.length)return toast('Выбери хотя бы одного участника','red');const {data:c,error}=await sb.from('chats').insert({type:'group',name,created_by:ME.id}).select().single();if(error)return toast(ru(error.message),'red');const rows=[{chat_id:c.id,user_id:ME.id},...sel.map(id=>({chat_id:c.id,user_id:id}))];const {error:e2}=await sb.from('chat_members').insert(rows);if(e2)toast(ru(e2.message),'red');await loadChats();renderChatList();$('#grpOverlay').classList.remove('open');openChat(c.id);toast('Группа «'+name+'» создана ');};
+$('#grpCreate').onclick=async()=>{const name=$('#grpName').value.trim();const sel=[...document.querySelectorAll('#grpList input:checked')].map(i=>i.value);if(!name)return toast('Введи название группы','red');if(!sel.length)return toast('Выбери хотя бы одного участника','red');const {data:c,error}=await sb.from('chats').insert({type:'group',name,created_by:ME.id}).select().single();if(error)return toast(ru(error.message),'red');const rows=[{chat_id:c.id,user_id:ME.id},...sel.map(id=>({chat_id:c.id,user_id:id}))];const {error:e2}=await sb.from('chat_members').insert(rows);if(e2)toast(ru(e2.message),'red');await loadChats();renderChatList();$('#grpOverlay').classList.remove('open');openChat(c.id);toast('Группа «'+name+'» создана 🎉');};
 
 function openNewChatModal(){$('#ncSearch').value='';ncRender('');$('#ncOverlay').classList.add('open');}
-async function ncRender(q){await fetchAllUsers();const query=(q||'').trim().toLowerCase();if(query.length<2){$('#ncList').innerHTML='<div class="empty-note">🔎 Введи юзернейм, чтобы найти человека<br>(минимум 2 символа)</div>';return;}const list=USERS.filter(u=>u.id!==ME.id&&((u.username||'').toLowerCase().includes(query)||(u.display_name||'').toLowerCase().includes(query)));$('#ncList').innerHTML=list.map(u=>`<div class="pick-row" data-uid="${u.id}"><div class="ava-wrap">${avatarHTML(u,'s')}<span class="dot ${isOnline(u)?'on':''}"></span></div><div style="min-width:0"><div class="pick-name">${esc(u.display_name||u.username)}</div><div class="pick-sub">@${esc(u.username)}</div></div></div>`).join('')||'<div class="empty-note">Никого не нашлось по запросу «'+esc(q)+'»</div>';$('#ncList').querySelectorAll('.pick-row').forEach(r=>r.onclick=async()=>{$('#ncOverlay').classList.remove('open');await openDirectWith(r.dataset.uid);});}
+async function ncRender(q){await fetchAllUsers();const query=(q||'').trim().toLowerCase();if(query.length<2){$('#ncList').innerHTML='<div class="empty-note">🔎 Введи юзернейм, чтобы найти человека<br>(минимум 2 символа)</div>';return;}const list=USERS.filter(u=>u.id!==ME.id&&((u.username||'').toLowerCase().includes(query)||(u.display_name||'').toLowerCase().includes(query)));$('#ncList').innerHTML=list.map(u=>`<div class="pick-row" data-uid="${u.id}"><div class="ava-wrap">${avatarHTML(u,'s')}<span class="dot ${isOnline(u)?'on':''}"></span></div><div style="min-width:0"><div class="pick-name">${esc(u.display_name||u.username)}</div><div class="pick-sub">@${esc(u.username)}</div></div></div>`).join('')||'<div class="empty-note">Никого не нашлось по запросу «'+esc(query)+'»</div>';$('#ncList').querySelectorAll('.pick-row').forEach(r=>r.onclick=async()=>{$('#ncOverlay').classList.remove('open');await openDirectWith(r.dataset.uid);});}
 $('#ncSearch').oninput=e=>ncRender(e.target.value);
 $('#btnNewChat').onclick=openNewChatModal;
 $('#emptyNewChat').onclick=openNewChatModal;
@@ -986,151 +933,15 @@ $('#btnAdmin').onclick=async()=>{if(!ME.is_admin)return;document.querySelector('
 
 document.querySelectorAll('#admTabs .adm-tab').forEach(tab=>{tab.onclick=async()=>{document.querySelectorAll('#admTabs .adm-tab').forEach(t=>t.classList.remove('active'));tab.classList.add('active');const t=tab.dataset.tab;$('#admUsersPane').classList.toggle('hidden',t!=='users');$('#admChatsPane').classList.toggle('hidden',t!=='chats');$('#admHistPane').classList.toggle('hidden',t!=='history');$('#admUpdatePane').classList.toggle('hidden',t!=='update');if(t==='users')await refreshAdminUsers();if(t==='chats')await loadAdminChats();if(t==='history')await loadAdminHistory();};});
 
-async function refreshAdminUsers(){
-  await fetchAllUsers();
-  $('#admUserList').innerHTML=USERS.map(u=>{
-    const mutedNow=u.muted_until&&Date.parse(u.muted_until)>Date.now();
-    const self=u.id===ME.id;
-    const isOwnerUser=u.email===OWNER_EMAIL;
-    const protectedUser=isOwnerUser||self;
-    return `<div class="a-row">${avatarHTML(u,'s')}
-      <div class="a-info" data-user-id="${u.id}" style="cursor:pointer;flex:1">
-        <b>${esc(u.display_name||u.username)}</b>
-        ${isOwnerUser?' <span class="tag gold">👑 Создатель</span>':self?' <span class="tag green">это ты</span>':''}
-        <span class="a-mail">@${esc(u.username)}</span><br>
-        <span class="a-mail">${esc(u.email)}</span>
-        <div>${u.is_admin?'<span class="tag gold">админ</span>':''}${u.is_banned?'<span class="tag red">Забанен</span>':''}${mutedNow?`<span class="tag green">мут до ${new Date(u.muted_until).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}</span>`:''}</div>
-      </div>
-      <div class="a-btns" data-uid="${u.id}">
-        <button class="mini" data-a="viewchats" title="Посмотреть чаты">👁 Чаты</button>
-        ${protectedUser?'<span style="color:var(--mut2);font-size:11px;padding:6px">🔒 защищён</span>':`
-          <button class="mini" data-a="m10">🔇10м</button>
-          <button class="mini" data-a="m60">🔇1ч</button>
-          <button class="mini" data-a="m1440">🔇24ч</button>
-          <button class="mini" data-a="unmute">🔓 Размут</button>
-          <button class="mini ${u.is_banned?'unban':'ban'}" data-a="ban">${u.is_banned?'✔ Разбанить':'⛔ Бан'}</button>
-          <button class="mini ${u.is_admin?'ban':'unban'}" data-a="toggleadmin">${u.is_admin?'🚫 Снять админа':' Админ'}</button>
-          ${isOwner?'<button class="mini delete" data-a="delete">🗑 Удалить</button>':''}
-        `}
-      </div>
-    </div>`;
-  }).join('');
+async function refreshAdminUsers(){await fetchAllUsers();$('#admUserList').innerHTML=USERS.map(u=>{const mutedNow=u.muted_until&&Date.parse(u.muted_until)>Date.now();const self=u.id===ME.id;const isOwnerUser=u.email===OWNER_EMAIL;const protectedUser=isOwnerUser||self;return `<div class="a-row">${avatarHTML(u,'s')}<div class="a-info" data-user-id="${u.id}" style="cursor:pointer;flex:1"><b>${esc(u.display_name||u.username)}</b>${isOwnerUser?' <span class="tag gold">👑 Создатель</span>':self?' <span class="tag green">это ты</span>':''} <span class="a-mail">@${esc(u.username)}</span><br><span class="a-mail">${esc(u.email)}</span><div>${u.is_admin?'<span class="tag gold">админ</span>':''}${u.is_banned?'<span class="tag red">Забанен</span>':''}${mutedNow?`<span class="tag green">мут до ${new Date(u.muted_until).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}</span>`:''}</div></div><div class="a-btns" data-uid="${u.id}">${protectedUser?'<span style="color:var(--mut2);font-size:11px;padding:6px">🔒 защищён</span>':`<button class="mini" data-a="viewchats">👁 Чаты</button><button class="mini" data-a="m10">🔇10м</button><button class="mini" data-a="m60">🔇1ч</button><button class="mini" data-a="m1440">🔇24ч</button><button class="mini" data-a="unmute">🔓 Размут</button><button class="mini ${u.is_banned?'unban':'ban'}" data-a="ban">${u.is_banned?'✔ Разбанить':'⛔ Бан'}</button><button class="mini ${u.is_admin?'ban':'unban'}" data-a="toggleadmin">${u.is_admin?'🚫 Снять админа':'⚡ Админ'}</button>${isOwner?'<button class="mini delete" data-a="delete">🗑 Удалить</button>':''}`}</div></div>`;}).join('');document.querySelectorAll('[data-user-id]').forEach(el=>{el.onclick=async(e)=>{if(e.target.closest('[data-a]'))return;const uid=el.dataset.userId;await showUserChats(uid);};});document.querySelectorAll('[data-a]').forEach(btn=>{btn.onclick=async(e)=>{e.stopPropagation();const uid=btn.closest('[data-uid]').dataset.uid;const u=USERS.find(x=>x.id===uid);if(!u)return;if(btn.dataset.a==='viewchats'){await showUserChats(uid);return;}if(btn.dataset.a==='delete'){if(!await confirmBox('Удалить аккаунт?','Все данные пользователя будут удалены безвозвратно.'))return;const {error}=await sb.from('profiles').delete().eq('id',uid);if(error){toast('Ошибка: '+ru(error.message),'red');return;}toast('Аккаунт удалён ✔');await refreshAdminUsers();return;}if(u.email===OWNER_EMAIL){toast('👑 Создателя нельзя трогать','red');return;}let upd=null;if(btn.dataset.a==='ban'){if(uid===ME.id){toast('Нельзя забанить самого себя','red');return;}upd={is_banned:!u.is_banned};}else if(btn.dataset.a==='unmute')upd={muted_until:null};else if(btn.dataset.a==='toggleadmin'){if(uid===ME.id){toast('Нельзя снять админку с себя','red');return;}upd={is_admin:!u.is_admin};}else{if(uid===ME.id){toast('Нельзя замутить себя','red');return;}upd={muted_until:new Date(Date.now()+{m10:10,m60:60,m1440:1440}[btn.dataset.a]*60000).toISOString()};}const {error}=await sb.from('profiles').update(upd).eq('id',uid);if(error)return toast(ru(error.message),'red');toast('Готово ✔');await refreshAdminUsers();};});}
 
-  document.querySelectorAll('[data-user-id]').forEach(el=>{
-    el.onclick=async(e)=>{
-      if(e.target.closest('[data-a]'))return;
-      const uid=el.dataset.userId;
-      await showUserChats(uid);
-    };
-  });
-
-  document.querySelectorAll('[data-a]').forEach(btn=>{
-    btn.onclick=async(e)=>{
-      e.stopPropagation();
-      const uid=btn.closest('[data-uid]').dataset.uid;
-      const u=USERS.find(x=>x.id===uid);
-      if(!u)return;
-      if(btn.dataset.a==='viewchats'){await showUserChats(uid);return;}
-      if(btn.dataset.a==='delete'){
-        if(!await confirmBox('Удалить аккаунт?','Все данные пользователя будут удалены безвозвратно.'))return;
-        const {error}=await sb.from('profiles').delete().eq('id',uid);
-        if(error){toast('Ошибка: '+ru(error.message),'red');return;}
-        toast('Аккаунт удалён ✔');
-        await refreshAdminUsers();
-        return;
-      }
-      if(u.email===OWNER_EMAIL){toast('👑 Создателя нельзя трогать','red');return;}
-      let upd=null;
-      if(btn.dataset.a==='ban'){if(uid===ME.id){toast('Нельзя забанить самого себя','red');return;}upd={is_banned:!u.is_banned};}
-      else if(btn.dataset.a==='unmute')upd={muted_until:null};
-      else if(btn.dataset.a==='toggleadmin'){if(uid===ME.id){toast('Нельзя снять админку с себя','red');return;}upd={is_admin:!u.is_admin};}
-      else{if(uid===ME.id){toast('Нельзя замутить себя','red');return;}upd={muted_until:new Date(Date.now()+{m10:10,m60:60,m1440:1440}[btn.dataset.a]*60000).toISOString()};}
-      const {error}=await sb.from('profiles').update(upd).eq('id',uid);
-      if(error)return toast(ru(error.message),'red');
-      toast('Готово ✔');
-      await refreshAdminUsers();
-    };
-  });
-}
-
-async function showUserChats(uid){
-  const user=PROFILES[uid]||USERS.find(u=>u.id===uid);if(!user)return;
-  $('#userChatsTitle').textContent=`Чаты ${user.display_name||user.username}`;
-  $('#userChatsList').innerHTML='<div class="loading">Загрузка чатов…</div>';
-  $('#userChatsOverlay').classList.add('open');
-  const {data:memberships}=await sb.from('chat_members').select('chat_id').eq('user_id',uid);
-  if(!memberships||!memberships.length){$('#userChatsList').innerHTML='<div class="empty-note">У пользователя нет чатов</div>';return;}
-  const chatIds=memberships.map(m=>m.chat_id);
-  const {data:chats}=await sb.from('chats').select('id,type,name,created_at,chat_members(user_id,profiles(id,username,display_name))').in('id',chatIds).limit(50);
-  if(!chats||!chats.length){$('#userChatsList').innerHTML='<div class="empty-note">Чаты не найдены</div>';return;}
-  $('#userChatsList').innerHTML=chats.map(c=>{
-    const members=(c.chat_members||[]).map(m=>m.profiles).filter(Boolean);
-    const otherMembers=members.filter(m=>m.id!==uid);
-    const title=c.type==='group'?c.name:(otherMembers.map(m=>m.display_name||m.username).join(', ')||'Личный чат');
-    return `<div class="user-chat-item" data-cid="${c.id}">
-      <div class="ava s ini" style="background:${GRADS[hashOf(c.id)%GRADS.length]}">${esc((title||'?')[0].toUpperCase())}</div>
-      <div style="flex:1;min-width:0">
-        <div class="admin-user-name">${esc(title||'Без названия')} ${c.type==='group'?'<span class="tag gold">группа</span>':''}</div>
-        <div class="admin-user-meta">${otherMembers.map(m=>'@'+esc(m.username)).join(', ')||'—'}</div>
-      </div>
-    </div>`;
-  }).join('');
-  document.querySelectorAll('.user-chat-item').forEach(r=>r.onclick=async()=>{
-    $('#userChatsOverlay').classList.remove('open');
-    await openModChat(r.dataset.cid);
-  });
-}
+async function showUserChats(uid){const user=PROFILES[uid]||USERS.find(u=>u.id===uid);if(!user)return;$('#userChatsTitle').textContent=`Чаты ${user.display_name||user.username}`;$('#userChatsList').innerHTML='<div class="loading">Загрузка чатов…</div>';$('#userChatsOverlay').classList.add('open');const {data:memberships}=await sb.from('chat_members').select('chat_id').eq('user_id',uid);if(!memberships||!memberships.length){$('#userChatsList').innerHTML='<div class="empty-note">У пользователя нет чатов</div>';return;}const chatIds=memberships.map(m=>m.chat_id);const {data:chats}=await sb.from('chats').select('id,type,name,created_at,chat_members(user_id,profiles(id,username,display_name))').in('id',chatIds).limit(50);if(!chats||!chats.length){$('#userChatsList').innerHTML='<div class="empty-note">Чаты не найдены</div>';return;}$('#userChatsList').innerHTML=chats.map(c=>{const members=(c.chat_members||[]).map(m=>m.profiles).filter(Boolean);const otherMembers=members.filter(m=>m.id!==uid);const title=c.type==='group'?c.name:(otherMembers.map(m=>m.display_name||m.username).join(', ')||'Личный чат');return `<div class="user-chat-item" data-cid="${c.id}"><div class="ava s ini" style="background:${GRADS[hashOf(c.id)%GRADS.length]}">${esc((title||'?')[0].toUpperCase())}</div><div style="flex:1;min-width:0"><div class="admin-user-name">${esc(title||'Без названия')} ${c.type==='group'?'<span class="tag gold">группа</span>':''}</div><div class="admin-user-meta">${otherMembers.map(m=>'@'+esc(m.username)).join(', ')||'—'}</div></div></div>`;}).join('');document.querySelectorAll('.user-chat-item').forEach(r=>r.onclick=async()=>{$('#userChatsOverlay').classList.remove('open');await openModChat(r.dataset.cid);});}
 
 async function loadAdminChats(){const {data}=await sb.from('chats').select('id,type,name,created_at,created_by,chat_members(user_id,profiles(id,username,display_name))').order('created_at',{ascending:false}).limit(100);if(!data||!data.length){$('#admChatList').innerHTML='<div class="empty-note">Чатов пока нет</div>';return;}$('#admChatList').innerHTML=data.map(c=>{const members=(c.chat_members||[]).map(m=>m.profiles).filter(Boolean);const names=members.map(m=>m.display_name||m.username).join(', ');const title=c.type==='group'?c.name:(names||'Личный чат');return `<div class="admin-chat-row" data-cid="${c.id}"><div class="ava s ini" style="background:${GRADS[hashOf(c.id)%GRADS.length]}">${esc((title||'?')[0].toUpperCase())}</div><div class="admin-chat-info"><div class="admin-chat-name">${esc(title||'Без названия')} ${c.type==='group'?'<span class="tag gold">группа</span>':''}</div><div class="admin-chat-meta">${esc(names||'—')} · ${new Date(c.created_at).toLocaleDateString('ru-RU')}</div></div></div>`;}).join('');document.querySelectorAll('.admin-chat-row').forEach(r=>r.onclick=()=>openModChat(r.dataset.cid));}
 
-async function openModChat(cid){
-  MOD_CHAT_ID=cid;
-  IMPERSONATE_USER=null;
-  const {data:chat}=await sb.from('chats').select('id,type,name,chat_members(user_id,profiles(id,username,display_name))').eq('id',cid).single();
-  if(!chat)return;
-  const members=(chat.chat_members||[]).map(m=>m.profiles).filter(Boolean);
-  MOD_CHAT_MEMBERS=members;
-  const title=chat.type==='group'?chat.name:members.map(m=>m.display_name||m.username).join(' и ');
-  $('#modChatTitle').textContent='👁 '+title;
-  $('#modImpersonateStatus').style.display='none';
-  $('#modImpersonateBtn').style.display='grid';
-  const {data:msgs}=await sb.from('messages').select('id,sender_id,content,created_at').eq('chat_id',cid).order('created_at',{ascending:true}).limit(200);
-  $('#modChatBody').innerHTML=(msgs||[]).map(m=>{
-    const p=PROFILES[m.sender_id]||members.find(x=>x.id===m.sender_id)||{username:'удалён',display_name:'удалён'};
-    const md=parseMedia(m.content);
-    const text=md?md.cap:m.content;
-    const senderName=p.display_name||p.username||'Неизвестно';
-    const color=nameColor(m.sender_id);
-    const isOwn=m.sender_id===ME.id;
-    return `<div class="mod-msg">
-      <div class="mod-msg-avatar">${avatarHTML(p,'s')}</div>
-      <div class="mod-msg-bubble">
-        <div class="mod-msg-sender">
-          <span class="sender-dot" style="background:${color}"></span>
-          <span style="color:${color}">${esc(senderName)}</span>
-          ${isOwn?'<span style="font-size:11px;color:var(--mut);font-weight:400">(это ты)</span>':''}
-        </div>
-        ${md?mediaHTML(md):''}
-        ${text?`<div class="mod-msg-text">${linkify(esc(text))}</div>`:''}
-        <div class="mod-msg-time">${fmtHM(m.created_at)}</div>
-      </div>
-    </div>`;
-  }).join('')||'<div class="empty-note">Сообщений нет</div>';
-  $('#adminOverlay').classList.remove('open');
-  $('#modChatOverlay').classList.add('open');
-}
+async function openModChat(cid){MOD_CHAT_ID=cid;IMPERSONATE_USER=null;const {data:chat}=await sb.from('chats').select('id,type,name,chat_members(user_id,profiles(id,username,display_name))').eq('id',cid).single();if(!chat)return;const members=(chat.chat_members||[]).map(m=>m.profiles).filter(Boolean);MOD_CHAT_MEMBERS=members;const title=chat.type==='group'?chat.name:members.map(m=>m.display_name||m.username).join(' и ');$('#modChatTitle').textContent='👁 '+title;$('#modImpersonateStatus').style.display='none';$('#modImpersonateBtn').style.display='grid';const {data:msgs}=await sb.from('messages').select('id,sender_id,content,created_at').eq('chat_id',cid).order('created_at',{ascending:true}).limit(200);$('#modChatBody').innerHTML=(msgs||[]).map(m=>{const p=PROFILES[m.sender_id]||members.find(x=>x.id===m.sender_id)||{username:'удалён',display_name:'удалён'};const md=parseMedia(m.content);const text=md?md.cap:m.content;const senderName=p.display_name||p.username||'Неизвестно';const color=nameColor(m.sender_id);const isOwn=m.sender_id===ME.id;return `<div class="mod-msg"><div class="mod-msg-avatar">${avatarHTML(p,'s')}</div><div class="mod-msg-bubble"><div class="mod-msg-sender"><span class="sender-dot" style="background:${color}"></span><span style="color:${color}">${esc(senderName)}</span>${isOwn?'<span style="font-size:11px;color:var(--mut);font-weight:400">(это ты)</span>':''}</div>${md?mediaHTML(md):''}${text?`<div class="mod-msg-text">${linkify(esc(text))}</div>`:''}<div class="mod-msg-time">${fmtHM(m.created_at)}</div></div></div>`;}).join('')||'<div class="empty-note">Сообщений нет</div>';$('#adminOverlay').classList.remove('open');$('#modChatOverlay').classList.add('open');}
 
-$('#modImpersonateBtn').onclick=async()=>{
-  if(!ME.is_admin){toast('Только для админов','red');return;}
-  const members=MOD_CHAT_MEMBERS.filter(m=>m.id!==ME.id);
-  if(!members.length){toast('В чате нет других пользователей','red');return;}
-  const modal=document.createElement('div');modal.className='overlay open';modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:200;padding:18px';
-  modal.innerHTML=`<div class="modal"><div class="m-head"><div class="m-title">✍ Написать от имени</div><button class="icon-btn x" onclick="this.closest('.overlay').remove()">✕</button></div><div style="color:var(--mut);font-size:13px;margin-bottom:12px">Выбери пользователя:</div><div class="pick-list">${members.map(m=>`<div class="pick-row" data-uid="${m.id}">${avatarHTML(m,'s')}<div style="flex:1;min-width:0"><div class="pick-name">${esc(m.display_name||m.username)}</div><div class="pick-sub">@${esc(m.username)}</div></div></div>`).join('')}</div></div>`;
-  document.body.appendChild(modal);
-  modal.querySelectorAll('.pick-row').forEach(r=>r.onclick=()=>{IMPERSONATE_USER=PROFILES[r.dataset.uid]||{id:r.dataset.uid};modal.remove();$('#modImpersonateStatus').style.display='block';$('#modImpersonateName').textContent=IMPERSONATE_USER.display_name||IMPERSONATE_USER.username;toast(`✍ Пишешь от имени ${IMPERSONATE_USER.display_name||IMPERSONATE_USER.username}`);});
-  modal.onclick=e=>{if(e.target===modal)modal.remove();};
-};
-
+$('#modImpersonateBtn').onclick=async()=>{if(!ME.is_admin){toast('Только для админов','red');return;}const members=MOD_CHAT_MEMBERS.filter(m=>m.id!==ME.id);if(!members.length){toast('В чате нет других пользователей','red');return;}const modal=document.createElement('div');modal.className='overlay open';modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:200;padding:18px';modal.innerHTML=`<div class="modal"><div class="m-head"><div class="m-title">✍ Написать от имени</div><button class="icon-btn x" onclick="this.closest('.overlay').remove()">✕</button></div><div style="color:var(--mut);font-size:13px;margin-bottom:12px">Выбери пользователя:</div><div class="pick-list">${members.map(m=>`<div class="pick-row" data-uid="${m.id}">${avatarHTML(m,'s')}<div style="flex:1;min-width:0"><div class="pick-name">${esc(m.display_name||m.username)}</div><div class="pick-sub">@${esc(m.username)}</div></div></div>`).join('')}</div></div>`;document.body.appendChild(modal);modal.querySelectorAll('.pick-row').forEach(r=>r.onclick=()=>{IMPERSONATE_USER=PROFILES[r.dataset.uid]||{id:r.dataset.uid};modal.remove();$('#modImpersonateStatus').style.display='block';$('#modImpersonateName').textContent=IMPERSONATE_USER.display_name||IMPERSONATE_USER.username;toast(`✍ Пишешь от имени ${IMPERSONATE_USER.display_name||IMPERSONATE_USER.username}`);});modal.onclick=e=>{if(e.target===modal)modal.remove();};};
 $('#modStopImpersonate').onclick=()=>{IMPERSONATE_USER=null;$('#modImpersonateStatus').style.display='none';toast('Вернулся к своему аккаунту');};
 
 async function loadAdminHistory(){const {data,error}=await sb.from('registrations').select('*').order('created_at',{ascending:false}).limit(300);if(error){$('#admHistList').innerHTML='<div class="empty-note">Ошибка: '+ru(error.message)+'</div>';return;}if(!data||!data.length){$('#admHistList').innerHTML='<div class="empty-note">История пуста</div>';return;}$('#admHistList').innerHTML=data.map((r,i)=>`<div class="h-row" style="display:flex;gap:12px;align-items:center;padding:10px 6px;border-bottom:1px dashed var(--line);font-size:13.5px;flex-wrap:wrap"><span style="color:var(--mut2);font:600 11px var(--mono);width:22px">${i+1}</span><b>@${esc(r.username)}</b><span style="font:400 11.5px var(--mono);color:var(--mut2)">${esc(r.email)}</span><time style="margin-left:auto;font:400 11.5px var(--mono);color:var(--mut2)">${new Date(r.created_at).toLocaleString('ru-RU')}</time></div>`).join('');}
@@ -1143,7 +954,18 @@ document.querySelectorAll('.overlay').forEach(ov=>ov.addEventListener('click',e=
 document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>b.closest('.overlay').classList.remove('open'));
 addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.overlay.open').forEach(o=>o.classList.remove('open'));$('#chatMenu').classList.remove('open');}});
 
+// ===== НОВОЕ: Модальное окно "Не сворачивай" =====
+function showInfoModal(){
+  if(!localStorage.getItem('golda_info_shown')){
+    $('#infoModal').classList.add('open');
+  }
+}
+$('#closeInfoBtn').onclick=()=>{
+  $('#infoModal').classList.remove('open');
+  localStorage.setItem('golda_info_shown','true');
+};
+
 (async function boot(){try{const {data:{session}}=await sb.auth.getSession();if(session)await enterApp();else showOnly('auth');}catch(err){console.error(err);showOnly('auth');}})();
 </script>
 </body>
-  </html>
+</html>
