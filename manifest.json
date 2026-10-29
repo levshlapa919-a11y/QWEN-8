@@ -1,0 +1,18 @@
+{
+  "name": "GOLDA Mesenger",
+  "short_name": "GOLDA",
+  "description": "Неоновый мессенджер с push-уведомлениями",
+  "start_url": "/golda-mesenger/",
+  "display": "standalone",
+  "background_color": "#050b07",
+  "theme_color": "#3dff85",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://em-content.zobj.net/source/apple/391/green-circle_1f7e2.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
