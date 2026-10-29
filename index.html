@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#050b07" id="themeMeta">
 <title>golda-mesenger</title>
-<!-- push.js: вся логика уведомлений внутри этого файла, внешний файл не подключается -->
 <link rel="manifest" href="manifest.json">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -584,12 +583,12 @@ body[data-theme="light"] .settings-row{background:rgba(0,0,0,.02)}
 <div class="info-modal" id="infoModal">
   <div class="info-box">
     <div class="info-icon">⚠️</div>
-    <div class="info-title">Уведомления подключаются</div>
+    <div class="info-title">Важно!</div>
     <div class="info-text">
-      Нажми один раз по экрану и <b>разреши уведомления</b> — после этого сообщения будут приходить даже когда приложение свёрнуто или закрыто.<br><br>
-      Совет: установи сайт на рабочий стол (Настройки → Установить как приложение).
+      Чтобы уведомления о сообщениях приходили <b>мгновенно</b>, пожалуйста, <b>не сворачивайте и не закрывайте браузер</b>.<br><br>
+      Совет: установите сайт как приложение (Настройки → Установить как приложение) — тогда уведомления будут работать стабильнее.
     </div>
-    <button class="btn primary" id="closeInfoBtn" style="margin-top:0">Понятно</button>
+    <button class="btn primary" id="closeInfoBtn" style="margin-top:0">Понятно, я запомню</button>
   </div>
 </div>
 
@@ -611,7 +610,7 @@ let CURRENT=null,MSG_IDS=new Set(),rtChannel=null,hbTimer=null;
 let SETUP_UID=null,SETUP_EMAIL='',MOD_CHAT_ID=null,IMPERSONATE_USER=null,MOD_CHAT_MEMBERS=[];
 const ONLINE_MS=70000;
 
-// ===== PWA: SERVICE WORKER =====
+// ===== PWA: РЕГИСТРАЦИЯ SERVICE WORKER =====
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
     navigator.serviceWorker.register('sw.js').then(()=>console.log('SW ok')).catch(e=>console.log('SW err',e));
@@ -646,7 +645,7 @@ $('#settingsInstall').onclick=async()=>{
   if(deferredInstallPrompt){deferredInstallPrompt.prompt();const r=await deferredInstallPrompt.userChoice;if(r.outcome==='accepted')toast('✅ Приложение установлено!');deferredInstallPrompt=null;}
   else{
     const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent);
-    alert(isIOS?'Установка на iPhone:\n1. Нажми «Поделиться» в Safari\n2. Выбери «На экран Домой»':'Установка на Android:\n1. Нажми ⋮ в браузере\n2. Выбери «Установить приложение»');
+    alert(isIOS?'Установка на iPhone:\n1. Нажми кнопку «Поделиться» в Safari\n2. Выбери «На экран Домой»':'Установка на Android:\n1. Нажми ⋮ в браузере\n2. Выбери «Установить приложение» или «Добавить на главный экран»');
   }
 };
 $('#btnSettings').onclick=()=>{$('#settingsEmail').textContent=ME?ME.email:'';$('#settingsOverlay').classList.add('open');};
@@ -699,7 +698,7 @@ $('#authForm').onsubmit=async e=>{e.preventDefault();const email=$('#authEmail')
 
 $('#setupForm').onsubmit=async e=>{e.preventDefault();const uname=normUname($('#setupUname').value);if(!validUname(uname)){$('#setupMsg').textContent='Юзернейм: 3–20 символов, латиница/цифры/_';return;}try{await createProfile(SETUP_UID,SETUP_EMAIL,uname,$('#setupName').value.trim()||uname);await enterApp();}catch(err){$('#setupMsg').textContent=ru(err.message);}};
 
-async function enterApp(){const {data:{session}}=await sb.auth.getSession();if(!session){showOnly('auth');return;}const {data:p}=await sb.from('profiles').select('*').eq('id',session.user.id).maybeSingle();if(!p){SETUP_UID=session.user.id;SETUP_EMAIL=session.user.email||'';showOnly('setup');return;}ME=p;PROFILES[p.id]=p;UNREAD={};CURRENT=null;showOnly('app');await Promise.all([fetchAllUsers(),loadChats(),loadBlocks()]);renderMe();renderChatList();updateRestrictionUI();if(ME.is_banned)showBanScreen();await checkOwnerUpdateFlag();subscribeRT();startHeartbeat();showInfoModal();pushEnsure();}
+async function enterApp(){const {data:{session}}=await sb.auth.getSession();if(!session){showOnly('auth');return;}const {data:p}=await sb.from('profiles').select('*').eq('id',session.user.id).maybeSingle();if(!p){SETUP_UID=session.user.id;SETUP_EMAIL=session.user.email||'';showOnly('setup');return;}ME=p;PROFILES[p.id]=p;UNREAD={};CURRENT=null;showOnly('app');await Promise.all([fetchAllUsers(),loadChats(),loadBlocks()]);renderMe();renderChatList();updateRestrictionUI();if(ME.is_banned)showBanScreen();await checkOwnerUpdateFlag();subscribeRT();startHeartbeat();showInfoModal();requestNotifPermission();}
 
 async function fetchAllUsers(){const {data}=await sb.from('profiles').select('*').order('username').limit(1000);USERS=data||[];USERS.forEach(u=>PROFILES[u.id]=u);}
 async function loadBlocks(){const {data}=await sb.from('blocks').select('blocked_id').eq('blocker_id',ME.id);BLOCKED=(data||[]).map(r=>r.blocked_id);}
@@ -803,4 +802,45 @@ async function refreshAdminUsers(){await fetchAllUsers();$('#admUserList').inner
 
 async function showUserChats(uid){const user=PROFILES[uid]||USERS.find(u=>u.id===uid);if(!user)return;$('#userChatsTitle').textContent=`Чаты ${user.display_name||user.username}`;$('#userChatsList').innerHTML='<div class="loading">Загрузка чатов…</div>';$('#userChatsOverlay').classList.add('open');const {data:memberships}=await sb.from('chat_members').select('chat_id').eq('user_id',uid);if(!memberships||!memberships.length){$('#userChatsList').innerHTML='<div class="empty-note">У пользователя нет чатов</div>';return;}const chatIds=memberships.map(m=>m.chat_id);const {data:chats}=await sb.from('chats').select('id,type,name,created_at,chat_members(user_id,profiles(id,username,display_name))').in('id',chatIds).limit(50);if(!chats||!chats.length){$('#userChatsList').innerHTML='<div class="empty-note">Чаты не найдены</div>';return;}$('#userChatsList').innerHTML=chats.map(c=>{const members=(c.chat_members||[]).map(m=>m.profiles).filter(Boolean);const otherMembers=members.filter(m=>m.id!==uid);const title=c.type==='group'?c.name:(otherMembers.map(m=>m.display_name||m.username).join(', ')||'Личный чат');return `<div class="user-chat-item" data-cid="${c.id}"><div class="ava s ini" style="background:${GRADS[hashOf(c.id)%GRADS.length]}">${esc((title||'?')[0].toUpperCase())}</div><div style="flex:1;min-width:0"><div class="admin-user-name">${esc(title||'Без названия')} ${c.type==='group'?'<span class="tag gold">группа</span>':''}</div><div class="admin-user-meta">${otherMembers.map(m=>'@'+esc(m.username)).join(', ')||'—'}</div></div></div>`;}).join('');document.querySelectorAll('.user-chat-item').forEach(r=>r.onclick=async()=>{$('#userChatsOverlay').classList.remove('open');await openModChat(r.dataset.cid);});}
 
-async function loadAdminChats(){const {data}=await sb.from('chats').select('id,type,name,created_at,created_by,chat_members(user_id,profiles(id,username,display_name))').order('created_at',{ascending:false}).limit(100);if(!data||!data.length){$('#admChatList').innerHTML='<div class="empty-note">Чатов пока нет</div>';return;}$('#admChatList').innerHTML=data.map(c=>{const members=(c.chat_members||[]).map(m=>m.profiles).filter(Boolean);const names=members.map(m=>m.display_name||m.username).join(', ');const title=c.type==='group'?c.name:(names||'Личный чат');return `<div class="admin-chat-row" data-cid="${c.id}"><div class="ava s ini" style="background:${GRADS[hashOf(c.id)%GRADS.length]}">${esc((title||'?')[0].toUpperCase())}</div><div class="admin-chat-info"><div class="admin-chat-name">${esc(title||'Без названия')} ${c.type==='group'?'<span class="tag gold">группа</span>':''}</div><div class="admin-chat-meta">${esc(names||'—
+async function loadAdminChats(){const {data}=await sb.from('chats').select('id,type,name,created_at,created_by,chat_members(user_id,profiles(id,username,display_name))').order('created_at',{ascending:false}).limit(100);if(!data||!data.length){$('#admChatList').innerHTML='<div class="empty-note">Чатов пока нет</div>';return;}$('#admChatList').innerHTML=data.map(c=>{const members=(c.chat_members||[]).map(m=>m.profiles).filter(Boolean);const names=members.map(m=>m.display_name||m.username).join(', ');const title=c.type==='group'?c.name:(names||'Личный чат');return `<div class="admin-chat-row" data-cid="${c.id}"><div class="ava s ini" style="background:${GRADS[hashOf(c.id)%GRADS.length]}">${esc((title||'?')[0].toUpperCase())}</div><div class="admin-chat-info"><div class="admin-chat-name">${esc(title||'Без названия')} ${c.type==='group'?'<span class="tag gold">группа</span>':''}</div><div class="admin-chat-meta">${esc(names||'—')} · ${new Date(c.created_at).toLocaleDateString('ru-RU')}</div></div></div>`;}).join('');document.querySelectorAll('.admin-chat-row').forEach(r=>r.onclick=()=>openModChat(r.dataset.cid));}
+
+async function openModChat(cid){MOD_CHAT_ID=cid;IMPERSONATE_USER=null;const {data:chat}=await sb.from('chats').select('id,type,name,chat_members(user_id,profiles(id,username,display_name))').eq('id',cid).single();if(!chat)return;const members=(chat.chat_members||[]).map(m=>m.profiles).filter(Boolean);MOD_CHAT_MEMBERS=members;const title=chat.type==='group'?chat.name:members.map(m=>m.display_name||m.username).join(' и ');$('#modChatTitle').textContent='👁 '+title;$('#modImpersonateStatus').style.display='none';$('#modImpersonateBtn').style.display='grid';const {data:msgs}=await sb.from('messages').select('id,sender_id,content,created_at').eq('chat_id',cid).order('created_at',{ascending:true}).limit(200);$('#modChatBody').innerHTML=(msgs||[]).map(m=>{const p=PROFILES[m.sender_id]||members.find(x=>x.id===m.sender_id)||{username:'удалён',display_name:'удалён'};const md=parseMedia(m.content);const text=md?md.cap:m.content;const senderName=p.display_name||p.username||'Неизвестно';const color=nameColor(m.sender_id);const isOwn=m.sender_id===ME.id;return `<div class="mod-msg"><div class="mod-msg-avatar">${avatarHTML(p,'s')}</div><div class="mod-msg-bubble"><div class="mod-msg-sender"><span class="sender-dot" style="background:${color}"></span><span style="color:${color}">${esc(senderName)}</span>${isOwn?'<span style="font-size:11px;color:var(--mut);font-weight:400">(это ты)</span>':''}</div>${md?mediaHTML(md):''}${text?`<div class="mod-msg-text">${linkify(esc(text))}</div>`:''}<div class="mod-msg-time">${fmtHM(m.created_at)}</div></div></div>`;}).join('')||'<div class="empty-note">Сообщений нет</div>';$('#adminOverlay').classList.remove('open');$('#modChatOverlay').classList.add('open');}
+
+$('#modImpersonateBtn').onclick=async()=>{if(!ME.is_admin){toast('Только для админов','red');return;}const members=MOD_CHAT_MEMBERS.filter(m=>m.id!==ME.id);if(!members.length){toast('В чате нет других пользователей','red');return;}const modal=document.createElement('div');modal.className='overlay open';modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:200;padding:18px';modal.innerHTML=`<div class="modal"><div class="m-head"><div class="m-title">✍ Написать от имени</div><button class="icon-btn x" onclick="this.closest('.overlay').remove()">✕</button></div><div style="color:var(--mut);font-size:13px;margin-bottom:12px">Выбери пользователя:</div><div class="pick-list">${members.map(m=>`<div class="pick-row" data-uid="${m.id}">${avatarHTML(m,'s')}<div style="flex:1;min-width:0"><div class="pick-name">${esc(m.display_name||m.username)}</div><div class="pick-sub">@${esc(m.username)}</div></div></div>`).join('')}</div></div>`;document.body.appendChild(modal);modal.querySelectorAll('.pick-row').forEach(r=>r.onclick=()=>{IMPERSONATE_USER=PROFILES[r.dataset.uid]||{id:r.dataset.uid};modal.remove();$('#modImpersonateStatus').style.display='block';$('#modImpersonateName').textContent=IMPERSONATE_USER.display_name||IMPERSONATE_USER.username;toast(`✍ Пишешь от имени ${IMPERSONATE_USER.display_name||IMPERSONATE_USER.username}`);});modal.onclick=e=>{if(e.target===modal)modal.remove();};};
+$('#modStopImpersonate').onclick=()=>{IMPERSONATE_USER=null;$('#modImpersonateStatus').style.display='none';toast('Вернулся к своему аккаунту');};
+
+async function loadAdminHistory(){const {data,error}=await sb.from('registrations').select('*').order('created_at',{ascending:false}).limit(300);if(error){$('#admHistList').innerHTML='<div class="empty-note">Ошибка: '+ru(error.message)+'</div>';return;}if(!data||!data.length){$('#admHistList').innerHTML='<div class="empty-note">История пуста</div>';return;}$('#admHistList').innerHTML=data.map((r,i)=>`<div style="display:flex;gap:12px;align-items:center;padding:10px 6px;border-bottom:1px dashed var(--line);font-size:13.5px;flex-wrap:wrap"><span style="color:var(--mut2);font:600 11px var(--mono);width:22px">${i+1}</span><b>@${esc(r.username)}</b><span style="font:400 11.5px var(--mono);color:var(--mut2)">${esc(r.email)}</span><time style="margin-left:auto;font:400 11.5px var(--mono);color:var(--mut2)">${new Date(r.created_at).toLocaleString('ru-RU')}</time></div>`).join('');}
+
+$('#btnTestUpdate').onclick=async()=>{if(!isOwner()){toast('Только создатель может это делать','red');return;}if(!await confirmBox('Включить тест обновления?','У всех пользователей КРОМЕ ТЕБЯ появится экран «Мессенджер обновляется».'))return;const {error}=await sb.from('profiles').update({about:'__UPDATING__'}).eq('id',ME.id);if(error)return toast(ru(error.message),'red');toast('🚀 Тест обновления включён!');$('#btnTestUpdate').classList.add('hidden');$('#btnStopUpdate').classList.remove('hidden');};
+$('#btnStopUpdate').onclick=async()=>{if(!isOwner()){toast('Только создатель может это делать','red');return;}const {error}=await sb.from('profiles').update({about:''}).eq('id',ME.id);if(error)return toast(ru(error.message),'red');toast('✅ Тест обновления выключен');$('#btnTestUpdate').classList.remove('hidden');$('#btnStopUpdate').classList.add('hidden');};
+
+$('#btnLogout').onclick=async()=>{try{await sb.auth.signOut();}catch{}ME=null;CHATS=[];CURRENT=null;IMPERSONATE_USER=null;if(rtChannel){sb.removeChannel(rtChannel);rtChannel=null;}if(hbTimer)clearInterval(hbTimer);$('#banScreen').classList.add('hidden');hideUpdateScreen();showOnly('auth');setMode('login');$('#authPass').value='';};
+document.querySelectorAll('.overlay').forEach(ov=>ov.addEventListener('click',e=>{if(e.target===ov)ov.classList.remove('open');}));
+document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>b.closest('.overlay').classList.remove('open'));
+addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.overlay.open').forEach(o=>o.classList.remove('open'));$('#chatMenu').classList.remove('open');}});
+
+function showInfoModal(){if(!localStorage.getItem('golda_info_shown')){$('#infoModal').classList.add('open');}}
+$('#closeInfoBtn').onclick=()=>{$('#infoModal').classList.remove('open');localStorage.setItem('golda_info_shown','true');};
+
+// ===== УВЕДОМЛЕНИЯ (ЧЕРЕЗ SERVICE WORKER) =====
+function requestNotifPermission(){if('Notification' in window && Notification.permission==='default'){Notification.requestPermission().then(p=>{if(p==='granted')toast('🔔 Уведомления включены!');});}}
+
+function sendNotif(m,chat){
+  if(!('Notification' in window))return;
+  if(Notification.permission!=='granted')return;
+  const sender=PROFILES[m.sender_id]||{display_name:'Кто-то',username:'unknown'};
+  const title=chat.type==='group'?(chat.name||'Группа'):(sender.display_name||sender.username);
+  const body=(PREFS.preview?m.content:'Новое сообщение').substring(0,100);
+  const opts={body:body,icon:'icon.svg',badge:'icon.svg',tag:'golda-'+chat.id,vibrate:[200,100,200],requireInteraction:false};
+  if(navigator.serviceWorker){
+    navigator.serviceWorker.ready.then(reg=>reg.showNotification(title,opts)).catch(()=>fallbackNotif(title,opts));
+  }else fallbackNotif(title,opts);
+}
+function fallbackNotif(title,opts){try{const n=new Notification(title,opts);n.onclick=()=>{window.focus();n.close();};}catch(e){}}
+
+function playNotifSound(){try{const ctx=new (window.AudioContext||window.webkitAudioContext)();const osc=ctx.createOscillator();const gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);osc.frequency.value=800;osc.type='sine';gain.gain.setValueAtTime(0.3,ctx.currentTime);gain.gain.exponentialRampToValueAtTime(0.01,ctx.currentTime+0.3);osc.start(ctx.currentTime);osc.stop(ctx.currentTime+0.3);}catch(e){}}
+
+(async function boot(){try{const {data:{session}}=await sb.auth.getSession();if(session)await enterApp();else showOnly('auth');}catch(err){console.error(err);showOnly('auth');}})();
+</script>
+</body>
+</html>
