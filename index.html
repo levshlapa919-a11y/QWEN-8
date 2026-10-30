@@ -263,7 +263,7 @@ body[data-theme="light"] .settings-row{background:rgba(0,0,0,.02)}
 ::-webkit-scrollbar-thumb{background:var(--accent);opacity:.3;border-radius:8px;border:2px solid transparent;background-clip:content-box}
 @media(max-width:900px){.app{grid-template-columns:1fr}.main{display:none}.app.chat-open .main{display:flex}.app.chat-open .side{display:none}.back{display:grid}}
 </style>
-<link rel="stylesheet" href="mobile.css">
+<link rel="stylesheet" href="mobile.css?v=3">
 </head>
 <body data-theme="dark">
 <div class="bg-grid"></div><div class="orb o1"></div><div class="orb o2"></div>
@@ -280,7 +280,7 @@ body[data-theme="light"] .settings-row{background:rgba(0,0,0,.02)}
   <div class="auth-card">
     <div class="brand">
       <div class="brand-mark">G</div>
-      <div class="brand-name"><b>golda</b>-mesenger</div>
+      <div class="brand-name"><b>g<span class="o-mark"></span>lda</b>-mesenger</div>
       <div class="brand-tag">neon chat</div>
     </div>
     <div class="tabs">
@@ -319,7 +319,7 @@ body[data-theme="light"] .settings-row{background:rgba(0,0,0,.02)}
 <div id="app" class="app hidden">
   <aside class="side">
     <div class="side-head">
-      <div class="side-brand"><b>golda</b>-mesenger</div>
+      <div class="side-brand"><b>g<span class="o-mark"></span>lda</b>-mesenger</div>
       <div class="side-actions">
         <button class="icon-btn" id="btnNewChat" title="Новый чат"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
         <button class="icon-btn" id="btnNewGroup" title="Создать группу"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3.2"/><path d="M2.8 19c.7-3 3.2-4.6 6.2-4.6s5.5 1.6 6.2 4.6"/><circle cx="17.5" cy="9.5" r="2.4"/><path d="M16 14.6c2.6.2 4.6 1.6 5.2 4"/></svg></button>
@@ -845,6 +845,6 @@ function playNotifSound(){try{const ctx=new (window.AudioContext||window.webkitA
 
 (async function boot(){try{const {data:{session}}=await sb.auth.getSession();if(session)await enterApp();else showOnly('auth');}catch(err){console.error(err);showOnly('auth');}})();
 </script>
-<script src="push.js"></script>
+<script src="push.js?v=3"></script>
 </body>
 </html>

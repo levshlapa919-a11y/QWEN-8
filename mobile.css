@@ -1,133 +1,170 @@
-/* golda-mesenger: мобильные улучшения (Android + iPhone). Подключается ПОСЛЕ основного <style>. */
+/* golda-mesenger — дизайн v3 (телефон + компьютер). Подключается ПОСЛЕ основного <style>. */
 
 :root{
-  --sat:env(safe-area-inset-top,0px);
-  --sab:env(safe-area-inset-bottom,0px);
-  --sal:env(safe-area-inset-left,0px);
-  --sar:env(safe-area-inset-right,0px);
+  --sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px);
+  --sal:env(safe-area-inset-left,0px);--sar:env(safe-area-inset-right,0px);
+  --r-lg:20px;--r-md:14px;
+  --glass:rgba(10,19,13,.72);
+  --glow:0 0 22px rgba(61,255,133,.32);
 }
-html{-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
-body{overscroll-behavior:none;-webkit-font-smoothing:antialiased;touch-action:manipulation}
-button,.chat-item,.pick-row,.settings-row,.menu-i{-webkit-user-select:none;user-select:none}
-.m-text,.bubble{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
+body[data-theme="light"]{--glass:rgba(255,255,255,.8);--glow:0 0 18px rgba(11,138,74,.22)}
+body[data-theme="orange"]{--glass:rgba(26,17,8,.74);--glow:0 0 22px rgba(255,140,50,.32)}
+body[data-theme="green"]{--glass:rgba(7,29,15,.74);--glow:0 0 22px rgba(0,230,118,.32)}
+body[data-theme="blue"]{--glass:rgba(8,18,32,.74);--glow:0 0 22px rgba(60,140,255,.32)}
 
-/* плавные скроллы без резинки */
+html{-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
+body{overscroll-behavior:none;-webkit-font-smoothing:antialiased;touch-action:manipulation;letter-spacing:.005em}
+button,.chat-item,.pick-row,.settings-row,.menu-i{-webkit-user-select:none;user-select:none}
+.m-text,.bubble{-webkit-user-select:text;user-select:text}
 #msgScroll,.chat-list,.modal,.pick-list{overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+
+/* ===== ЛОГО: красивая «о» вместо буквы ===== */
+.o-mark{display:inline-block;position:relative;width:.74em;height:.74em;border-radius:50%;
+  margin:0 .035em;vertical-align:-.02em;
+  border:.15em solid transparent;
+  background:linear-gradient(var(--bg),var(--bg)) padding-box,
+             conic-gradient(from 210deg,var(--neon),var(--gold),var(--neon),var(--gold),var(--neon)) border-box;
+  box-shadow:0 0 .55em var(--accent),inset 0 0 .3em rgba(61,255,133,.35);
+  animation:oSpin 7s linear infinite}
+.o-mark::after{content:"";position:absolute;left:50%;top:50%;width:.2em;height:.2em;margin:-.1em 0 0 -.1em;border-radius:50%;
+  background:var(--gold);box-shadow:0 0 .35em var(--gold)}
+@keyframes oSpin{to{filter:hue-rotate(40deg)}}
+body[data-theme="light"] .o-mark{box-shadow:0 0 .25em rgba(11,138,74,.4)}
+
+/* ===== общие улучшения ===== */
+.btn.primary{border-radius:16px;letter-spacing:.02em;position:relative;overflow:hidden}
+.btn.primary::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.28) 50%,transparent 70%);transform:translateX(-120%);transition:transform .6s}
+.btn.primary:hover::after{transform:translateX(120%)}
+.icon-btn{border-radius:14px;background:rgba(255,255,255,.02)}
+.inp{border-radius:14px}
+.auth-card{border-radius:26px;box-shadow:0 30px 90px rgba(0,0,0,.65),0 0 0 1px rgba(61,255,133,.08),var(--glow)}
+.brand-mark{border-radius:22px}
+.modal{border-radius:24px}
+
+/* аватарки — круглые */
+.ava{border-radius:50%}
+.ava.s{border-radius:50%}
+.ava.l{border-radius:50%}
+.ava-btn .cam{border-radius:50%}
+.dot{width:13px;height:13px}
+
+/* ===== список чатов ===== */
+.side{background:var(--glass);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.search .inp{border-radius:16px;background:rgba(255,255,255,.04)}
+.chat-item{border-radius:18px;padding:12px 12px;margin-bottom:3px}
+.chat-item:hover{background:rgba(61,255,133,.06)}
+.chat-item.active{background:linear-gradient(120deg,rgba(61,255,133,.16),rgba(61,255,133,.05));border-color:var(--line2);box-shadow:var(--glow)}
+.badge{border-radius:99px;min-width:22px;height:22px;box-shadow:0 0 14px rgba(255,211,77,.55)}
+.ci-name{font-weight:800}
+
+/* ===== шапка чата ===== */
+.chat-head{background:var(--glass);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 6px 24px rgba(0,0,0,.25)}
+
+/* ===== сообщения ===== */
+#msgScroll{background:
+  radial-gradient(600px 300px at 90% 0%,rgba(61,255,133,.05),transparent 70%),
+  radial-gradient(500px 300px at 0% 100%,rgba(255,211,77,.04),transparent 70%)}
+.bubble{border-radius:6px 20px 20px 20px;background:linear-gradient(160deg,var(--p2),var(--p1));box-shadow:0 6px 22px rgba(0,0,0,.28)}
+.msg.own .bubble{border-radius:20px 6px 20px 20px;
+  background:linear-gradient(150deg,rgba(61,255,133,.26),rgba(61,255,133,.09));
+  border-color:var(--line2);box-shadow:0 6px 24px rgba(61,255,133,.12)}
+body[data-theme="light"] .msg.own .bubble{background:linear-gradient(150deg,rgba(11,138,74,.18),rgba(11,138,74,.07))}
+.m-time{opacity:.85}
+.day{backdrop-filter:blur(6px);box-shadow:0 2px 10px rgba(0,0,0,.2)}
+
+/* ===== поле ввода: плавающая «таблетка» ===== */
+.input-bar{background:transparent;border-top:0;padding-top:6px}
+.ib-inner{background:var(--glass);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border:1px solid var(--line2);border-radius:28px;padding:6px;align-items:flex-end;
+  box-shadow:0 10px 34px rgba(0,0,0,.35)}
+.ib-inner .icon-btn{border:0;background:transparent;border-radius:50%}
+#msgInput{background:transparent;border:0;box-shadow:none!important;padding:12px 8px;border-radius:20px}
+.send{border-radius:50%;width:46px;height:46px}
+.send:hover{transform:scale(1.06)}
+#micBtn{border-radius:50%}
+
+/* ===== настройки / переключатели ===== */
+.settings-row{border-radius:16px}
+.toggle{box-shadow:inset 0 0 0 1px var(--line)}
+.toggle.on{box-shadow:0 0 14px rgba(61,255,133,.4)}
 
 /* push-баннер */
 .push-banner{position:fixed;left:12px;right:12px;top:calc(var(--sat) + 10px);z-index:400;display:flex;gap:10px;align-items:center;
-  background:var(--p1);border:1px solid var(--line2);border-radius:16px;padding:12px 12px 12px 14px;
-  box-shadow:0 14px 40px rgba(0,0,0,.55),0 0 0 1px rgba(61,255,133,.08);animation:pbIn .35s cubic-bezier(.2,.9,.3,1.1);max-width:560px;margin:0 auto}
+  background:var(--glass);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid var(--line2);border-radius:18px;padding:12px 12px 12px 14px;
+  box-shadow:0 14px 40px rgba(0,0,0,.55),var(--glow);animation:pbIn .35s cubic-bezier(.2,.9,.3,1.1);max-width:560px;margin:0 auto}
 @keyframes pbIn{from{opacity:0;transform:translateY(-14px)}}
 .pb-text{flex:1;font-size:13px;line-height:1.4;color:var(--tx)}
-.pb-btn{border:0;border-radius:11px;padding:9px 14px;font:800 13px var(--font);color:#03140a;background:linear-gradient(135deg,var(--neon),var(--accent));box-shadow:0 0 16px rgba(61,255,133,.35);cursor:pointer;flex:none}
+.pb-btn{border:0;border-radius:12px;padding:10px 15px;font:800 13px var(--font);color:#03140a;background:linear-gradient(135deg,var(--neon),var(--accent));box-shadow:var(--glow);cursor:pointer;flex:none}
 body[data-theme="light"] .pb-btn{color:#fff}
 .pb-x{border:0;background:transparent;color:var(--mut);font-size:15px;width:30px;height:30px;border-radius:8px;cursor:pointer;flex:none}
 
-/* настоящие тап-состояния вместо hover на тач-экранах */
 @media (hover:none){
   .chat-item:hover,.pick-row:hover,.icon-btn:hover{transform:none;box-shadow:none}
-  .chat-item:active{background:rgba(61,255,133,.12)}
-  .icon-btn:active,.send:active,.btn:active{transform:scale(.93)}
+  .chat-item:active{background:rgba(61,255,133,.14)}
+  .icon-btn:active,.send:active,.btn:active{transform:scale(.92)}
   .settings-row:active,.menu-i:active{background:rgba(61,255,133,.1)}
 }
 .send,.icon-btn,.btn{transition:transform .12s,background .18s,box-shadow .18s}
 
-/* ===== Телефон ===== */
+/* ===== телефон ===== */
 @media (max-width:900px){
-  /* iOS не зумит поля, если шрифт ≥16px */
   .inp,textarea.inp,#msgInput,.search input{font-size:16px!important}
-
-  /* тяжёлые эффекты — убираем ради плавности */
   .orb{display:none}
-  body::before{opacity:.8}
-  .side,.chat-head,.input-bar{backdrop-filter:none;-webkit-backdrop-filter:none}
-  .side{background:var(--p1)}
-  .chat-head,.input-bar{background:var(--p1)}
-
-  /* безопасные зоны (чёлка, жест-бар) */
   .side-head{padding-top:calc(var(--sat) + 14px);padding-left:calc(var(--sal) + 14px);padding-right:calc(var(--sar) + 14px)}
+  .side-brand{font-size:17px}
   .chat-head{padding-top:calc(var(--sat) + 8px);padding-left:calc(var(--sal) + 10px);padding-right:calc(var(--sar) + 10px);gap:8px}
-  .input-bar{padding:10px calc(var(--sar) + 10px) calc(var(--sab) + 10px) calc(var(--sal) + 10px)}
-  .me{padding-bottom:calc(var(--sab) + 12px);padding-left:calc(var(--sal) + 14px)}
+  .input-bar{padding:6px calc(var(--sar) + 10px) calc(var(--sab) + 10px) calc(var(--sal) + 10px)}
+  .me{padding-bottom:calc(var(--sab) + 12px);padding-left:calc(var(--sal) + 14px);background:var(--glass)}
   .auth{padding-top:calc(var(--sat) + 20px);padding-bottom:calc(var(--sab) + 20px)}
-  #toasts{bottom:calc(var(--sab) + 84px)}
+  #toasts{bottom:calc(var(--sab) + 90px)}
 
-  /* крупные зоны нажатия (44px) */
-  .icon-btn{width:44px;height:44px;border-radius:13px}
-  .send,#micBtn{width:48px;height:48px;border-radius:15px}
-  .btn{min-height:48px;border-radius:14px}
+  .icon-btn{width:44px;height:44px}
+  .btn{min-height:48px;border-radius:16px}
   .tab{padding:12px}
-  .menu-i{padding:14px 14px}
+  .menu-i{padding:14px}
   .mini{padding:9px 11px}
   .toggle{width:52px;height:30px}
   .toggle::after{width:24px;height:24px}
   .toggle.on::after{left:25px}
 
-  /* список чатов */
   .search{margin:2px 12px 10px}
   .chat-list{padding:2px 8px 8px}
-  .chat-item{padding:12px 10px;border-radius:16px;gap:12px}
   .chat-item.active::before{display:none}
   .ci-name{font-size:16px}
   .ci-prev{font-size:14px}
-  .ava.m{width:50px;height:50px;border-radius:16px}
+  .ava.m{width:52px;height:52px}
 
-  /* сообщения: шире, компактнее, свои — без аватарки */
   #msgScroll{padding:14px 10px 8px}
   .messages{gap:6px}
   .msg{max-width:92%;gap:7px}
-  .msg.own .ava{display:none}
-  .bubble{padding:8px 12px 6px;border-radius:6px 18px 18px 18px}
-  .msg.own .bubble{border-radius:18px 6px 18px 18px;background:linear-gradient(160deg,rgba(61,255,133,.2),rgba(61,255,133,.08));border-color:var(--line2)}
+  .msg.own .ava,.msg.own .m-name{display:none}
+  .bubble{padding:9px 13px 6px}
   .m-name{font-size:12.5px;margin-bottom:3px}
-  .msg.own .m-name{display:none}
   .m-text{font-size:16px;line-height:1.4}
   .m-img{max-width:100%;max-height:340px}
   .m-video{max-width:100%}
   .m-audio{width:100%}
   .day{margin:8px 0 2px}
-
-  /* поле ввода в виде «таблетки» */
-  .ib-inner{gap:6px}
-  #msgInput{border-radius:22px;padding:12px 16px;min-height:48px}
   .rec-ui{height:48px}
 
-  /* модалки — «шторки» снизу */
   .overlay{align-items:flex-end;padding:0}
-  .modal,.modal.wide{width:100%;max-height:92dvh;border-radius:22px 22px 0 0;padding:20px 18px calc(var(--sab) + 20px);animation:sheetUp .28s cubic-bezier(.2,.9,.3,1)}
-  .modal::before{content:"";display:block;width:42px;height:4px;border-radius:4px;background:var(--line2);margin:-8px auto 14px}
+  .modal,.modal.wide{width:100%;max-height:92dvh;border-radius:26px 26px 0 0;padding:20px 18px calc(var(--sab) + 20px);animation:sheetUp .28s cubic-bezier(.2,.9,.3,1)}
+  .modal::before{content:"";display:block;width:44px;height:4px;border-radius:4px;background:var(--line2);margin:-8px auto 14px}
   @keyframes sheetUp{from{transform:translateY(40px);opacity:0}}
   #confirmOverlay,.info-modal{align-items:center;padding:18px}
-  #confirmOverlay .modal{border-radius:20px;width:min(380px,100%);padding:22px}
+  #confirmOverlay .modal{border-radius:22px;width:min(380px,100%);padding:22px}
   #confirmOverlay .modal::before{display:none}
 
-  /* меню чата */
-  .chat-menu{top:calc(var(--sat) + 60px);right:10px;min-width:240px;border-radius:16px}
-
-  /* вход */
-  .auth-card{padding:28px 20px;border-radius:22px}
-
-  /* админка: кнопки переносятся нормально */
+  .chat-menu{top:calc(var(--sat) + 60px);right:10px;min-width:240px;border-radius:18px}
+  .auth-card{padding:28px 20px}
   .a-btns{width:100%}
   .theme-options{grid-template-columns:repeat(3,1fr)}
-
-  /* экран бана/обновления не залезает под жест-бар */
   .bs-actions-real{bottom:calc(var(--sab) + 30px)}
 }
-
-/* маленькие экраны */
 @media (max-width:380px){
-  .side-brand{font-size:13px}
+  .side-brand{font-size:14px}
   .theme-options{grid-template-columns:repeat(2,1fr)}
 }
-
-/* установленное PWA: без лишних отступов браузера */
-@media (display-mode:standalone){
-  body{user-select:none}
-}
-
-/* уважаем «уменьшить анимацию» */
 @media (prefers-reduced-motion:reduce){
   *{animation-duration:.01ms!important;transition-duration:.01ms!important}
 }
