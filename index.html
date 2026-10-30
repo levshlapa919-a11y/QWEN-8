@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#050b07" id="themeMeta">
 <title>golda-mesenger</title>
 <link rel="manifest" href="manifest.json">
@@ -10,8 +10,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="GOLDA">
-<link rel="icon" href="icon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="icon.svg">
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -263,6 +263,7 @@ body[data-theme="light"] .settings-row{background:rgba(0,0,0,.02)}
 ::-webkit-scrollbar-thumb{background:var(--accent);opacity:.3;border-radius:8px;border:2px solid transparent;background-clip:content-box}
 @media(max-width:900px){.app{grid-template-columns:1fr}.main{display:none}.app.chat-open .main{display:flex}.app.chat-open .side{display:none}.back{display:grid}}
 </style>
+<link rel="stylesheet" href="mobile.css">
 </head>
 <body data-theme="dark">
 <div class="bg-grid"></div><div class="orb o1"></div><div class="orb o2"></div>
@@ -582,13 +583,14 @@ body[data-theme="light"] .settings-row{background:rgba(0,0,0,.02)}
 
 <div class="info-modal" id="infoModal">
   <div class="info-box">
-    <div class="info-icon">⚠️</div>
-    <div class="info-title">Важно!</div>
+    <div class="info-icon">🔔</div>
+    <div class="info-title">Уведомления</div>
     <div class="info-text">
-      Чтобы уведомления о сообщениях приходили <b>мгновенно</b>, пожалуйста, <b>не сворачивайте и не закрывайте браузер</b>.<br><br>
-      Совет: установите сайт как приложение (Настройки → Установить как приложение) — тогда уведомления будут работать стабильнее.
+      Чтобы сообщения приходили, даже когда приложение закрыто, <b>установи сайт как приложение</b> и разреши уведомления.<br><br>
+      Android: меню ⋮ → «Установить приложение».<br>
+      iPhone: Safari → «Поделиться» → «На экран Домой», затем открой иконку GOLDA.
     </div>
-    <button class="btn primary" id="closeInfoBtn" style="margin-top:0">Понятно, я запомню</button>
+    <button class="btn primary" id="closeInfoBtn" style="margin-top:0">Понятно</button>
   </div>
 </div>
 
@@ -823,6 +825,7 @@ function showInfoModal(){if(!localStorage.getItem('golda_info_shown')){$('#infoM
 $('#closeInfoBtn').onclick=()=>{$('#infoModal').classList.remove('open');localStorage.setItem('golda_info_shown','true');};
 
 // ===== УВЕДОМЛЕНИЯ (ЧЕРЕЗ SERVICE WORKER) =====
+// Разрешение и push-подписка обрабатываются в push.js (он заменяет эту функцию)
 function requestNotifPermission(){if('Notification' in window && Notification.permission==='default'){Notification.requestPermission().then(p=>{if(p==='granted')toast('🔔 Уведомления включены!');});}}
 
 function sendNotif(m,chat){
@@ -831,7 +834,7 @@ function sendNotif(m,chat){
   const sender=PROFILES[m.sender_id]||{display_name:'Кто-то',username:'unknown'};
   const title=chat.type==='group'?(chat.name||'Группа'):(sender.display_name||sender.username);
   const body=(PREFS.preview?m.content:'Новое сообщение').substring(0,100);
-  const opts={body:body,icon:'icon.svg',badge:'icon.svg',tag:'golda-'+chat.id,vibrate:[200,100,200],requireInteraction:false};
+  const opts={body:body,icon:'icon-192.png',badge:'badge-96.png',tag:'golda-'+chat.id,vibrate:[200,100,200],requireInteraction:false,data:{chatId:chat.id}};
   if(navigator.serviceWorker){
     navigator.serviceWorker.ready.then(reg=>reg.showNotification(title,opts)).catch(()=>fallbackNotif(title,opts));
   }else fallbackNotif(title,opts);
@@ -842,5 +845,6 @@ function playNotifSound(){try{const ctx=new (window.AudioContext||window.webkitA
 
 (async function boot(){try{const {data:{session}}=await sb.auth.getSession();if(session)await enterApp();else showOnly('auth');}catch(err){console.error(err);showOnly('auth');}})();
 </script>
+<script src="push.js"></script>
 </body>
 </html>
