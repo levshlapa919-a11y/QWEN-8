@@ -262,6 +262,11 @@
 
     const { error } = await sbc().from('calls').insert({ id, chat_id: chat.id, caller_id: m.id, kind });
     if (error) { endCall({ reason: 'Не удалось позвонить', db: null, silent: true }); return say('Ошибка: ' + error.message, 'red'); }
+    sbc().rpc('call_reachability', { p_chat: chat.id }).then(({ data }) => {
+      if (!data || !call || call.id !== id || call.state !== 'ringing') return;
+      if (!data.online && !data.push) setStatus('Не в сети, уведомления у него выключены — звонок может не дойти');
+      else if (!data.online) setStatus('Звоним… (приложение закрыто, придёт уведомление)');
+    }).catch(() => {});
     call.timeoutT = setTimeout(() => {
       if (call && call.state === 'ringing') endCall({ reason: 'Нет ответа', db: 'missed' });
     }, RING_MS);
@@ -269,9 +274,9 @@
 
   // ===== Входящий =====
   let incoming = null; // {row, timer}
-  function onIncoming(row) {
+  function onIncoming(row, ageSec) {
     const m = me(); if (!m || !row || row.caller_id === m.id || row.status !== 'ringing') return;
-    if (Date.now() - Date.parse(row.created_at) > RING_MS) return;
+    if (ageSec != null && ageSec > RING_MS / 1000) return; // возраст считает сервер
     if (typeof BLOCKED !== 'undefined' && BLOCKED.includes(row.caller_id)) return;
     if (m.is_banned) return;
     if (call || incoming) {
@@ -281,7 +286,7 @@
     }
     const chat = (typeof CHATS !== 'undefined' ? CHATS : []).find(c => c.id === row.chat_id);
     const caller = (typeof PROFILES !== 'undefined' && PROFILES[row.caller_id]) || (chat && chat.members.find(x => x.id === row.caller_id)) || {};
-    incoming = { row, timer: setTimeout(dismissIncoming, Math.max(1000, RING_MS - (Date.now() - Date.parse(row.created_at)))) };
+    incoming = { row, timer: setTimeout(dismissIncoming, Math.max(8000, RING_MS - (ageSec || 0) * 1000)) };
     showUi({ name: caller.display_name || caller.username || 'Звонок', avaHtml: avatarHTML(caller, 'l'),
       status: row.kind === 'video' ? '📹 Видеозвонок…' : '📞 Входящий звонок…', ringing: true, incoming: true });
     startRing('in');
@@ -401,9 +406,8 @@
   }
   async function checkPending() {
     const m = me(); if (!m || call || incoming) return;
-    const since = new Date(Date.now() - RING_MS).toISOString();
-    const { data } = await sbc().from('calls').select('*').eq('status', 'ringing').neq('caller_id', m.id).gte('created_at', since).order('created_at', { ascending: false }).limit(1);
-    if (data && data[0]) onIncoming(data[0]);
+    const { data } = await sbc().rpc('pending_calls');
+    if (data && data[0]) onIncoming(data[0], 0);
   }
   function ensureRealtime() {
     const m = me();
@@ -415,12 +419,13 @@
     if (rtChan) { try { sbc().removeChannel(rtChan); } catch (_) {} }
     rtFor = m.id;
     rtChan = sbc().channel('golda-calls')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'calls' }, e => onIncoming(e.new))
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'calls' }, e => onIncoming(e.new, 0))
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'calls' }, e => onCallRow(e.new))
       .subscribe(s => { if (s === 'SUBSCRIBED') checkPending(); });
   }
   setInterval(ensureRealtime, 1000);
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') checkPending(); });
+  setInterval(() => { if (document.visibilityState === 'visible') checkPending(); }, 3000);
 
   // ===== Кнопки звонка в шапке чата =====
   function injectHeaderButtons() {
@@ -453,7 +458,7 @@
     if (!id || !me() || !sbc()) return;
     const { data } = await sbc().from('calls').select('*').eq('id', id).maybeSingle();
     if (!data) return;
-    if (data.status === 'ringing') onIncoming(data);
+    if (data.status === 'ringing') onIncoming(data, 0);
     else if (data.status === 'missed') say('Пропущенный звонок');
   }
   if ('serviceWorker' in navigator) {

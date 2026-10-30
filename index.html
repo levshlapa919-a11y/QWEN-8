@@ -2,6 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
+<script>try{document.documentElement.setAttribute("data-ui",localStorage.getItem("golda_ui")||"new")}catch(e){document.documentElement.setAttribute("data-ui","new")}</script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#050b07" id="themeMeta">
 <title>golda-mesenger</title>
@@ -264,6 +265,7 @@ body[data-theme="light"] .settings-row{background:rgba(0,0,0,.02)}
 @media(max-width:900px){.app{grid-template-columns:1fr}.main{display:none}.app.chat-open .main{display:flex}.app.chat-open .side{display:none}.back{display:grid}}
 </style>
 <link rel="stylesheet" href="mobile.css?v=3">
+<link rel="stylesheet" href="ui2.css?v=2">
 </head>
 <body data-theme="dark">
 <div class="bg-grid"></div><div class="orb o1"></div><div class="orb o2"></div>
@@ -360,7 +362,7 @@ body[data-theme="light"] .settings-row{background:rgba(0,0,0,.02)}
       <div id="msgScroll"><div class="messages" id="messages"></div></div>
       <footer class="input-bar" id="inputBar">
         <div class="ib-inner">
-          <button class="icon-btn" id="attachBtn" title="Фото или видео"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21.4 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.2-9.19a4 4 0 0 1 5.65 5.66l-9.2 9.19a2 2 0 0 1-2.82-2.83l8.49-8.48"/></svg></button>
+          <button class="icon-btn" id="attachBtn" title="Файл, фото или видео"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21.4 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.2-9.19a4 4 0 0 1 5.65 5.66l-9.2 9.19a2 2 0 0 1-2.82-2.83l8.49-8.48"/></svg></button>
           <input type="file" id="attachInput" accept="image/*,video/*" class="hidden">
           <textarea class="inp" id="msgInput" rows="1" placeholder="Сообщение…"></textarea>
           <div class="rec-ui hidden" id="recUi"><span class="rec-dot"></span><span id="recTime">0:00</span><span>отпусти — отправится</span></div>
@@ -671,8 +673,10 @@ function avatarHTML(p,cls='m'){if(p&&p.avatar_url)return `<img class="ava ${cls}
 function confirmBox(title,text){return new Promise(res=>{$('#cfTitle').textContent=title;$('#cfText').textContent=text;$('#confirmOverlay').classList.add('open');const done=v=>{$('#confirmOverlay').classList.remove('open');res(v);};$('#cfOk').onclick=()=>done(true);$('#cfCancel').onclick=()=>done(false);});}
 const normUname=v=>v.trim().toLowerCase().replace(/\s+/g,'');
 const validUname=v=>/^[a-z0-9_]{3,20}$/.test(v);
-function parseMedia(c){const m=String(c).match(/^\[\[(image|video|audio)\|([^\]]+)\]\]([\s\S]*)$/);return m?{kind:m[1],url:m[2],cap:m[3].trim()}:null;}
-function mediaHTML(md){if(md.kind==='image')return `<a href="${esc(md.url)}" target="_blank" rel="noopener"><img class="m-img" src="${esc(md.url)}" alt="фото" loading="lazy"></a>`;if(md.kind==='video')return `<video class="m-video" src="${esc(md.url)}" controls playsinline preload="metadata"></video>`;return `<div class="m-voice">🎤 голосовое сообщение</div><audio class="m-audio" src="${esc(md.url)}" controls preload="metadata"></audio>`;}
+function parseMedia(c){const m=String(c).match(/^\[\[(image|video|audio|file)\|([^\]]+)\]\]([\s\S]*)$/);if(!m)return null;if(m[1]==='file'){const p=m[2].split('|');let nm=p[1]||'файл';try{nm=decodeURIComponent(nm)}catch(e){}return{kind:'file',url:p[0],name:nm,size:+p[2]||0,cap:m[3].trim()};}return{kind:m[1],url:m[2],cap:m[3].trim()};}
+function fmtSize(b){if(!b)return '';if(b<1024)return b+' Б';if(b<1048576)return (b/1024).toFixed(0)+' КБ';return (b/1048576).toFixed(1)+' МБ';}
+function fileCardHTML(md){const ext=(md.name.split('.').pop()||'').slice(0,4).toUpperCase();return `<a class="m-file" href="${esc(md.url)}" target="_blank" rel="noopener" download="${esc(md.name)}"><span class="m-file-ico">${esc(ext||'FILE')}</span><span class="m-file-info"><b>${esc(md.name)}</b><small>${fmtSize(md.size)} · скачать</small></span></a>`;}
+function mediaHTML(md){if(md.kind==='file')return fileCardHTML(md);if(md.kind==='image')return `<a href="${esc(md.url)}" target="_blank" rel="noopener"><img class="m-img" src="${esc(md.url)}" alt="фото" loading="lazy"></a>`;if(md.kind==='video')return `<video class="m-video" src="${esc(md.url)}" controls playsinline preload="metadata"></video>`;return `<div class="m-voice">🎤 голосовое сообщение</div><audio class="m-audio" src="${esc(md.url)}" controls preload="metadata"></audio>`;}
 
 let screamAudio=null,screamCtx=null,screamReady=false;
 function initScreamer(){screamAudio=new Audio(SCREAM_AUDIO);screamAudio.volume=1.0;screamAudio.loop=false;screamAudio.preload='auto';}
@@ -712,12 +716,12 @@ const otherOf=c=>c.members.find(m=>m.id!==ME.id)||{};
 
 function renderMe(){$('#meAva').innerHTML=`<div class="ava-wrap">${avatarHTML(ME,'m')}<span class="dot on"></span></div>`;$('#meName').textContent=ME.display_name||ME.username;$('#meUname').textContent='@'+ME.username;$('#btnAdmin').classList.toggle('hidden',!ME.is_admin);}
 
-function previewOf(lm,chat){const md=parseMedia(lm.content);const who=lm.sender_id===ME.id?'Вы: ':(chat.type==='group'?((PROFILES[lm.sender_id]||{}).username||'')+': ':'');if(md)return(md.kind==='image'?'📎 Фото':md.kind==='video'?'🎬 Видео':'🎤 Голосовое')+(md.cap?' · '+esc(md.cap):'');return esc(who+lm.content);}
+function previewOf(lm,chat){const md=parseMedia(lm.content);const who=lm.sender_id===ME.id?'Вы: ':(chat.type==='group'?((PROFILES[lm.sender_id]||{}).username||'')+': ':'');if(md)return(md.kind==='file'?'📄 '+esc(md.name):md.kind==='image'?'📎 Фото':md.kind==='video'?'🎬 Видео':'🎤 Голосовое')+(md.cap?' · '+esc(md.cap):'');return esc(who+lm.content);}
 
 function renderChatList(){const q=($('#searchInput').value||'').toLowerCase();const ts=c=>c.lastMsg?Date.parse(c.lastMsg.created_at):Date.parse(c.created_at);const list=CHATS.filter(c=>titleOf(c).toLowerCase().includes(q)).sort((a,b)=>ts(b)-ts(a));$('#chatList').innerHTML=list.map(c=>{const o=c.type==='direct'?otherOf(c):null;const lm=c.lastMsg;const prev=lm?previewOf(lm,c):'<i>нет сообщений</i>';const unread=UNREAD[c.id]||0;const ava=c.type==='group'?`<div class="ava m ini" style="background:${GRADS[hashOf(c.name||c.id)%GRADS.length]}">${esc((c.name||'Г')[0].toUpperCase())}</div>`:`<div class="ava-wrap">${avatarHTML(o,'m')}<span class="dot ${isOnline(o)?'on':''}"></span></div>`;return `<div class="chat-item ${CURRENT===c.id?'active':''}" data-id="${c.id}">${ava}<div class="ci-body"><div class="ci-top"><span class="ci-name">${esc(titleOf(c))}</span><span class="ci-time">${lm?fmtListTime(lm.created_at):''}</span></div><div class="ci-bottom"><span class="ci-prev">${prev}</span>${unread?`<span class="badge">${unread>99?'99+':unread}</span>`:''}</div></div></div>`;}).join('')||'<div class="empty-note">Чатов пока нет.<br>Нажми ＋ сверху, чтобы начать.</div>';document.querySelectorAll('.chat-item').forEach(el=>el.onclick=()=>openChat(el.dataset.id));}
 $('#searchInput').oninput=renderChatList;
 
-function msgHTML(m,chat){const own=m.sender_id===ME.id,p=PROFILES[m.sender_id]||{};const md=parseMedia(m.content);const text=md?md.cap:m.content;const senderName=p.display_name||p.username||'—';const color=nameColor(m.sender_id);return `<div class="msg ${own?'own':''}" data-id="${m.id}">${avatarHTML(p,'s')}<div class="bubble"><div class="m-name" style="color:${color}"><span class="sender-dot" style="background:${color}"></span>${esc(senderName)}${own?'<span style="font-size:11px;color:var(--mut);font-weight:400;margin-left:4px">(ты)</span>':''}</div>${md?mediaHTML(md):''}${text?`<div class="m-text">${linkify(esc(text))}</div>`:''}<div class="m-time">${fmtHM(m.created_at)}</div></div></div>`;}
+function msgHTML(m,chat){const own=m.sender_id===ME.id,p=PROFILES[m.sender_id]||{};const md=parseMedia(m.content);const text=md?md.cap:m.content;const senderName=p.display_name||p.username||'—';const color=nameColor(m.sender_id);return `<div class="msg ${own?'own':''}" data-id="${m.id}">${avatarHTML(p,'s')}<div class="bubble"><div class="m-name" style="color:${color}"><span class="sender-dot" style="background:${color}"></span>${esc(senderName)}${own?'<span style="font-size:11px;color:var(--mut);font-weight:400;margin-left:4px">(ты)</span>':''}</div>${md?mediaHTML(md):''}${text?`<div class="m-text">${linkify(esc(text))}</div>`:''}<div class="m-time">${fmtHM(m.created_at)}${own?`<span class="tick" data-ts="${m.created_at}"></span>`:''}</div></div></div>`;}
 function renderMsgList(list,chat){let html='',lastDay='';for(const m of list){const d=dayLabel(m.created_at);if(d!==lastDay){html+=`<div class="day">${d}</div>`;lastDay=d;}html+=msgHTML(m,chat);}$('#messages').innerHTML=html||'<div class="empty-note">Сообщений пока нет — напиши первым! 💬</div>';}
 function appendMsg(m,chat){const wrap=document.createElement('div');wrap.innerHTML=msgHTML(m,chat);const ph=$('#messages').querySelector('.empty-note');if(ph)ph.remove();$('#messages').appendChild(wrap.firstElementChild);}
 const scrollBottom=()=>requestAnimationFrame(()=>{$('#msgScroll').scrollTop=$('#msgScroll').scrollHeight;});
@@ -846,6 +850,7 @@ function playNotifSound(){try{const ctx=new (window.AudioContext||window.webkitA
 (async function boot(){try{const {data:{session}}=await sb.auth.getSession();if(session)await enterApp();else showOnly('auth');}catch(err){console.error(err);showOnly('auth');}})();
 </script>
 <script src="push.js?v=4"></script>
-<script src="call.js?v=1"></script>
+<script src="call.js?v=2"></script>
+<script src="features.js?v=2"></script>
 </body>
 </html>

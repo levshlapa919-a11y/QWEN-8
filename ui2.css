@@ -1,0 +1,108 @@
+/* golda-mesenger — НОВЫЙ интерфейс «Aurora». Действует только при <html data-ui="new">.
+   Классический вид = тот же сайт без этих правил (переключатель в Настройках). */
+
+html[data-ui="new"]{
+  --ac2:color-mix(in srgb,var(--neon) 55%,#19d3c5);
+  --own-grad:linear-gradient(135deg,var(--neon),var(--ac2));
+  --own-tx:#03140a;--own-time:rgba(3,20,10,.62);--own-tick:rgba(3,20,10,.45);--own-read:#0a46c2;
+  --card:color-mix(in srgb,var(--p2) 78%,transparent);
+  --rim:linear-gradient(135deg,color-mix(in srgb,var(--neon) 70%,transparent),color-mix(in srgb,var(--gold) 55%,transparent));
+}
+html[data-ui="new"] body[data-theme="light"]{--own-tx:#fff;--own-time:rgba(255,255,255,.8);--own-tick:rgba(255,255,255,.6);--own-read:#fff}
+html[data-ui="new"] body[data-theme="blue"]{--own-tx:#04101f}
+
+/* фон: северное сияние */
+html[data-ui="new"] body::before{
+  background:
+   radial-gradient(900px 520px at 8% -8%,color-mix(in srgb,var(--neon) 26%,transparent),transparent 62%),
+   radial-gradient(760px 520px at 100% 8%,color-mix(in srgb,var(--gold) 14%,transparent),transparent 62%),
+   radial-gradient(900px 600px at 55% 112%,color-mix(in srgb,var(--ac2) 22%,transparent),transparent 62%)}
+html[data-ui="new"] .bg-grid{opacity:.35}
+
+/* логотип */
+html[data-ui="new"] .side-brand{font-size:19px;letter-spacing:.01em}
+html[data-ui="new"] .brand-mark{background:var(--own-grad);border-radius:26px}
+
+/* ===== каркас ===== */
+@media (min-width:901px){
+  html[data-ui="new"] .app{grid-template-columns:380px 1fr;gap:14px;padding:14px}
+  html[data-ui="new"] .side{border:1px solid var(--line);border-radius:30px;box-shadow:0 24px 70px rgba(0,0,0,.35)}
+  html[data-ui="new"] .main{border:1px solid var(--line);border-radius:30px;background:color-mix(in srgb,var(--p1) 55%,transparent);overflow:hidden;height:calc(100dvh - 28px)}
+  html[data-ui="new"] .chat-head{border-radius:0}
+}
+
+/* ===== список чатов ===== */
+html[data-ui="new"] .side{background:color-mix(in srgb,var(--p1) 80%,transparent)}
+html[data-ui="new"] .search .inp{border-radius:99px;padding-left:40px;background:color-mix(in srgb,var(--p3) 70%,transparent)}
+html[data-ui="new"] .chat-item{background:var(--card);border:1px solid var(--line);border-radius:22px;margin-bottom:8px;padding:12px;transition:transform .15s,box-shadow .2s,border-color .2s}
+html[data-ui="new"] .chat-item:hover{transform:translateY(-1px);border-color:var(--line2)}
+html[data-ui="new"] .chat-item.active{background:linear-gradient(135deg,color-mix(in srgb,var(--neon) 22%,var(--p2)),var(--p2));border-color:var(--line2);box-shadow:0 10px 30px color-mix(in srgb,var(--neon) 22%,transparent)}
+html[data-ui="new"] .ava{border-radius:18px}
+html[data-ui="new"] .ava.s{border-radius:13px}
+html[data-ui="new"] .ava.l{border-radius:30px}
+html[data-ui="new"] .ava-wrap .ava{box-shadow:0 0 0 2px var(--bg),0 0 0 3.5px var(--line2)}
+html[data-ui="new"] .dot.on{box-shadow:0 0 0 2px var(--bg),0 0 10px var(--neon)}
+html[data-ui="new"] .badge{background:var(--own-grad);color:var(--own-tx);box-shadow:0 0 16px color-mix(in srgb,var(--neon) 55%,transparent)}
+html[data-ui="new"] .ci-name{font-size:16px;letter-spacing:.005em}
+html[data-ui="new"] .me{margin:8px;border:1px solid var(--line);border-radius:22px;background:var(--card)}
+html[data-ui="new"] .icon-btn{border-radius:16px;background:color-mix(in srgb,var(--p3) 55%,transparent)}
+
+/* ===== шапка чата ===== */
+html[data-ui="new"] .chat-head{background:color-mix(in srgb,var(--p1) 78%,transparent);border-bottom:1px solid var(--line)}
+html[data-ui="new"] .h-name{font-size:17px}
+
+/* ===== сообщения ===== */
+html[data-ui="new"] #msgScroll{background:none}
+html[data-ui="new"] .bubble{background:var(--card);border:1px solid var(--line);border-radius:8px 24px 24px 24px;box-shadow:0 8px 26px rgba(0,0,0,.22)}
+html[data-ui="new"] .msg.own .bubble{background:var(--own-grad);border:0;border-radius:24px 8px 24px 24px;color:var(--own-tx);
+  box-shadow:0 10px 30px color-mix(in srgb,var(--neon) 32%,transparent)}
+html[data-ui="new"] .msg.own .m-text{color:var(--own-tx)}
+html[data-ui="new"] .msg.own .m-text a{color:var(--own-tx);text-decoration:underline}
+html[data-ui="new"] .msg.own .m-time{color:var(--own-time)}
+html[data-ui="new"] .msg.own .tick{color:var(--own-tick)}
+html[data-ui="new"] .msg.own .tick.read{color:var(--own-read)}
+html[data-ui="new"] .m-text{font-size:calc(var(--font-size)*1.04);line-height:1.45}
+html[data-ui="new"] .day{background:color-mix(in srgb,var(--p3) 70%,transparent);border-radius:99px;letter-spacing:.14em}
+html[data-ui="new"] .m-img,html[data-ui="new"] .m-video{border-radius:18px}
+
+/* ===== поле ввода ===== */
+html[data-ui="new"] .input-bar{background:transparent;border:0}
+html[data-ui="new"] .ib-inner{border:1.5px solid transparent;border-radius:30px;padding:7px;
+  background:linear-gradient(color-mix(in srgb,var(--p1) 88%,transparent),color-mix(in srgb,var(--p1) 88%,transparent)) padding-box,var(--rim) border-box;
+  box-shadow:0 14px 40px rgba(0,0,0,.35),0 0 30px color-mix(in srgb,var(--neon) 10%,transparent)}
+html[data-ui="new"] .send{background:var(--own-grad);color:var(--own-tx);width:48px;height:48px;box-shadow:0 8px 22px color-mix(in srgb,var(--neon) 45%,transparent)}
+html[data-ui="new"] .ib-inner .icon-btn{background:transparent}
+
+/* ===== кнопки, формы ===== */
+html[data-ui="new"] .btn.primary{background:var(--own-grad);color:var(--own-tx);border-radius:99px;box-shadow:0 10px 28px color-mix(in srgb,var(--neon) 38%,transparent)}
+html[data-ui="new"] .btn.ghost{border-radius:99px}
+html[data-ui="new"] .inp{border-radius:16px;background:color-mix(in srgb,var(--p3) 55%,transparent)}
+html[data-ui="new"] .tabs{border-radius:99px}
+html[data-ui="new"] .tab{border-radius:99px}
+html[data-ui="new"] .auth-card{border:1.5px solid transparent;border-radius:32px;
+  background:linear-gradient(165deg,var(--p2),var(--p1)) padding-box,var(--rim) border-box}
+
+/* ===== окна ===== */
+html[data-ui="new"] .modal{border-radius:30px;border:1.5px solid transparent;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--neon) 9%,var(--p2)),var(--p1) 45%) padding-box,var(--rim) border-box}
+@media (max-width:900px){html[data-ui="new"] .modal,html[data-ui="new"] .modal.wide{border-radius:32px 32px 0 0}}
+html[data-ui="new"] .settings-row{background:var(--card);border-radius:18px}
+html[data-ui="new"] .settings-row-icon{background:color-mix(in srgb,var(--neon) 16%,transparent);border-radius:12px}
+html[data-ui="new"] .pick-row{border-radius:16px;background:var(--card)}
+html[data-ui="new"] .toggle.on{background:var(--own-grad)}
+html[data-ui="new"] .toast{background:color-mix(in srgb,var(--p1) 92%,transparent);border-radius:99px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+
+/* ===== профиль ===== */
+html[data-ui="new"] #userOverlay .prof-row{padding:16px;border-radius:24px;border:1px solid var(--line2);
+  background:linear-gradient(135deg,color-mix(in srgb,var(--neon) 24%,transparent),color-mix(in srgb,var(--gold) 14%,transparent))}
+html[data-ui="new"] #userOverlay .ava.l{box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--neon),0 10px 30px rgba(0,0,0,.4)}
+html[data-ui="new"] .about-box{border-radius:18px;background:var(--card)}
+html[data-ui="new"] .trk{border-radius:18px;background:var(--card)}
+html[data-ui="new"] .trk-btn{background:var(--own-grad);color:var(--own-tx)}
+html[data-ui="new"] #miniPlayer{background:color-mix(in srgb,var(--p1) 92%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+
+/* пустое состояние */
+html[data-ui="new"] .empty .big-g{background:var(--own-grad);-webkit-background-clip:text;background-clip:text;color:transparent;opacity:.55;text-shadow:none;filter:drop-shadow(0 0 30px color-mix(in srgb,var(--neon) 55%,transparent))}
+
+/* свои сообщения: без подписи и аватарки — чище и читаемее */
+html[data-ui="new"] .msg.own .m-name,html[data-ui="new"] .msg.own .ava{display:none}

@@ -1,5 +1,5 @@
 /* golda-mesenger service worker: push + офлайн-оболочка */
-const CACHE = 'golda-shell-v4';
+const CACHE = 'golda-shell-v6';
 const SHELL = ['./', './index.html', './manifest.json', './mobile.css', './push.js', './icon-192.png'];
 
 self.addEventListener('install', e => {
@@ -10,8 +10,14 @@ self.addEventListener('install', e => {
 self.addEventListener('activate', e => {
   e.waitUntil((async () => {
     const keys = await caches.keys();
+    const hadOld = keys.some(k => k !== CACHE);
     await Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)));
     await self.clients.claim();
+    // новая версия сайта: перезагружаем открытые окна, чтобы у всех сразу был свежий код
+    if (hadOld) {
+      const wins = await self.clients.matchAll({ type: 'window' });
+      wins.forEach(c => { try { c.navigate(c.url); } catch (_) {} });
+    }
   })());
 });
 
