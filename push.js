@@ -93,6 +93,54 @@
     }
   }
 
+  // ===== Строка «Push-уведомления» в настройках (со статусом и подсказкой) =====
+  function iosVersion() {
+    const m = navigator.userAgent.match(/OS (\d+)_(\d+)/);
+    return m ? parseFloat(m[1] + '.' + m[2]) : null;
+  }
+  async function pushStatus() {
+    if (isIOS && !isStandalone) return { ok: false, text: 'Открой сайт с иконки на рабочем столе (не из Safari). Если иконки нет: Safari → Поделиться → На экран «Домой».', btn: false };
+    if (isIOS && iosVersion() && iosVersion() < 16.4) return { ok: false, text: 'Нужен iOS 16.4 или новее (сейчас ' + iosVersion() + '). Обнови iPhone в Настройки → Основные → Обновление ПО.', btn: false };
+    if (!supported) return { ok: false, text: 'Этот браузер не поддерживает push-уведомления.', btn: false };
+    if (Notification.permission === 'denied') return { ok: false, text: 'Уведомления запрещены. Включи в Настройках телефона → GOLDA (или Safari) → Уведомления.', btn: false };
+    if (Notification.permission === 'granted') {
+      let sub = null;
+      try { const reg = await navigator.serviceWorker.ready; sub = await reg.pushManager.getSubscription(); } catch (_) {}
+      return sub ? { ok: true, text: 'Включены ✔ Придут даже при закрытом приложении.', btn: false } : { ok: false, text: 'Разрешение есть, но подписка не создана. Нажми кнопку.', btn: true };
+    }
+    return { ok: false, text: 'Не включены. Нажми кнопку и разреши уведомления.', btn: true };
+  }
+  function injectSettingsRow() {
+    const sec = [...document.querySelectorAll('#settingsOverlay .settings-section')].find(x => x.textContent.includes('Уведомления и звуки'));
+    if (!sec || document.getElementById('pushRow')) return;
+    const row = document.createElement('div');
+    row.id = 'pushRow';
+    row.className = 'settings-row';
+    row.style.cssText = 'flex-direction:column;align-items:stretch;gap:10px;cursor:default';
+    row.innerHTML = '<div class="settings-row-left"><div class="settings-row-icon">📲</div><div><div class="settings-row-title">Push-уведомления</div><div class="settings-row-sub" id="pushStatusText" style="white-space:normal;line-height:1.4">Проверяем…</div></div></div><button class="btn primary" id="pushEnableBtn" type="button" style="margin-top:0">Включить уведомления</button><button class="btn ghost hidden" id="pushTestBtn" type="button">Проверить: прислать тест</button>';
+    sec.insertBefore(row, sec.querySelector('.settings-label').nextSibling);
+    document.getElementById('pushEnableBtn').onclick = async () => {
+      const b = document.getElementById('pushEnableBtn'); b.disabled = true;
+      try { await enablePush(); } finally { b.disabled = false; refreshPushRow(); }
+    };
+    document.getElementById('pushTestBtn').onclick = async () => {
+      try {
+        const reg = await navigator.serviceWorker.ready;
+        await reg.showNotification('GOLDA', { body: 'Тест: уведомления работают ✔', icon: 'icon-192.png', badge: 'badge-96.png', tag: 'golda-test' });
+      } catch (e) { toast('Не удалось показать тест: ' + (e.message || e), 'red'); }
+    };
+  }
+  async function refreshPushRow() {
+    injectSettingsRow();
+    const t = document.getElementById('pushStatusText'); if (!t) return;
+    const st = await pushStatus();
+    t.textContent = st.text;
+    t.style.color = st.ok ? 'var(--neon)' : '';
+    document.getElementById('pushEnableBtn').classList.toggle('hidden', !st.btn);
+    document.getElementById('pushTestBtn').classList.toggle('hidden', !st.ok);
+  }
+  document.addEventListener('click', e => { if (e.target.closest('#btnSettings')) setTimeout(refreshPushRow, 50); }, true);
+
   // Подменяем вызов из enterApp()
   window.requestNotifPermission = initPush;
   try { requestNotifPermission = initPush; } catch (_) {}
