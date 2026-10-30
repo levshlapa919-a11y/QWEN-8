@@ -1,5 +1,5 @@
 /* golda-mesenger service worker: push + офлайн-оболочка */
-const CACHE = 'golda-shell-v3';
+const CACHE = 'golda-shell-v4';
 const SHELL = ['./', './index.html', './manifest.json', './mobile.css', './push.js', './icon-192.png'];
 
 self.addEventListener('install', e => {
@@ -36,20 +36,28 @@ self.addEventListener('push', e => {
   try { data = e.data ? e.data.json() : {}; } catch (_) { data = { body: e.data ? e.data.text() : '' }; }
 
   const title = data.title || 'golda-mesenger';
+  const isCall = data.type === 'call';
   const options = {
     body: data.body || 'Новое сообщение',
     icon: 'icon-192.png',
     badge: 'badge-96.png',
     tag: data.tag || 'golda',
     renotify: true,
-    vibrate: [200, 100, 200],
-    data: { chatId: data.chatId || null, url: './' + (data.chatId ? '?chat=' + data.chatId : '') }
+    vibrate: isCall ? [600, 250, 600, 250, 600, 250, 600, 250, 600] : [200, 100, 200],
+    requireInteraction: isCall,
+    data: {
+      chatId: data.chatId || null,
+      callId: data.callId || null,
+      type: data.type || 'msg',
+      url: './' + (data.callId && isCall ? '?call=' + data.callId : (data.chatId ? '?chat=' + data.chatId : ''))
+    }
   };
+  if (isCall) options.actions = [{ action: 'answer', title: 'Ответить' }, { action: 'decline', title: 'Отклонить' }];
 
   e.waitUntil((async () => {
     const list = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
     const focused = list.find(c => c.visibilityState === 'visible' && c.focused);
-    if (focused) {
+    if (focused && !isCall) {
       // Приложение открыто и на экране: показываем тихо и сразу убираем
       // (iOS требует показывать уведомление на каждый push)
       options.silent = true;
@@ -70,12 +78,14 @@ self.addEventListener('push', e => {
 self.addEventListener('notificationclick', e => {
   e.notification.close();
   const d = e.notification.data || {};
+  if (e.action === 'decline') return; // просто закрываем; звонящему уйдёт «нет ответа»
   e.waitUntil((async () => {
     const list = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
     for (const c of list) {
       if ('focus' in c) {
         await c.focus();
-        c.postMessage({ type: 'open-chat', chatId: d.chatId });
+        if (d.type === 'call' && d.callId) c.postMessage({ type: 'open-call', callId: d.callId });
+        else c.postMessage({ type: 'open-chat', chatId: d.chatId });
         return;
       }
     }

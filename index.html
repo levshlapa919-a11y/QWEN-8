@@ -846,5 +846,6 @@ function playNotifSound(){try{const ctx=new (window.AudioContext||window.webkitA
 (async function boot(){try{const {data:{session}}=await sb.auth.getSession();if(session)await enterApp();else showOnly('auth');}catch(err){console.error(err);showOnly('auth');}})();
 </script>
 <script src="push.js?v=4"></script>
+<script src="call.js?v=1"></script>
 </body>
 </html>
