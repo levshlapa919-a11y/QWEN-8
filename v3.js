@@ -191,16 +191,91 @@
     setTimeout(() => location.reload(), 700);
   }
 
-  /* ================= СТИКЕРЫ ================= */
-  const STK = [['👋', 'Привет'], ['🫶', 'Пока'], ['😎', 'Круто'], ['😂', 'ЛОЛ'], ['😍', 'Люблю'], ['🔥', 'Огонь'], ['👌', 'ОК'], ['🙏', 'Спасибо'], ['🥲', 'Грущу'], ['😡', 'Злюсь'], ['😴', 'Сплю'], ['🤔', 'Думаю'],
-  ['🎉', 'Ура!'], ['🫡', 'Респект'], ['🤯', 'Вау'], ['🤑', 'Деньги'], ['🙄', 'Ну-ну'], ['😱', 'Ужас'], ['🤗', 'Обнял'], ['☕', 'Кофе'], ['🏆', 'Победа'], ['🤫', 'Тсс'], ['🤷', 'Хз'], ['⏳', 'Жду']];
+  /* ================= СТИКЕРЫ: фирменный маскот «Голди» ================= */
+  // [подпись, глаза, рот, бровь, предмет, цвет-фона(hue), тон-лица]
+  const STK = [
+    ['Привет', 'n', 'smile', '', 'wave', 150], ['Пока', 'h', 'smile', '', 'hearts', 330], ['Круто', 'cool', 'smile', '', 'spark', 200],
+    ['ЛОЛ', 'h', 'grin', '', 'tears', 45], ['Люблю', 'heart', 'smile', '', 'hearts', 340], ['Огонь', 'n', 'grin', '', 'fire', 18],
+    ['ОК', 'wink', 'smile', '', 'ok', 140], ['Спасибо', 'h', 'smile', '', 'hearts', 160], ['Грущу', 'cry', 'frown', '', '', 215],
+    ['Злюсь', 'n', 'frown', 'angry', 'red', 0], ['Сплю', 'z', 'zz', '', 'zzz', 250], ['Думаю', 'n', 'flat', 'think', 'bubble', 265],
+    ['Ура!', 'star', 'grin', '', 'party', 300], ['Респект', 'n', 'smile', '', 'salute', 120], ['Вау', 'wow', 'o', '', 'spark', 190],
+    ['Деньги', 'dollar', 'grin', '', 'money', 105], ['Ну-ну', 'lid', 'flat', 'think', '', 35], ['Ужас', 'wow', 'o', '', 'sweat', 230],
+    ['Обнял', 'h', 'smile', '', 'arms', 25], ['Кофе', 'h', 'smile', '', 'cup', 28], ['Победа', 'n', 'grin', '', 'trophy', 48],
+    ['Тсс', 'n', 'o2', '', 'hush', 275], ['Хз', 'n', 'flat', 'think', 'shrug', 175], ['Жду', 'n', 'flat', '', 'hourglass', 205]
+  ];
+  const INK = '#1a1205', BR = '#8a5a00';
+  function starPts(cx, cy, r) { let p = []; for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r * .45 : r; p.push((cx + rr * Math.cos(a)).toFixed(1) + ',' + (cy + rr * Math.sin(a)).toFixed(1)); } return p.join(' '); }
+  const heartP = (x, y, s, c) => `<path transform="translate(${x},${y}) scale(${s})" d="M0 7 C-17 -4 -9 -16 0 -7 C9 -16 17 -4 0 7Z" fill="${c || '#ff3b5c'}" stroke="#fff" stroke-width="1.6"/>`;
+  const stroke = (d, w) => `<path d="${d}" stroke="${INK}" stroke-width="${w || 5}" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
+  function eyesSVG(k) {
+    const eye = x => `<ellipse cx="${x}" cy="92" rx="7" ry="10" fill="${INK}"/><circle cx="${x + 3}" cy="88" r="2.8" fill="#fff"/>`;
+    switch (k) {
+      case 'h': return stroke('M71 97 q9 -16 18 0') + stroke('M111 97 q9 -16 18 0');
+      case 'heart': return heartP(80, 92, 1.5) + heartP(120, 92, 1.5);
+      case 'star': return `<polygon points="${starPts(80, 92, 14)}" fill="#ff7a00" stroke="#fff" stroke-width="2"/><polygon points="${starPts(120, 92, 14)}" fill="#ff7a00" stroke="#fff" stroke-width="2"/>`;
+      case 'z': return stroke('M71 94 h18') + stroke('M111 94 h18');
+      case 'wow': return `<circle cx="80" cy="92" r="12" fill="#fff" stroke="${INK}" stroke-width="3"/><circle cx="80" cy="92" r="3.6" fill="${INK}"/><circle cx="120" cy="92" r="12" fill="#fff" stroke="${INK}" stroke-width="3"/><circle cx="120" cy="92" r="3.6" fill="${INK}"/>`;
+      case 'cry': return eye(80) + eye(120) + '<path d="M78 106 q-7 12 0 17 q7 -5 0 -17z M122 106 q-7 12 0 17 q7 -5 0 -17z" fill="#5bc8ff" stroke="#2b8fd0" stroke-width="1.5"/>';
+      case 'dollar': return `<text x="80" y="103" font-size="30" font-weight="900" text-anchor="middle" fill="#13a14a" stroke="#fff" stroke-width="1.5" font-family="Arial,sans-serif">$</text><text x="120" y="103" font-size="30" font-weight="900" text-anchor="middle" fill="#13a14a" stroke="#fff" stroke-width="1.5" font-family="Arial,sans-serif">$</text>`;
+      case 'cool': return `<rect x="62" y="80" width="34" height="22" rx="9" fill="#0d0d12" stroke="#fff" stroke-width="1.5"/><rect x="104" y="80" width="34" height="22" rx="9" fill="#0d0d12" stroke="#fff" stroke-width="1.5"/><path d="M96 88 h8" stroke="#0d0d12" stroke-width="4"/><path d="M68 85 l8 0 M110 85 l8 0" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity=".7"/>`;
+      case 'wink': return eye(80) + stroke('M111 95 q9 -14 18 0');
+      case 'lid': return eye(80) + eye(120) + '<rect x="70" y="80" width="20" height="10" fill="#ffc933"/><rect x="110" y="80" width="20" height="10" fill="#ffc933"/>' + stroke('M70 90 h20') + stroke('M110 90 h20', 4);
+      default: return eye(80) + eye(120);
+    }
+  }
+  function mouthSVG(k) {
+    switch (k) {
+      case 'grin': return `<path d="M78 112 q22 38 44 0z" fill="#5a1010" stroke="${INK}" stroke-width="4" stroke-linejoin="round"/><ellipse cx="100" cy="128" rx="10" ry="5" fill="#ff7a90"/>`;
+      case 'o': return `<ellipse cx="100" cy="126" rx="9" ry="12" fill="#5a1010" stroke="${INK}" stroke-width="4"/>`;
+      case 'o2': return `<ellipse cx="100" cy="124" rx="5" ry="6" fill="#5a1010" stroke="${INK}" stroke-width="3"/>`;
+      case 'flat': return stroke('M86 124 h28');
+      case 'frown': return stroke('M82 132 q18 -20 36 0');
+      case 'zz': return stroke('M90 124 q10 6 20 0', 4);
+      default: return stroke('M80 116 q20 24 40 0');
+    }
+  }
+  function browSVG(k) { return k === 'angry' ? stroke('M64 74 L92 86') + stroke('M136 74 L108 86') : k === 'think' ? stroke('M108 76 q12 -9 24 0') : ''; }
+  function propSVG(k, h) {
+    switch (k) {
+      case 'wave': return `<path d="M152 118 q26 -4 24 -34" stroke="${BR}" stroke-width="13" fill="none" stroke-linecap="round"/><path d="M152 118 q26 -4 24 -34" stroke="#ffc933" stroke-width="8" fill="none" stroke-linecap="round"/><circle cx="176" cy="76" r="13" fill="#ffd34d" stroke="${BR}" stroke-width="3"/>`;
+      case 'hearts': return heartP(40, 54, 1.3) + heartP(160, 44, 1.7) + heartP(150, 150, 1.1, '#ff7aa8');
+      case 'spark': return `<polygon points="${starPts(38, 52, 13)}" fill="#fff"/><polygon points="${starPts(162, 62, 10)}" fill="#fff"/><polygon points="${starPts(150, 148, 8)}" fill="#fff"/>`;
+      case 'tears': return '<path d="M52 100 q-12 10 -6 22 q12 -6 6 -22z M148 100 q12 10 6 22 q-12 -6 -6 -22z" fill="#5bc8ff" stroke="#2b8fd0" stroke-width="1.5"/>';
+      case 'fire': return `<path d="M100 8 C122 26 130 38 116 52 C112 44 106 44 104 50 C92 40 94 24 100 8z" fill="#ff7a00" stroke="#ffd34d" stroke-width="3"/><path d="M100 30 C108 38 108 44 102 48 C96 44 96 38 100 30z" fill="#ffd34d"/>`;
+      case 'ok': return `<circle cx="152" cy="136" r="15" fill="#ffd34d" stroke="${BR}" stroke-width="3"/><circle cx="148" cy="134" r="6" fill="none" stroke="${BR}" stroke-width="3"/><path d="M156 128 l8 -10 M158 136 l10 0" stroke="${BR}" stroke-width="3" stroke-linecap="round"/>`;
+      case 'red': return '<ellipse cx="100" cy="98" rx="58" ry="56" fill="#ff2d2d" opacity=".32"/>';
+      case 'zzz': return '<g fill="#fff" stroke="#3a2d8a" stroke-width="1.5" font-family="Arial,sans-serif" font-weight="900"><text x="138" y="62" font-size="30">Z</text><text x="158" y="42" font-size="22">z</text><text x="170" y="26" font-size="16">z</text></g>';
+      case 'bubble': return '<circle cx="146" cy="46" r="5" fill="#fff"/><circle cx="158" cy="32" r="8" fill="#fff"/><text x="158" y="37" font-size="13" font-weight="900" text-anchor="middle" fill="#3a2d8a" font-family="Arial,sans-serif">?</text>';
+      case 'party': return `<path d="M100 6 L76 50 L124 50z" fill="#ff4d9a" stroke="#fff" stroke-width="3"/><circle cx="100" cy="8" r="6" fill="#ffd34d"/><path d="M88 34 h24 M82 44 h36" stroke="#fff" stroke-width="3"/><rect x="34" y="70" width="8" height="4" fill="#fff" transform="rotate(30 34 70)"/><rect x="164" y="96" width="8" height="4" fill="#6ee7ff" transform="rotate(-30 164 96)"/><rect x="40" y="130" width="8" height="4" fill="#ffd34d" transform="rotate(60 40 130)"/><circle cx="158" cy="140" r="4" fill="#fff"/>`;
+      case 'salute': return `<path d="M148 112 q18 -16 -10 -42" stroke="${BR}" stroke-width="13" fill="none" stroke-linecap="round"/><path d="M148 112 q18 -16 -10 -42" stroke="#ffc933" stroke-width="8" fill="none" stroke-linecap="round"/><rect x="118" y="60" width="26" height="10" rx="5" fill="#ffd34d" stroke="${BR}" stroke-width="3" transform="rotate(-18 130 65)"/>`;
+      case 'money': return `<circle cx="150" cy="146" r="15" fill="#ffd34d" stroke="${BR}" stroke-width="3"/><text x="150" y="152" font-size="18" font-weight="900" text-anchor="middle" fill="${BR}" font-family="Arial,sans-serif">$</text><circle cx="52" cy="140" r="11" fill="#ffd34d" stroke="${BR}" stroke-width="3"/><text x="52" y="145" font-size="13" font-weight="900" text-anchor="middle" fill="${BR}" font-family="Arial,sans-serif">$</text>`;
+      case 'sweat': return '<path d="M142 66 q-10 14 -2 22 q12 -6 2 -22z" fill="#9fe4ff" stroke="#2b8fd0" stroke-width="2"/>';
+      case 'arms': return `<path d="M52 118 q14 40 48 38 M148 118 q-14 40 -48 38" stroke="${BR}" stroke-width="13" fill="none" stroke-linecap="round"/><path d="M52 118 q14 40 48 38 M148 118 q-14 40 -48 38" stroke="#ffc933" stroke-width="8" fill="none" stroke-linecap="round"/>` + heartP(100, 150, 1.2);
+      case 'cup': return `<path d="M164 140 q16 2 0 16" stroke="#fff" stroke-width="5" fill="none"/><rect x="134" y="128" width="32" height="30" rx="8" fill="#fff" stroke="#6b3d00" stroke-width="3"/><path d="M142 118 q-4 -6 0 -12 M152 118 q-4 -6 0 -12" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/><rect x="134" y="136" width="32" height="6" fill="#8a4b12" opacity=".6"/>`;
+      case 'trophy': return `<path d="M74 44 l8 -22 l18 16 l18 -16 l8 22z" fill="#ffd34d" stroke="${BR}" stroke-width="3"/><path d="M134 128 h28 v12 q0 16 -14 16 q-14 0 -14 -16z" fill="#ffd34d" stroke="${BR}" stroke-width="3"/><rect x="143" y="156" width="10" height="8" fill="${BR}"/><path d="M134 132 q-10 0 -8 10 q2 6 8 6 M162 132 q10 0 8 10 q-2 6 -8 6" stroke="${BR}" stroke-width="3" fill="none"/>`;
+      case 'hush': return `<rect x="95" y="128" width="11" height="34" rx="5.5" fill="#ffd34d" stroke="${BR}" stroke-width="3"/>`;
+      case 'shrug': return `<path d="M44 116 q-20 -10 -6 -34 M156 116 q20 -10 6 -34" stroke="${BR}" stroke-width="13" fill="none" stroke-linecap="round"/><path d="M44 116 q-20 -10 -6 -34 M156 116 q20 -10 6 -34" stroke="#ffc933" stroke-width="8" fill="none" stroke-linecap="round"/><circle cx="38" cy="78" r="12" fill="#ffd34d" stroke="${BR}" stroke-width="3"/><circle cx="162" cy="78" r="12" fill="#ffd34d" stroke="${BR}" stroke-width="3"/>`;
+      case 'hourglass': return '<path d="M138 116 h30 l-15 20 l15 20 h-30 l15 -20z" fill="#fff6" stroke="#fff" stroke-width="4" stroke-linejoin="round"/><path d="M146 146 h14 l-7 8z" fill="#ffd34d"/>';
+      default: return '';
+    }
+  }
   function stkSVG(i) {
-    const [em, cap] = STK[i], h = (i * 47 + 130) % 360, id = 'g' + i;
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160"><defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(${h},85%,52%)"/><stop offset="1" stop-color="hsl(${(h + 50) % 360},80%,30%)"/></linearGradient><linearGradient id="${id}r" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3dff85"/><stop offset="1" stop-color="#ffd34d"/></linearGradient></defs>` +
-      `<rect x="6" y="6" width="148" height="148" rx="40" fill="url(#${id})" stroke="rgba(255,255,255,.55)" stroke-width="3"/>` +
-      `<circle cx="132" cy="28" r="9" fill="none" stroke="url(#${id}r)" stroke-width="4.5"/><circle cx="132" cy="28" r="2.2" fill="#ffd34d"/>` +
-      `<text x="80" y="92" font-size="68" text-anchor="middle" font-family="'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif">${em}</text>` +
-      `<text x="80" y="134" font-size="19" font-weight="800" text-anchor="middle" fill="#fff" font-family="Manrope,Arial,sans-serif" letter-spacing=".5">${cap.toUpperCase()}</text></svg>`;
+    const [cap, eyes, mouth, brow, prop, h] = STK[i], id = 'g' + i;
+    const big = ['party', 'trophy', 'fire'].includes(prop);
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs>` +
+      `<radialGradient id="${id}b" cx=".38" cy=".3" r=".85"><stop offset="0" stop-color="#fff2a8"/><stop offset=".45" stop-color="#ffd34d"/><stop offset="1" stop-color="#f0a500"/></radialGradient>` +
+      `<linearGradient id="${id}bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(${h},85%,58%)"/><stop offset="1" stop-color="hsl(${(h + 40) % 360},80%,32%)"/></linearGradient>` +
+      `<linearGradient id="${id}r" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3dff85"/><stop offset="1" stop-color="#19d3c5"/></linearGradient></defs>` +
+      `<circle cx="100" cy="100" r="94" fill="url(#${id}bg)" stroke="#fff" stroke-width="6"/>` +
+      `<circle cx="100" cy="100" r="84" fill="none" stroke="#fff" stroke-opacity=".25" stroke-width="2" stroke-dasharray="3 7"/>` +
+      `<ellipse cx="100" cy="100" rx="60" ry="58" fill="url(#${id}b)" stroke="${BR}" stroke-width="4"/>` +
+      `<ellipse cx="76" cy="66" rx="18" ry="9" fill="#fff" opacity=".45" transform="rotate(-28 76 66)"/>` +
+      `<circle cx="62" cy="112" r="9" fill="#ff8aa0" opacity=".5"/><circle cx="138" cy="112" r="9" fill="#ff8aa0" opacity=".5"/>` +
+      (prop === 'red' ? propSVG('red') : '') + (prop === 'party' || prop === 'fire' || prop === 'trophy' ? '' : '') +
+      eyesSVG(eyes) + browSVG(brow) + mouthSVG(mouth) +
+      (prop !== 'red' ? propSVG(prop, h) : '') +
+      `<g transform="translate(30 34)"><circle r="12" fill="none" stroke="url(#${id}r)" stroke-width="6"/><circle r="3.4" fill="#ffd34d"/></g>` +
+      `<text x="100" y="${big ? 188 : 186}" font-size="${cap.length > 6 ? 20 : 24}" font-weight="900" text-anchor="middle" fill="#fff" stroke="#14120a" stroke-width="5" paint-order="stroke" stroke-linejoin="round" font-family="Manrope,Arial Black,Arial,sans-serif" letter-spacing=".5">${cap.toUpperCase()}</text></svg>`;
     return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
   }
   const stkSrc = ref => { if (ref.startsWith('b:')) { const i = +ref.slice(2); return STK[i] ? stkSVG(i) : ''; } return ref; };
