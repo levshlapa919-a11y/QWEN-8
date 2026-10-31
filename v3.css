@@ -151,8 +151,9 @@ body[data-wall] #msgScroll{background:var(--wall)!important;background-size:cove
 /* ===== исправления: высота на телефоне, шапка чата, шрифты ===== */
 @media (max-width:900px){
   html,body{height:100%}
-  .app{position:fixed;inset:0;height:auto}
-  .main{height:100%}
+  .app{position:fixed;inset:0;height:auto;grid-template-rows:minmax(0,1fr)}
+  .main{height:auto;min-height:0;overflow:hidden}
+  .side{min-height:0}
 }
 .head-info{min-width:0;flex:1}
 .head-info>div:last-child{min-width:0}
