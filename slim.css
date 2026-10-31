@@ -1,0 +1,61 @@
+/* golda-mesenger: нижняя панель вкладок, карточки, форма аватаров, плавающие фигуры, тема «Бирюза», узор чата */
+body[data-theme="teal"]{--bg:#123540;--p1:#17424f;--p2:#1f5667;--p3:#286b7f;--line:rgba(134,211,234,.16);--line2:rgba(134,211,234,.36);--neon:#86d3ea;--accent:#86d3ea;--gold:#ffd34d;--red:#ff8f9c;--tx:#e6f7fc;--mut:#9cc7d3;--mut2:#79a5b2;--glass:rgba(23,66,79,.82);--glow:0 0 22px rgba(134,211,234,.25);--ac2:#b4e6f4;--own-tx:#0c2b35;--own-time:rgba(12,43,53,.6);--own-tick:rgba(12,43,53,.45);--own-read:#0b5fa8;--card:color-mix(in srgb,var(--p2) 85%,transparent);--own-grad:linear-gradient(135deg,#b4e6f4,#86d3ea);--rim:linear-gradient(135deg,rgba(134,211,234,.7),rgba(180,230,244,.35))}
+body[data-theme="teal"]::before{background:radial-gradient(900px 560px at 50% -12%,rgba(134,211,234,.18),transparent 65%)!important}
+body[data-theme="teal"] .bg-grid,body[data-theme="teal"] .orb{display:none}
+body[data-theme="teal"] .inp,body[data-theme="teal"] .btn,body[data-theme="teal"] .search input{border-radius:99px}
+body[data-theme="teal"] .btn.primary,body[data-theme="teal"] .send{background:#86d3ea;color:#0c2b35;box-shadow:none}
+body[data-theme="teal"] .icon-btn{border-radius:20px;background:var(--p3);border-color:transparent}
+body[data-theme="teal"] .chat-item{border-radius:26px}
+body[data-theme="teal"] .modal{border-radius:30px}
+body[data-theme="teal"] #appParticles{display:block}
+body[data-theme="teal"] #appParticles i{background:#86d3ea}
+.theme-opt[data-t="teal"]{background:#1f5667;color:#86d3ea}
+
+/* узор-обои чата (как в Slim): контурные иконки */
+body[data-theme="indigo"]:not([data-wall]) #msgScroll,body[data-theme="teal"]:not([data-wall]) #msgScroll{background-color:color-mix(in srgb,var(--bg) 82%,#000);background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220' fill='none' stroke='%23ffffff' stroke-opacity='.075' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M20 30h44a8 8 0 0 1 8 8v22a8 8 0 0 1-8 8H42l-14 12V68h-8a8 8 0 0 1-8-8V38a8 8 0 0 1 8-8z' transform='translate(4 4)'/><path d='M150 40c-14 0-22 10-22 24v14l-8 10h60l-8-10V64c0-14-8-24-22-24zM142 96a8 8 0 0 0 16 0' transform='translate(0 -6)'/><rect x='24' y='128' width='44' height='34' rx='6'/><path d='M24 142h44M46 128v34M46 128c-8-12-22-10-18 0M46 128c8-12 22-10 18 0'/><path d='M168 130l-18 28h14l-6 24 22-32h-14z'/><circle cx='100' cy='110' r='22'/><circle cx='100' cy='110' r='8'/><path d='M96 190l4-12 4 12 12 4-12 4-4 12-4-12-12-4z'/><circle cx='196' cy='24' r='5'/><circle cx='20' cy='200' r='5'/>");background-size:220px 220px}
+
+/* карточки настроек */
+.settings-row{border-radius:26px!important;padding:14px 16px!important;background:var(--p2)!important;border:0!important;margin-bottom:8px}
+.settings-row-icon{width:46px;height:46px;border-radius:50%!important;background:var(--p1);display:grid;place-items:center;font-size:20px;flex:none}
+.settings-label{font-weight:800;letter-spacing:.02em}
+.btn-out{display:block;width:100%;margin-top:14px;min-height:54px;border:0;border-radius:99px;background:color-mix(in srgb,var(--red) 22%,var(--p2));color:var(--red);font:800 16px var(--font);cursor:pointer}
+
+/* форма аватара и фигуры */
+.sl-sec{margin-top:14px}
+.sl-shapes{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0}
+.sl-shapes button{width:56px;height:56px;border-radius:50%;border:0;background:var(--p3);display:grid;place-items:center;cursor:pointer}
+.sl-shapes button i{display:block;width:28px;height:28px;background:var(--tx)}
+.sl-shapes button.on{background:var(--neon)}.sl-shapes button.on i{background:var(--p1)}
+.sl-cnt{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.sl-cnt button{border:0;border-radius:99px;padding:10px 18px;background:var(--p3);color:var(--mut);font:800 14px var(--font);cursor:pointer}
+.sl-cnt button.on{background:var(--neon);color:var(--p1)}
+.sl-tog{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--p2);border-radius:26px;padding:14px 16px;margin:8px 0}
+.sl-tog b{display:block;font-size:15px}.sl-tog small{color:var(--mut)}
+.sl-sw{width:56px;height:32px;border-radius:99px;background:var(--p3);position:relative;border:0;cursor:pointer;flex:none;transition:background .2s}
+.sl-sw::after{content:"";position:absolute;top:4px;left:4px;width:24px;height:24px;border-radius:50%;background:var(--mut);transition:.2s}
+.sl-sw.on{background:var(--neon)}.sl-sw.on::after{left:28px;background:var(--p1)}
+body[data-ava="circle"] .ava{border-radius:50%!important}
+body[data-ava="squircle"] .ava{border-radius:34%!important}
+body[data-ava="arch"] .ava{border-radius:50% 50% 14% 14%!important}
+body[data-ava="hex"] .ava{border-radius:0!important;clip-path:polygon(50% 0,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%)}
+body[data-ava="flower"] .ava{border-radius:0!important;clip-path:var(--flower)}
+
+/* нижняя панель (телефон) */
+#slimNav{display:none}
+@media (max-width:900px){
+  .me{display:none!important}
+  .chat-list,#callsList,.calls-list{padding-bottom:calc(var(--sab,0px) + 104px)!important}
+  body.nav-on #slimNav{display:flex}
+  #slimNav{position:fixed;left:12px;right:12px;bottom:calc(var(--sab,0px) + 12px);z-index:40;gap:10px;align-items:center;animation:navUp .4s cubic-bezier(.2,.9,.3,1)}
+  @keyframes navUp{from{transform:translateY(90px);opacity:0}}
+  #slimNav .pill{flex:1;display:flex;align-items:center;justify-content:space-around;height:64px;border-radius:99px;background:color-mix(in srgb,var(--bg) 88%,#000);border:1px solid var(--line);box-shadow:0 12px 40px rgba(0,0,0,.45);padding:0 8px;min-width:0}
+  #slimNav button{border:0;background:none;color:var(--mut);height:48px;min-width:48px;border-radius:99px;display:flex;align-items:center;justify-content:center;gap:8px;font:800 15px var(--font);cursor:pointer;padding:0 12px;transition:background .25s,color .25s,padding .25s}
+  #slimNav button svg{flex:none}
+  #slimNav button span{display:none;white-space:nowrap}
+  #slimNav button.on{background:color-mix(in srgb,var(--neon) 30%,var(--p2));color:var(--tx);padding:0 18px}
+  #slimNav button.on span{display:inline}
+  #slimNav .srch{width:64px;height:64px;border-radius:24px;background:color-mix(in srgb,var(--neon) 28%,var(--p2));color:var(--tx);flex:none;padding:0}
+  .side-brand{font-size:24px}
+  .chat-head{margin:8px 8px 0;border-radius:30px;border:1px solid var(--line);background:var(--p2)!important}
+  .ib-inner{border-radius:99px}
+}
