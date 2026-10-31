@@ -1,7 +1,7 @@
 /* golda-mesenger — НОВЫЙ интерфейс «Aurora». Действует только при <html data-ui="new">.
    Классический вид = тот же сайт без этих правил (переключатель в Настройках). */
 
-html[data-ui="new"]{
+html[data-ui="new"] body{
   --ac2:color-mix(in srgb,var(--neon) 55%,#19d3c5);
   --own-grad:linear-gradient(135deg,var(--neon),var(--ac2));
   --own-tx:#03140a;--own-time:rgba(3,20,10,.62);--own-tick:rgba(3,20,10,.45);--own-read:#0a46c2;

@@ -27,10 +27,7 @@
     ['Russo One', "'Russo One',sans-serif", 'Russo+One'],
     ['Playfair', "'Playfair Display',serif", 'Playfair+Display:wght@400;600;700;800'],
     ['Lora', "'Lora',serif", 'Lora:wght@400;500;600;700'],
-    ['Caveat', "'Caveat',cursive", 'Caveat:wght@400;600;700'],
-    ['Pacifico', "'Pacifico',cursive", 'Pacifico'],
-    ['JetBrains Mono', "'JetBrains Mono',monospace", 'JetBrains+Mono:wght@400;600;700'],
-    ['Press Start', "'Press Start 2P',monospace", 'Press+Start+2P']
+    ['JetBrains Mono', "'JetBrains Mono',monospace", 'JetBrains+Mono:wght@400;600;700']
   ];
   const ACCENTS = ['#3dff85', '#00e5ff', '#3c8cff', '#a56bff', '#ff5ec8', '#ff4d6d', '#ff8c32', '#ffd34d', '#c6ff3d', '#ffffff'];
   const WALLS = [
@@ -46,6 +43,7 @@
   const DEF = { font: 'Manrope', size: null, accent: '', bub: 'round', wall: 'none', wallImg: '', rx: ['❤️', '👍', '😂', '🔥', '😮', '😢'] };
   let CUST = Object.assign({}, DEF);
   try { CUST = Object.assign({}, DEF, JSON.parse(LS.get('golda_cust', '{}') || '{}')); } catch (e) { }
+  if (CUST.size && CUST.size > 18) CUST.size = 18;
   const saveCust = () => LS.set('golda_cust', JSON.stringify(CUST));
   let fontsLoaded = false;
   function loadFonts(all) {
@@ -91,7 +89,7 @@
     el.innerHTML = `<div class="settings-label">✨ Кастомизация</div>
       <div class="cz-lbl">Шрифт</div><div class="cz-fonts" id="czFonts">${fonts}</div>
       <div class="cz-lbl">Размер текста: <b id="czSizeV">${CUST.size || 'авто'}</b></div>
-      <input type="range" class="cz-range" id="czSize" min="12" max="22" step="1" value="${CUST.size || 14}">
+      <input type="range" class="cz-range" id="czSize" min="12" max="18" step="1" value="${CUST.size || 14}">
       <div class="cz-lbl">Цвет акцента</div>
       <div class="cz-sw" id="czAcc">${sw}<input type="color" id="czAccPick" value="${CUST.accent || '#3dff85'}"><button data-c="" style="background:var(--p3);font-size:13px" title="По умолчанию">↺</button></div>
       <div class="cz-lbl">Форма сообщений</div><div class="cz-opts" id="czBub">${bub}</div>
@@ -548,6 +546,7 @@
     loadReactions(id);
   };
 
+  document.addEventListener('click', e => { if (e.target.closest && e.target.closest('.theme-opt') && CUST.accent) { CUST.accent = ''; saveCust(); applyCust(); QA('#czAcc button').forEach(x => x.classList.remove('on')); } }, true);
   applyCust();
   injectSettings();
   addStickerInput();

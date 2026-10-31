@@ -147,3 +147,16 @@ body[data-wall] #msgScroll{background:var(--wall)!important;background-size:cove
   .ban-screen .bs-face-real{object-fit:contain!important;object-position:center!important}
   @keyframes facePop{0%{transform:scale(.08) rotate(-6deg);filter:brightness(2.6) contrast(1.6)}9%{transform:scale(2.3) rotate(3deg);filter:brightness(2) contrast(1.5)}22%{transform:scale(1.5) rotate(-2deg)}60%{transform:scale(1.7)}100%{transform:scale(1.85);opacity:.92;filter:brightness(.8) contrast(1.4)}}
 }
+
+/* ===== исправления: высота на телефоне, шапка чата, шрифты ===== */
+@media (max-width:900px){
+  html,body{height:100%}
+  .app{position:fixed;inset:0;height:auto}
+  .main{height:100%}
+}
+.head-info{min-width:0;flex:1}
+.head-info>div:last-child{min-width:0}
+.h-name,.h-sub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat-head .icon-btn{flex:none}
+@media (max-width:900px){.chat-head{gap:6px}.chat-head .icon-btn{width:40px;height:40px}}
+body[data-theme="blue"]{--glass:rgba(8,18,32,.74);--glow:0 0 22px rgba(60,140,255,.32)}
