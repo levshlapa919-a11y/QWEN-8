@@ -166,3 +166,21 @@ body[data-theme="blue"]{--glass:rgba(8,18,32,.74);--glow:0 0 22px rgba(60,140,25
 .chat-head .ava,.chat-head .ava.m{width:42px!important;height:42px!important;font-size:16px!important;border-radius:14px!important}
 .chat-head .ava-wrap{width:42px;height:42px;flex:none}
 .chat-head{padding-top:calc(var(--sat,0px) + 8px);padding-bottom:8px}
+
+/* ===== бан: лицо на весь экран + инверсия ===== */
+.ban-screen .bs-container{position:absolute;inset:0;width:100%;height:100%}
+.ban-screen .bs-face-real{position:absolute;inset:0;width:100%!important;height:100%!important;object-fit:fill!important;transform-origin:center}
+.ban-screen .bs-face-real.pop{opacity:1!important;animation:faceHorror 2.7s linear forwards!important}
+@keyframes faceHorror{
+  0%{transform:scale(.3);filter:invert(0) contrast(1.7) brightness(2)}
+  5%{transform:scale(1.18) skew(2deg,-1deg);filter:invert(1) contrast(2) saturate(2)}
+  18%{transform:scale(1.05) skew(-3deg,1deg);filter:invert(1) contrast(2.2) hue-rotate(20deg)}
+  22%{transform:scale(1.14) skew(2deg,0);filter:invert(0) contrast(1.9) saturate(1.8) brightness(1.1)}
+  38%{transform:scale(1.04) skew(-2deg,1deg) translateX(-1%);filter:invert(0) contrast(1.8)}
+  42%{transform:scale(1.2) skew(3deg,-1deg);filter:invert(1) contrast(2.2) saturate(2.4)}
+  56%{transform:scale(1.08) skew(-3deg,0) translateX(1%);filter:invert(1) contrast(2) hue-rotate(-25deg)}
+  60%{transform:scale(1.16);filter:invert(0) contrast(2) saturate(2)}
+  76%{transform:scale(1.06) skew(2deg,1deg);filter:invert(0) contrast(1.8) brightness(1.1)}
+  80%{transform:scale(1.22) skew(-2deg,-1deg);filter:invert(1) contrast(2.3)}
+  100%{transform:scale(1.1);opacity:.55;filter:invert(0) contrast(1.6) brightness(.7)}}
+.ban-screen.live .bs-face-real:not(.pop){opacity:.5!important;filter:brightness(.4) contrast(1.6)}
