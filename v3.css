@@ -160,3 +160,8 @@ body[data-wall] #msgScroll{background:var(--wall)!important;background-size:cove
 .chat-head .icon-btn{flex:none}
 @media (max-width:900px){.chat-head{gap:6px}.chat-head .icon-btn{width:40px;height:40px}}
 body[data-theme="blue"]{--glass:rgba(8,18,32,.74);--glow:0 0 22px rgba(60,140,255,.32)}
+
+/* аватар в шапке чата не должен раздуваться */
+.chat-head .ava,.chat-head .ava.m{width:42px!important;height:42px!important;font-size:16px!important;border-radius:14px!important}
+.chat-head .ava-wrap{width:42px;height:42px;flex:none}
+.chat-head{padding-top:calc(var(--sat,0px) + 8px);padding-bottom:8px}
