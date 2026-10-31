@@ -1,0 +1,50 @@
+/* golda-mesenger: плавные экраны входа/регистрации (тёмно-синий фон, круглые кнопки, частицы) */
+.auth,#welcome{--a-bg:#0b1226;--a-field:#16213f;--a-field2:#1c2a50;--a-acc:#6b8bd9;--a-tx:#eef1fb;--a-mut:#9aa6c9;font-family:'Nunito',var(--font),system-ui,sans-serif;color:var(--a-tx)}
+.auth,#welcome{background:radial-gradient(900px 600px at 50% -10%,#18254a,var(--a-bg) 65%)!important;z-index:60;align-items:stretch;justify-content:center;padding:0;overflow:auto}
+#welcome{position:fixed;inset:0;z-index:70;display:flex;flex-direction:column;align-items:center;transition:opacity .35s,transform .35s}
+#welcome.out{opacity:0;transform:scale(1.04);pointer-events:none}
+#welcome.hidden{display:none}
+/* частицы */
+#aParticles{position:fixed;inset:0;z-index:80;pointer-events:none;overflow:hidden}
+#aParticles i{position:absolute;display:block;background:#6b8bd9;opacity:.22;clip-path:polygon(50% 0,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%);animation:aFloat linear infinite}
+@keyframes aFloat{0%{transform:translate3d(0,0,0) rotate(0)}50%{transform:translate3d(var(--dx),-40px,0) rotate(180deg)}100%{transform:translate3d(0,0,0) rotate(360deg)}}
+body.auth-off #aParticles{display:none}
+
+/* welcome */
+#welcome .w-logo{margin-top:auto;position:relative;width:min(58vw,250px);aspect-ratio:1;display:grid;place-items:center;animation:wFloat 5s ease-in-out infinite}
+@keyframes wFloat{50%{transform:translateY(-10px)}}
+#welcome .w-blob{position:absolute;inset:0;background:linear-gradient(145deg,#8fa8ee,#5a78cf);border-radius:46% 54% 50% 50%/52% 46% 54% 48%;box-shadow:0 26px 70px rgba(90,120,207,.35);animation:wBlob 9s ease-in-out infinite}
+@keyframes wBlob{50%{border-radius:54% 46% 48% 52%/46% 54% 46% 54%}}
+#welcome .w-ring{position:relative;width:46%;aspect-ratio:1;border-radius:50%;border:clamp(10px,3vw,16px) solid #0b1226;display:grid;place-items:center}
+#welcome .w-ring::after{content:"";width:26%;aspect-ratio:1;border-radius:50%;background:#ffd34d;box-shadow:0 0 24px #ffd34d}
+#welcome .w-name{margin-top:34px;font:800 clamp(30px,9vw,44px)/1 'Nunito',sans-serif;letter-spacing:-.01em}
+#welcome .w-name b{color:#8fa8ee;font-weight:800}
+#welcome .w-sub{margin-top:10px;color:var(--a-mut);font-weight:600}
+#welcome .w-btns{margin-top:auto;width:100%;max-width:460px;padding:0 22px calc(var(--sab,0px) + 26px);display:flex;flex-direction:column;gap:12px}
+
+/* общие кнопки/поля */
+.a-btn,.auth .btn.primary,.auth .auth-alt{display:block;width:100%;border:0;border-radius:99px;min-height:60px;padding:0 24px;font:800 18px 'Nunito',sans-serif;cursor:pointer;text-align:center;transition:transform .12s,filter .15s}
+.a-btn.main,.auth .btn.primary,html[data-ui] .auth .btn.primary{background:var(--a-acc)!important;color:#0b1226!important;box-shadow:none!important;border:0!important}
+.a-btn.sec,.auth .auth-alt{background:var(--a-field)!important;color:var(--a-tx)!important;box-shadow:none!important}
+.a-btn:active,.auth .btn:active,.auth .auth-alt:active{transform:scale(.97)}
+.a-btn:disabled,.auth .btn:disabled{opacity:.5}
+
+/* экраны входа / регистрации */
+.auth-card{width:100%!important;max-width:460px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column;background:none!important;border:0!important;box-shadow:none!important;border-radius:0!important;padding:calc(var(--sat,0px) + 14px) 22px calc(var(--sab,0px) + 26px)!important;animation:none!important}
+.auth .brand,.auth .tabs{display:none!important}
+.a-top{display:flex;gap:10px;margin-bottom:34px}
+.a-top button{width:54px;height:54px;border-radius:20px;border:0;background:var(--a-field);color:var(--a-tx);font-size:22px;cursor:pointer;display:grid;place-items:center}
+.a-title{font:800 clamp(34px,10vw,46px)/1.05 'Nunito',sans-serif;margin:0 0 10px}
+.a-sub{color:var(--a-mut);font-weight:600;font-size:17px;margin:0 0 26px}
+#authForm,#setupForm{flex:1;display:flex;flex-direction:column;gap:12px}
+.auth .lbl{display:none}
+.auth .inp,html[data-ui] .auth .inp{background:var(--a-field)!important;border:2px solid transparent!important;box-shadow:none!important;border-radius:99px;min-height:60px;padding:0 24px;color:var(--a-tx);font:700 18px 'Nunito',sans-serif;text-align:left}
+.auth .inp::placeholder{color:#7c89b0}
+.auth .inp:focus,html[data-ui] .auth .inp:focus{border-color:var(--a-acc)!important;background:var(--a-field2)!important}
+#unameWrap{display:flex;flex-direction:column;gap:12px}
+#authForm .btn.primary,#setupForm .btn.primary{margin-top:auto}
+.auth .auth-msg{order:-1;margin:0;min-height:0;color:#ff9aa8;font-weight:700}
+.auth .auth-msg:empty{display:none}
+.auth .auth-msg.ok{color:#8be0a8}
+.auth-alt{margin-top:-0px}
+@media (min-width:700px){.auth-card{min-height:auto;margin:auto}.auth{align-items:center}}
