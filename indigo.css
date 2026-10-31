@@ -1,0 +1,39 @@
+/* golda-mesenger: тема «Индиго» — как экраны входа: тёмно-синий, круглые формы, плавные анимации */
+body[data-theme="indigo"]{--bg:#0b1226;--p1:#101a36;--p2:#16213f;--p3:#1c2a50;--line:rgba(143,168,238,.14);--line2:rgba(143,168,238,.32);--neon:#7f9be6;--accent:#7f9be6;--gold:#ffd34d;--red:#ff7b8c;--tx:#eef1fb;--mut:#9aa6c9;--mut2:#7280a8;--glass:rgba(16,26,54,.78);--glow:0 0 22px rgba(127,155,230,.28);--ac2:#aabcf5;--own-tx:#0b1226;--own-time:rgba(11,18,38,.6);--own-tick:rgba(11,18,38,.45);--own-read:#1b46b8;--card:color-mix(in srgb,var(--p2) 82%,transparent);--own-grad:linear-gradient(135deg,#8fa8ee,#6b8bd9);--rim:linear-gradient(135deg,rgba(143,168,238,.7),rgba(170,188,245,.35))}
+body[data-theme="indigo"]::before{background:radial-gradient(900px 560px at 50% -12%,rgba(90,120,207,.28),transparent 65%),radial-gradient(700px 500px at 100% 100%,rgba(143,168,238,.12),transparent 65%)!important}
+body[data-theme="indigo"] .bg-grid,body[data-theme="indigo"] .orb{display:none}
+body[data-theme="indigo"] .brand-name b,body[data-theme="indigo"] .side-brand b{color:#8fa8ee;text-shadow:none}
+.theme-options{grid-template-columns:repeat(3,1fr)!important}
+.theme-opt[data-t="indigo"]{background:#16213f;color:#8fa8ee}
+
+/* формы: круглые */
+body[data-theme="indigo"] .inp,body[data-theme="indigo"] .search input{border-radius:99px;background:var(--p3);border:2px solid transparent}
+body[data-theme="indigo"] .inp:focus,body[data-theme="indigo"] .search input:focus{border-color:var(--neon);box-shadow:none}
+body[data-theme="indigo"] .btn{border-radius:99px}
+body[data-theme="indigo"] .btn.primary,body[data-theme="indigo"] .send{background:#6b8bd9;color:#0b1226;box-shadow:none}
+body[data-theme="indigo"] .icon-btn{border-radius:20px;background:var(--p3);border-color:transparent}
+body[data-theme="indigo"] .chat-item{border-radius:26px}
+body[data-theme="indigo"] .chat-item.active{background:color-mix(in srgb,#6b8bd9 22%,var(--p2))}
+body[data-theme="indigo"] .side-tabs{background:var(--p3)}
+body[data-theme="indigo"] .side-tabs button.on,body[data-theme="indigo"] .side-tabs .on{background:#6b8bd9;color:#0b1226}
+body[data-theme="indigo"] .modal{border-radius:30px;background:var(--p1)}
+body[data-theme="indigo"] .bubble{border-radius:22px}
+body[data-theme="indigo"] .ib-inner{border-radius:99px;background:var(--p2)}
+
+/* частицы в приложении */
+#appParticles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;display:none}
+body[data-theme="indigo"] #appParticles{display:block}
+#appParticles i{position:absolute;display:block;background:#6b8bd9;clip-path:polygon(50% 0,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%);animation:aFloat linear infinite}
+
+/* плавные анимации (для всех тем) */
+@keyframes slideIn{from{opacity:0;transform:translateX(28px)}}
+@keyframes riseIn{from{opacity:0;transform:translateY(12px) scale(.97)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}}
+.app.chat-open .main{animation:slideIn .3s cubic-bezier(.2,.9,.3,1)}
+.msg{animation:riseIn .28s cubic-bezier(.2,.9,.3,1) both}
+.chat-item{animation:fadeUp .35s cubic-bezier(.2,.9,.3,1) both}
+.chat-item:nth-child(2){animation-delay:.03s}.chat-item:nth-child(3){animation-delay:.06s}.chat-item:nth-child(4){animation-delay:.09s}.chat-item:nth-child(5){animation-delay:.12s}.chat-item:nth-child(n+6){animation-delay:.15s}
+.modal{animation:riseIn .3s cubic-bezier(.2,.9,.3,1)!important}
+.btn,.icon-btn,.send,.chat-item,.theme-opt{transition:transform .18s cubic-bezier(.2,.9,.3,1),background .25s,box-shadow .25s,border-color .25s}
+.btn:active,.icon-btn:active,.send:active,.theme-opt:active{transform:scale(.94)}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important}}

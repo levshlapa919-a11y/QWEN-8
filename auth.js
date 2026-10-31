@@ -57,6 +57,20 @@
   if (setupEl) new MutationObserver(sync).observe(setupEl, { attributes: true, attributeFilter: ['class'] });
   sync();
 
+
+  // тема «Индиго»: кнопка, по умолчанию, частицы приложения, цвет шапки браузера
+  try {
+    const row = Q('.theme-options');
+    if (row && !row.querySelector('[data-t="indigo"]')) {
+      const b = document.createElement('button'); b.className = 'theme-opt'; b.dataset.t = 'indigo'; b.textContent = '🟣 Индиго';
+      b.onclick = () => applyTheme('indigo'); row.insertBefore(b, row.firstChild);
+    }
+    if (typeof themeNames !== 'undefined') themeNames.indigo = 'Индиго';
+    const ap = pr.cloneNode(true); ap.id = 'appParticles'; document.body.insertBefore(ap, document.body.firstChild);
+    new MutationObserver(() => { const t = document.body.dataset.theme, m = Q('#themeMeta'); if (m && t === 'indigo') m.setAttribute('content', '#0b1226'); }).observe(document.body, { attributes: true, attributeFilter: ['data-theme'] });
+    if (!localStorage.getItem(THEME_KEY)) applyTheme('indigo'); else if (document.body.dataset.theme === 'indigo') applyTheme('indigo');
+  } catch (e) { }
+
   // «Последний шаг»
   if (setupEl) {
     const sc = setupEl.querySelector('.auth-card'), sf = Q('#setupForm');
