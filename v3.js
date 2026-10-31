@@ -446,6 +446,7 @@
     const acts = [['reply', '↩', 'Ответить']];
     if (!isStk && !md) acts.push(['copy', '⧉', 'Копировать']);
     acts.push(['fwd', '➦', 'Переслать']);
+    acts.push(['fav', '⭐', 'В избранное']);
     if (isStk && !isStk[1].startsWith('b:') && !MYSTK.some(s => s.url === isStk[1])) acts.push(['savestk', '🎭', 'Добавить в мои стикеры']);
     if (own && !isStk && !md) acts.push(['edit', '✎', 'Изменить']);
     if (own || ME.is_admin) acts.push(['del', '🗑', 'Удалить', 1]);
@@ -463,6 +464,7 @@
       else if (k === 'copy') { try { await navigator.clipboard.writeText(c); tst('Скопировано ✔'); } catch (er) { tst('Не удалось скопировать', 'red'); } }
       else if (k === 'edit') startEdit(m);
       else if (k === 'fwd') openForward(m);
+      else if (k === 'fav') { const { error } = await sb.from('saved_notes').insert({ user_id: ME.id, content: c }); tst(error ? 'Не вышло: ' + ru(error.message) : 'Добавлено в избранное ⭐', error ? 'red' : ''); }
       else if (k === 'savestk') { const { error } = await sb.from('user_stickers').insert({ user_id: ME.id, url: isStk[1] }); if (!error) { await loadMyStickers(); tst('Стикер сохранён ✔'); } else tst('Не вышло', 'red'); }
       else if (k === 'del') {
         if (!await confirmBox('Удалить сообщение?', 'Оно пропадёт у всех участников чата.')) return;
