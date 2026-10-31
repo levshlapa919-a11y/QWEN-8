@@ -184,3 +184,6 @@ body[data-theme="blue"]{--glass:rgba(8,18,32,.74);--glow:0 0 22px rgba(60,140,25
   80%{transform:scale(1.22) skew(-2deg,-1deg);filter:invert(1) contrast(2.3)}
   100%{transform:scale(1.1);opacity:.55;filter:invert(0) contrast(1.6) brightness(.7)}}
 .ban-screen.live .bs-face-real:not(.pop){opacity:.5!important;filter:brightness(.4) contrast(1.6)}
+.m-file.big{cursor:default}
+.m-file.big .bg-btns{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.m-file.big .bg-btns button{border:0;border-radius:99px;background:var(--neon);color:var(--p1);font:800 13px var(--font);padding:8px 14px;cursor:pointer}

@@ -319,7 +319,8 @@
   // =====================================================================
   // 4) ОТПРАВКА ЛЮБЫХ ФАЙЛОВ (фото, видео, документы) — до 50 МБ
   // =====================================================================
-  const MAX_FILE_MB = 50; // лимит бесплатного Supabase Storage
+  const MAX_FILE_MB = 300; // файлы > 45 МБ режутся на части по 40 МБ
+  const CHUNK = 40 * 1048576;
   const fcss = document.createElement('style');
   fcss.textContent = `
   .m-file{display:flex;align-items:center;gap:12px;padding:9px 12px;border:1px solid var(--line2);border-radius:16px;background:rgba(255,255,255,.05);
@@ -334,7 +335,7 @@
   async function sendAnyFile(f) {
     if (!f || !me() || typeof CURRENT === 'undefined' || !CURRENT) return;
     if (typeof restricted === 'function' && restricted()) return;
-    if (f.size > MAX_FILE_MB * 1024 * 1024) return say('Файл больше ' + MAX_FILE_MB + ' МБ — бесплатное хранилище больше не принимает', 'red');
+    if (f.size > MAX_FILE_MB * 1024 * 1024) return say('Файл больше ' + MAX_FILE_MB + ' МБ', 'red');
     const chat = CHATS.find(c => c.id === CURRENT); if (!chat) return;
     if (chat.type === 'direct' && BLOCKED.includes(otherOf(chat).id)) return say('Сначала разблокируй пользователя');
 
@@ -343,6 +344,24 @@
     let blob = f;
     if (kind === 'image' && f.size > 4 * 1024 * 1024 && !/gif|svg/.test(t) && typeof downscaleMax === 'function') {
       try { blob = await downscaleMax(f, 2400); } catch (_) { blob = f; }
+    }
+    if (blob.size > 45 * 1048576) {
+      // большой файл: режем на части по 40 МБ (бесплатное хранилище принимает до 50 МБ на файл)
+      const id = Date.now() + '_' + Math.random().toString(36).slice(2, 8), base = `media/${CURRENT}/${id}`, n = Math.ceil(blob.size / CHUNK);
+      for (let i = 0; i < n; i++) {
+        say(`📦 Загружаем часть ${i + 1} из ${n}… не закрывай приложение`);
+        const part = blob.slice(i * CHUNK, Math.min(blob.size, (i + 1) * CHUNK));
+        let err = null;
+        for (let k = 0; k < 3 && (k === 0 || err); k++) { const r = await sbc().storage.from('avatars').upload(`${base}/p${String(i).padStart(3, '0')}`, part, { contentType: 'application/octet-stream', upsert: true }); err = r.error; }
+        if (err) return say('Ошибка загрузки части ' + (i + 1) + ': ' + err.message, 'red');
+      }
+      const baseUrl = sbc().storage.from('avatars').getPublicUrl(base).data.publicUrl;
+      const content = `[[big|${baseUrl}|${n}|${encodeURIComponent(f.name)}|${f.size}|${f.type || 'application/octet-stream'}]]`;
+      const sid = (typeof IMPERSONATE_USER !== 'undefined' && IMPERSONATE_USER) ? IMPERSONATE_USER.id : me().id;
+      const { data: m, error } = await sbc().from('messages').insert({ chat_id: CURRENT, sender_id: sid, content }).select().single();
+      if (error) return say(error.message, 'red');
+      if (!MSG_IDS.has(m.id)) { MSG_IDS.add(m.id); appendMsg(m, chat); scrollBottom(); }
+      return say('✔ Большой файл отправлен');
     }
     const mb = (blob.size / 1048576).toFixed(1);
     say('📎 Отправляем ' + mb + ' МБ… не закрывай приложение');
