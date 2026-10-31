@@ -1,0 +1,67 @@
+/* golda-mesenger: единый аккуратный вид внутренних окон (настройки, админка, профили, модалки) */
+.overlay{--mono:var(--font);--disp:var(--font)}
+.overlay .modal{background:var(--p1)!important;border:1px solid var(--line)!important;box-shadow:0 30px 80px rgba(0,0,0,.5)!important;padding:20px 16px calc(var(--sab,0px) + 22px)!important}
+.overlay .modal *{text-shadow:none}
+.overlay .m-head{margin:2px 2px 14px}
+.overlay .m-title{font-size:22px;font-weight:800;letter-spacing:0;color:var(--tx)}
+.overlay .icon-btn.x{width:44px;height:44px;border-radius:50%;background:var(--p3);border:0}
+
+/* настройки: сгруппированные карточки со строками-разделителями */
+.overlay .settings-section{background:var(--p2);border-radius:26px;padding:6px 16px 14px;margin:14px 0 0;border:0}
+.overlay .settings-label{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--neon);margin:12px 0 4px;opacity:.9}
+.overlay .settings-row{background:transparent!important;border:0!important;border-radius:0!important;border-bottom:1px solid var(--line)!important;margin:0!important;padding:14px 0!important}
+.overlay .settings-section>.settings-row:last-child,.overlay .settings-row:last-child{border-bottom:0!important}
+.overlay .settings-row-icon{width:42px;height:42px;border-radius:14px!important;background:color-mix(in srgb,var(--neon) 14%,transparent)!important;font-size:20px}
+.overlay .settings-row-title{font-size:16px;font-weight:700}
+.overlay .settings-row-sub{font-size:13px;font-weight:500;color:var(--mut);margin-top:3px;line-height:1.35}
+.overlay .cz-lbl{font-size:13px;font-weight:700;letter-spacing:0;text-transform:none;color:var(--mut);margin:16px 2px 8px}
+.overlay .cz-lbl b{color:var(--tx)}
+
+/* однотипные «чипсы» */
+.overlay .theme-opt,.overlay .font-size-opt,.overlay .cz-fonts button,.overlay .cz-opts button,.overlay .sl-cnt button{background:var(--p3)!important;border:0!important;border-radius:99px!important;color:var(--tx)!important;box-shadow:none!important;font-weight:700;font-size:14px;padding:11px 14px;min-height:44px}
+.overlay .theme-opt.active,.overlay .font-size-opt.active,.overlay .cz-fonts button.on,.overlay .cz-opts button.on,.overlay .sl-cnt button.on{background:var(--neon)!important;color:var(--p1)!important}
+.overlay .theme-options{gap:8px!important;margin:10px 0 4px}
+.overlay .theme-opt::before{content:"";display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--dot,#3dff85);margin-right:8px;vertical-align:-1px;box-shadow:0 0 0 2px rgba(255,255,255,.25)}
+.theme-opt[data-t="indigo"]{--dot:#7f9be6}.theme-opt[data-t="teal"]{--dot:#86d3ea}.theme-opt[data-t="dark"]{--dot:#3dff85}.theme-opt[data-t="light"]{--dot:#f4f7f5}.theme-opt[data-t="orange"]{--dot:#ff8c32}.theme-opt[data-t="green"]{--dot:#00e676}.theme-opt[data-t="blue"]{--dot:#3c8cff}
+.overlay .cz-wall button,.overlay .cz-sw button{border-color:transparent}
+.overlay .cz-wall button.on{border-color:var(--neon)}
+.overlay .cz-rx button{background:var(--p3);border:0}
+
+/* переключатели */
+.overlay .toggle{width:52px;height:30px;background:var(--p3)}
+.overlay .toggle::after{top:3px;left:3px;width:24px;height:24px;box-shadow:none;background:var(--mut)}
+.overlay .toggle.on{background:var(--neon)}
+.overlay .toggle.on::after{left:25px;background:var(--p1)}
+
+/* кнопки внутри окон */
+.overlay .btn{border-radius:99px;min-height:52px;font-weight:800;font-size:16px;border:0}
+.overlay .btn.ghost{background:var(--p3);color:var(--tx);border:0}
+.overlay .btn.primary{background:var(--neon);color:var(--p1)}
+.overlay .btn.dng,.overlay .cz-danger .btn{background:color-mix(in srgb,var(--red) 85%,#000);color:#fff}
+.overlay .cz-danger{background:color-mix(in srgb,var(--red) 12%,var(--p2));border:0;border-radius:22px;padding:16px;margin-top:16px}
+.overlay .cz-danger p{color:var(--mut);font-size:13px;line-height:1.4;margin:6px 0 12px}
+.overlay .btn-out{background:var(--p3);color:var(--red);border-radius:99px;min-height:52px;margin-top:14px}
+.overlay .inp,.overlay textarea.inp{background:var(--p3)!important;border:2px solid transparent!important;border-radius:16px;color:var(--tx);box-shadow:none!important}
+.overlay .inp:focus{border-color:var(--neon)!important}
+
+/* админ-панель */
+.overlay .adm-tabs{background:var(--p2);border-radius:99px;padding:4px;gap:4px;margin:6px 0 10px}
+.overlay .adm-tab{border:0!important;border-radius:99px;background:transparent;color:var(--mut);padding:11px 8px;font-weight:800;font-size:14px;min-width:0;box-shadow:none!important}
+.overlay .adm-tab.active{background:var(--neon);color:var(--p1)}
+.overlay .a-row{display:grid!important;grid-template-columns:48px 1fr;gap:6px 12px;align-items:center;background:var(--p2)!important;border:0!important;border-radius:22px;padding:14px;margin-top:10px}
+.overlay .a-info{min-width:0}
+.overlay .a-info b{font-size:16px}
+.overlay .a-mail{font-size:13px;color:var(--mut);word-break:break-all}
+.overlay .a-btns{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.overlay .mini{border:0!important;border-radius:99px;background:var(--p3);color:var(--tx);padding:9px 14px;font-size:13px;font-weight:700}
+.overlay .mini.ban,.overlay .mini.delete{background:color-mix(in srgb,var(--red) 20%,var(--p3));color:var(--red)}
+.overlay .mini.unban{background:color-mix(in srgb,var(--neon) 20%,var(--p3));color:var(--neon)}
+.overlay .tag{border-radius:99px;font-size:11px;font-weight:800;letter-spacing:.04em;padding:4px 10px;background:var(--p3);border:0;color:var(--tx)}
+.overlay .tag.gold{background:rgba(255,211,77,.16);color:var(--gold)}
+.overlay .tag.red{background:rgba(255,97,97,.16);color:var(--red)}
+.overlay .tag.green{background:color-mix(in srgb,var(--neon) 16%,transparent);color:var(--neon)}
+.overlay .pick-row{background:var(--p2);border:0;border-radius:20px;padding:12px}
+.overlay .pick-name{font-weight:700}
+.overlay .pick-sub{color:var(--mut)}
+.overlay .about-box{background:var(--p2);border:0;border-radius:20px}
+.overlay .theme-opt{white-space:nowrap;padding:11px 6px;font-size:13.5px}

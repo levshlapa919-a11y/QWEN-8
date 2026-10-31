@@ -84,7 +84,8 @@
   // кнопка админа — в верхние действия
   function moveAdmin() { const a = Q('#btnAdmin'), act = Q('.side-actions'); if (a && act && !a.dataset.moved) { a.dataset.moved = 1; act.insertBefore(a, act.firstChild); } }
 
+  const cleanThemes = () => QA('.theme-opt').forEach(b => { if (!b.dataset.c) { b.dataset.c = 1; b.textContent = b.textContent.replace(/^[^\p{L}]+/u, '').trim(); } });
   applyAva();
-  const t = setInterval(() => { moveAdmin(); rebuildNeeded(); injectSettings(); }, 700);
+  const t = setInterval(() => { moveAdmin(); cleanThemes(); rebuildNeeded(); injectSettings(); }, 700);
   let built = false; function rebuildNeeded() { if (!built && Q('#appParticles')) { built = true; rebuildShapes(); } }
 })();
