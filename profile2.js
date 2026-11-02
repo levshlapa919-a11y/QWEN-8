@@ -17,7 +17,7 @@
     const e = im.dataset.e; if (im.dataset.t === '0' && /fe0f/.test(im.src)) { im.dataset.t = '1'; im.src = im.src.replace(/_fe0f/g, ''); return; }
     const sp = document.createElement('span'); sp.className = 'ae-fb'; sp.textContent = e; im.replaceWith(sp);
   }, true);
-  const gi = g => g.image_url ? `<img class="ae gi" alt="${E(g.name)}" src="${E(g.image_url)}" loading="lazy">` : ae(g.emoji);
+  const gi = g => g.image_url ? `<img class="ae gi" alt="${E(g.name)}" src="${E(g.image_url)}" loading="lazy">` : (window.giftSVG && window.giftSVG(g.name)) || ae(g.emoji);
   /* красивый фон подарка: свечение + узор из самой иконки (как у NFT) */
   const pat = em => { const t = `<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><g font-size='17' text-anchor='middle' opacity='.2'><text x='16' y='22'>${em}</text><text x='48' y='54'>${em}</text></g><g fill='white' opacity='.35'><circle cx='50' cy='14' r='1.4'/><circle cx='12' cy='50' r='1.4'/></g></svg>`; return "url('data:image/svg+xml," + encodeURIComponent(t).replace(/'/g, '%27') + "')"; };
   const bgOf = g => `radial-gradient(circle at 50% 36%,rgba(255,255,255,.42),rgba(255,255,255,0) 58%),${pat(g.emoji)},linear-gradient(160deg,${g.bg1},${g.bg2})`;

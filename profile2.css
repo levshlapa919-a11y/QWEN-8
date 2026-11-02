@@ -127,3 +127,6 @@ body.bot-sys #inputBar{display:none!important}
 .gs{background-image:linear-gradient(180deg,color-mix(in srgb,var(--g1) 22%,var(--p1)),var(--p1) 46%)}
 .gs-halo .ae,.gs-halo .ae-fb{animation:giFloat 3.2s ease-in-out infinite}
 @keyframes giFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+svg.ae.gi-svg{width:62px;height:62px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.35))}
+.gm-e svg.ae.gi-svg{width:78px;height:78px}
+.gs-halo svg.ae.gi-svg{width:176px;height:176px}
