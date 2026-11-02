@@ -17,16 +17,17 @@
     const e = im.dataset.e; if (im.dataset.t === '0' && /fe0f/.test(im.src)) { im.dataset.t = '1'; im.src = im.src.replace(/_fe0f/g, ''); return; }
     const sp = document.createElement('span'); sp.className = 'ae-fb'; sp.textContent = e; im.replaceWith(sp);
   }, true);
+  const gi = g => g.image_url ? `<img class="ae gi" alt="${E(g.name)}" src="${E(g.image_url)}" loading="lazy">` : gi(g);
   const say = (t, k) => { try { toast(t, k); } catch (e) { } };
 
   /* ---------- подарки: карточки ---------- */
   function giftCard(ug) {
     const g = ug.gifts || {};
-    return `<button type="button" class="gf ${g.kind === 'nft' ? 'nft' : ''} r-${E(g.rarity)}" data-ug="${E(ug.id)}" style="background:linear-gradient(160deg,${E(g.bg1)},${E(g.bg2)})"><span class="gf-e">${ae(g.emoji)}</span><span class="gf-n">${E(g.name)}</span>${ug.serial ? `<span class="gf-s">#${ug.serial}</span>` : ''}</button>`;
+    return `<button type="button" class="gf ${g.kind === 'nft' ? 'nft' : ''} r-${E(g.rarity)}" data-ug="${E(ug.id)}" style="background:linear-gradient(160deg,${E(g.bg1)},${E(g.bg2)})"><span class="gf-e">${gi(g)}</span><span class="gf-n">${E(g.name)}</span>${ug.serial ? `<span class="gf-s">#${ug.serial}</span>` : ''}</button>`;
   }
   async function loadGifts(uid, box, cnt) {
     box.innerHTML = '<div class="gf-empty">Загрузка…</div>';
-    const { data, error } = await sb.from('user_gifts').select('id,serial,msg,anon,hidden,created_at,from_id,owner_id,gifts(name,emoji,kind,supply,rarity,bg1,bg2,price)').eq('owner_id', uid).order('created_at', { ascending: false });
+    const { data, error } = await sb.from('user_gifts').select('id,serial,msg,anon,hidden,created_at,from_id,owner_id,gifts(name,emoji,kind,supply,rarity,bg1,bg2,price,image_url)').eq('owner_id', uid).order('created_at', { ascending: false });
     if (error || !data) { box.innerHTML = '<div class="gf-empty">Не удалось загрузить</div>'; return; }
     const list = uid === meId() ? data.slice() : data.filter(x => !x.hidden); box._d = list; if (cnt) cnt.textContent = list.length ? list.length : '';
     box.innerHTML = list.length ? list.map(giftCard).join('') : '<div class="gf-empty">Подарков пока нет 🎁</div>';
@@ -39,15 +40,16 @@
     const rows = [['От', ug.anon ? '<span class="gs-mut">Скрыто</span>' : `<span class="gs-who">${from ? avatarHTML(from, 's') : ''}<b>${E(from ? (from.display_name || from.username) : '—')}</b></span>`]];
     if (!mine) rows.push(['Кому', `<span class="gs-who">${to ? avatarHTML(to, 's') : ''}<b>${E(to ? (to.display_name || to.username) : '—')}</b></span>`]);
     rows.push(['Дата', E(dt(ug.created_at))], ['Стоимость', '💎 ' + fmt(g.price)]);
-    if (ug.serial) rows.push(['NFT', `#${ug.serial} из ${g.supply} · ${RAR[g.rarity] || ''}`]);
-    o.innerHTML = `<div class="gs" style="--g1:${E(g.bg1)};--g2:${E(g.bg2)}"><div class="gs-grab"></div><div class="gs-halo">${ae(g.emoji)}</div>
+    if (ug.serial) rows.push(['NFT', `#${ug.serial}${g.supply ? ' из ' + g.supply : ''} · ${RAR[g.rarity] || ''}`]);
+    o.innerHTML = `<div class="gs" style="--g1:${E(g.bg1)};--g2:${E(g.bg2)}"><div class="gs-grab"></div><div class="gs-halo">${gi(g)}</div>
       <div class="gs-t">${mine ? 'Подарок Вам' : 'Подарок для ' + E(to ? (to.display_name || to.username) : '')}</div><div class="gs-n">${E(g.name)}</div>
       ${ug.msg ? `<div class="gs-m">${E(ug.msg)}</div>` : ''}
       <div class="gs-tab">${rows.map(r => `<div class="gs-r"><div class="gs-k">${r[0]}</div><div class="gs-v">${r[1]}</div></div>`).join('')}</div>
       ${mine ? `<div class="gs-hide">Подарок ${ug.hidden ? 'скрыт из' : 'виден в'} вашем профиле. <button type="button" id="gsHide">${ug.hidden ? 'Показать' : 'Скрыть'} ›</button></div>` : ''}
-      <button class="gs-ok" type="button">OK</button></div>`;
+      <button class="gs-ok" type="button">OK</button>${mine ? '<button class="gs-del" type="button" id="gsDel">🗑 Удалить из профиля</button>' : ''}</div>`;
     o.onclick = async ev => {
       if (ev.target === o || ev.target.closest('.gs-ok')) return o.remove();
+      if (ev.target.id === 'gsDel') { const b = ev.target; if (!b.dataset.s) { b.dataset.s = 1; b.textContent = 'Точно удалить? Нажми ещё раз'; return; } const { error } = await sb.rpc('delete_gift', { p_id: ug.id }); if (!error) { say('Подарок удалён'); o.remove(); if (onChange) onChange(); } else say('Не удалось удалить', 'red'); return; }
       if (ev.target.id === 'gsHide') { const h = !ug.hidden; const { error } = await sb.rpc('hide_gift', { p_id: ug.id, p_hide: h }); if (!error) { ug.hidden = h; say(h ? 'Подарок скрыт из профиля' : 'Подарок снова в профиле'); o.remove(); if (onChange) onChange(); } }
     };
     document.body.appendChild(o);
@@ -65,14 +67,14 @@
   function giftMsgBody(ug) {
     if (!ug) return '<div class="gm-load">🎁 Подарок…</div>';
     const g = ug.gifts, to = who(ug.owner_id), from = who(ug.from_id);
-    return `<div class="gm" style="background:linear-gradient(160deg,${E(g.bg1)},${E(g.bg2)})"><div class="gm-e">${ae(g.emoji)}</div><div class="gm-i"><div class="gm-h">🎁 ${E(from ? (from.display_name || from.username) : '')} → ${E(to ? (to.display_name || to.username) : '')}</div><div class="gm-n">${E(g.name)}</div><div class="gm-s">${ug.serial ? `NFT #${ug.serial} из ${g.supply} · ` : ''}💎 ${fmt(g.price)}</div>${ug.msg ? `<div class="gm-t">${E(ug.msg)}</div>` : ''}</div></div>`;
+    return `<div class="gm" style="background:linear-gradient(160deg,${E(g.bg1)},${E(g.bg2)})"><div class="gm-e">${gi(g)}</div><div class="gm-i"><div class="gm-h">🎁 ${E(from ? (from.display_name || from.username) : '')} → ${E(to ? (to.display_name || to.username) : '')}</div><div class="gm-n">${E(g.name)}</div><div class="gm-s">${ug.serial ? `NFT #${ug.serial}${g.supply ? ' из ' + g.supply : ''} · ` : ''}💎 ${fmt(g.price)}</div>${ug.msg ? `<div class="gm-t">${E(ug.msg)}</div>` : ''}</div></div>`;
   }
   window.mediaHTML = function (md) { if (md && md.kind === 'gift') return `<div class="gift-msg" data-id="${E(md.id)}">${giftMsgBody(GC[md.id])}</div>`; return _mh(md); };
   window.previewOf = function (lm, chat) { const md = window.parseMedia(lm.content); if (md && md.kind === 'gift') return (lm.sender_id === meId() ? 'Вы: ' : '') + '🎁 Подарок'; return _pv(lm, chat); };
   async function hydrateGifts() {
     for (const el of document.querySelectorAll('.gift-msg')) {
       if (el.dataset.l) continue; el.dataset.l = 1;
-      const { data } = await sb.from('user_gifts').select('id,serial,msg,anon,hidden,created_at,from_id,owner_id,gifts(name,emoji,kind,supply,rarity,bg1,bg2,price)').eq('id', el.dataset.id).maybeSingle();
+      const { data } = await sb.from('user_gifts').select('id,serial,msg,anon,hidden,created_at,from_id,owner_id,gifts(name,emoji,kind,supply,rarity,bg1,bg2,price,image_url)').eq('id', el.dataset.id).maybeSingle();
       if (data) { GC[data.id] = data; el.innerHTML = giftMsgBody(data); el._ug = data; }
     }
   }
@@ -94,13 +96,19 @@
     function grid() {
       o.querySelector('#shGrid').innerHTML = gifts.filter(g => g.kind === tab).sort((a, b) => tab === 'nft' ? b.price - a.price : a.price - b.price).map(g => {
         const left = g.supply ? g.supply - g.sold : null, out = left !== null && left <= 0;
-        return `<button type="button" class="sg ${out ? 'out' : ''} ${sel && sel.id === g.id ? 'sel' : ''}" data-id="${g.id}" style="background:linear-gradient(160deg,${E(g.bg1)},${E(g.bg2)})"><span class="gf-e">${ae(g.emoji)}</span><span class="gf-n">${E(g.name)}</span><span class="sg-p">💎 ${fmt(g.price)}</span>${left !== null ? `<span class="gf-s">${out ? 'распродано' : 'осталось ' + left}</span>` : ''}</button>`;
+        return `<button type="button" class="sg ${out ? 'out' : ''} ${sel && sel.id === g.id ? 'sel' : ''}" data-id="${g.id}" style="background:linear-gradient(160deg,${E(g.bg1)},${E(g.bg2)})"><span class="gf-e">${gi(g)}</span><span class="gf-n">${E(g.name)}</span><span class="sg-p">💎 ${fmt(g.price)}</span>${left !== null ? `<span class="gf-s">${out ? 'распродано' : 'осталось ' + left}</span>` : ''}</button>`;
       }).join('');
     }
     function buy() {
       const b = o.querySelector('#shBuy');
       if (!sel) { b.innerHTML = '<div class="sh-hint">Выбери подарок</div>'; return; }
-      b.innerHTML = `<div class="sh-sel">${E(sel.emoji)} <b>${E(sel.name)}</b> — 💎 ${fmt(sel.price)}</div><input class="inp" id="shMsg" maxlength="200" placeholder="Добавить сообщение (необязательно)"><label class="sh-anon"><input type="checkbox" id="shAnon"> Скрыть, что это от меня</label><button class="btn primary" id="shGo" type="button">Подарить за 💎 ${fmt(sel.price)}</button>`;
+      b.innerHTML = `<div class="sh-sel">${E(sel.emoji)} <b>${E(sel.name)}</b> — 💎 ${fmt(sel.price)}</div><input class="inp" id="shMsg" maxlength="200" placeholder="Добавить сообщение (необязательно)"><label class="sh-anon"><input type="checkbox" id="shAnon"> Скрыть, что это от меня</label><button class="btn primary" id="shGo" type="button">Подарить за 💎 ${fmt(sel.price)}</button>${isOwner() ? '<button class="btn ghost" id="shIcon" type="button" style="margin-top:8px;width:100%">🖼 Задать иконку подарка</button><input type="file" id="shIconIn" accept="image/*" class="hidden">' : ''}`;
+      const ic = b.querySelector('#shIcon'); if (ic) { ic.onclick = () => b.querySelector('#shIconIn').click(); b.querySelector('#shIconIn').onchange = async ev => {
+        const f = ev.target.files[0]; if (!f) return; ic.disabled = true; ic.textContent = 'Загружаем…';
+        try { const path = 'gifts/' + sel.id + '_' + Date.now() + '.' + (f.name.split('.').pop() || 'png').toLowerCase(); const up = await sb.storage.from('avatars').upload(path, f, { upsert: true, contentType: f.type });
+          if (up.error) throw up.error; const url = sb.storage.from('avatars').getPublicUrl(path).data.publicUrl;
+          const r = await sb.rpc('owner_set_gift_image', { p_gift: sel.id, p_url: url }); if (!r.data) throw 0; sel.image_url = url; say('Иконка сохранена'); grid(); buy();
+        } catch (er) { ic.disabled = false; ic.textContent = '🖼 Задать иконку подарка'; say('Не удалось загрузить иконку', 'red'); } }; }
       b.querySelector('#shGo').onclick = async () => {
         const go = b.querySelector('#shGo'); go.disabled = true; go.textContent = 'Отправляем…';
         const { data, error } = await sb.rpc('send_gift', { p_gift: sel.id, p_to: uid, p_msg: b.querySelector('#shMsg').value, p_anon: b.querySelector('#shAnon').checked });

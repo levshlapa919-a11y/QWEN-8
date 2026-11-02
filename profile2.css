@@ -112,3 +112,6 @@ body.bot-sys #inputBar{display:none!important}
 .sh-grid .sg{min-height:122px;flex:none;justify-content:center}
 .gift-grid{grid-auto-rows:minmax(104px,max-content)}
 .gift-grid .gf{min-height:104px}
+.ae.gi{border-radius:12px}
+.gs-halo .ae.gi{border-radius:24px}
+.gs-del{margin-top:8px;width:100%;min-height:46px;border:0;border-radius:99px;background:transparent;color:var(--red);font:800 14px var(--font);cursor:pointer}
