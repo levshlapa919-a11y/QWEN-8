@@ -5,7 +5,8 @@
   const E = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const fmt = n => String(Math.floor(+n || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
   const GOLD = '00000000-0000-4000-8000-000000901d07', GOLDA = '00000000-0000-4000-8000-00000000b001', PRIME = '00000000-0000-4000-8000-00000000b002';
-  const OWNER = '03d24548-56f1-4329-a7f0-466c18b8a8c9';
+  const OWNERS = ['03d24548-56f1-4329-a7f0-466c18b8a8c9', '6c02c4d5-c674-432d-9a5c-86e31c465790'];
+  const isOwner = () => OWNERS.includes(meId());
   const BOTS = { [GOLD]: 'gold', [GOLDA]: 'golda', [PRIME]: 'prime' };
   const RAR = { common: 'Обычный', uncommon: 'Необычный', rare: 'Редкий', epic: 'Эпический', legendary: 'Легендарный' };
   const meId = () => (typeof ME !== 'undefined' && ME) ? ME.id : null;
@@ -27,8 +28,8 @@
     box.innerHTML = '<div class="gf-empty">Загрузка…</div>';
     const { data, error } = await sb.from('user_gifts').select('id,serial,msg,anon,hidden,created_at,from_id,owner_id,gifts(name,emoji,kind,supply,rarity,bg1,bg2,price)').eq('owner_id', uid).order('created_at', { ascending: false });
     if (error || !data) { box.innerHTML = '<div class="gf-empty">Не удалось загрузить</div>'; return; }
-    const list = uid === meId() ? data : data.filter(x => !x.hidden); data.length = 0; list.forEach(x => data.push(x)); box._d = data; if (cnt) cnt.textContent = data.length ? data.length : '';
-    box.innerHTML = data.length ? data.map(giftCard).join('') : '<div class="gf-empty">Подарков пока нет 🎁</div>';
+    const list = uid === meId() ? data.slice() : data.filter(x => !x.hidden); box._d = list; if (cnt) cnt.textContent = list.length ? list.length : '';
+    box.innerHTML = list.length ? list.map(giftCard).join('') : '<div class="gf-empty">Подарков пока нет 🎁</div>';
   }
   const who = id => (typeof PROFILES !== 'undefined' && PROFILES[id]) || (typeof USERS !== 'undefined' && USERS.find(u => u.id === id)) || null;
   const dt = d => new Date(d).toLocaleString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }).replace(',', ' в');
@@ -155,25 +156,29 @@
     };
   }
 
+  function ask(title, ph, val, cb) {
+    const o = document.createElement('div'); o.className = 'gs-ov';
+    o.innerHTML = `<div class="gs"><div class="gs-grab"></div><div class="gs-t" style="font-size:19px">${E(title)}</div><input class="inp" id="askIn" style="margin-top:14px;width:100%" placeholder="${E(ph)}" value="${E(val || '')}"><button class="gs-ok" type="button">Готово</button></div>`;
+    o.onclick = ev => { if (ev.target === o) return o.remove(); if (ev.target.closest('.gs-ok')) { const v = o.querySelector('#askIn').value; o.remove(); cb(v); } };
+    document.body.appendChild(o); setTimeout(() => o.querySelector('#askIn').focus(), 100);
+  }
   function ownerTools(u, hide) {
     let box = $('#uOwner');
     if (!box) { box = document.createElement('div'); box.id = 'uOwner'; box.className = 'tg-sec'; $('#uGiftSec').after(box); }
-    if (meId() !== OWNER || hide) { box.style.display = 'none'; return; }
+    if (!isOwner() || hide) { box.style.display = 'none'; return; }
     box.style.display = '';
-    box.innerHTML = '<div class="tg-sec-h">👑 Создатель</div><div class="ow-b"><button type="button" id="owTake">💰 Забрать голдышки</button><button type="button" id="owName">✏️ Сменить юзернейм</button></div><div class="ow-i" id="owInfo"></div>';
-    sb.from('gold_wallets').select('balance').eq('user_id', u.id).maybeSingle().then(r => { const i = $('#owInfo'); if (i) i.textContent = 'У пользователя: ' + fmt((r.data && r.data.balance) || 0) + ' голдышек'; });
-    $('#owTake').onclick = async () => {
-      const v = prompt('Сколько голдышек забрать у @' + u.username + '?'); if (v == null) return;
+    box.innerHTML = '<div class="tg-sec-h">👑 Создатель</div><div class="ow-b"><button type="button" id="owTake">💰 Забрать gold</button><button type="button" id="owName">✏️ Сменить юзернейм</button></div><div class="ow-i" id="owInfo"></div>';
+    sb.from('gold_wallets').select('balance').eq('user_id', u.id).maybeSingle().then(r => { const i = $('#owInfo'); if (i) i.textContent = 'У пользователя: ' + fmt((r.data && r.data.balance) || 0) + ' gold'; });
+    $('#owTake').onclick = () => ask('Сколько gold забрать у @' + u.username + '?', 'Например 500', '', async v => {
       const n = parseInt(String(v).replace(/\s/g, ''), 10); if (!(n > 0)) return say('Введи число больше нуля', 'red');
       const { data } = await sb.rpc('owner_take_gold', { p_user: u.id, p_amount: n });
-      if (data && data.ok) { say('Забрано ' + fmt(data.taken) + ' голдышек'); $('#owInfo').textContent = 'У пользователя: ' + fmt(data.balance) + ' голдышек'; } else say('Не получилось', 'red');
-    };
-    $('#owName').onclick = async () => {
-      const v = prompt('Новый юзернейм для @' + u.username + ' (латиница, цифры, _; 3–20)', u.username); if (v == null) return;
+      if (data && data.ok) { say('Забрано ' + fmt(data.taken) + ' gold'); $('#owInfo').textContent = 'У пользователя: ' + fmt(data.balance) + ' gold'; } else say('Не получилось', 'red');
+    });
+    $('#owName').onclick = () => ask('Новый юзернейм для @' + u.username, 'латиница, цифры, _ (3–20)', u.username, async v => {
       const { data } = await sb.rpc('owner_set_username', { p_user: u.id, p_name: v });
       if (data && data.ok) { u.username = data.username; if (typeof PROFILES !== 'undefined' && PROFILES[u.id]) PROFILES[u.id].username = data.username; $('#uUname').textContent = '@' + data.username; say('Юзернейм изменён'); }
       else say(data && data.error === 'taken' ? 'Этот юзернейм занят' : data && data.error === 'bad_name' ? 'Только латиница, цифры и _ (3–20)' : 'Не получилось', 'red');
-    };
+    });
   }
 
   /* ---------- мой профиль: баланс праймиков и подарки ---------- */
@@ -206,7 +211,7 @@
   function prefill(t) { const i = $('#msgInput'); i.value = t; i.dispatchEvent(new Event('input', { bubbles: true })); i.focus(); }
   let bet = 100;
   function menuItems(kind) {
-    const owner = meId() === OWNER;
+    const owner = isOwner();
     if (kind === 'gold') return [
       ['💰 Баланс', () => sendText('баланс')], ['🎁 Бонус', () => sendText('бонус')], ['🏆 Топ', () => sendText('топ')], ['❓ Помощь', () => sendText('помощь')],
       ['🔴 Красное', () => sendText('рулетка ' + bet + ' к')], ['⚫ Чёрное', () => sendText('рулетка ' + bet + ' ч')], ['🟢 Зеро', () => sendText('рулетка ' + bet + ' з')], ['💣 Мины', () => sendText('мины ' + bet)],
@@ -214,7 +219,7 @@
       ['💸 Перевод…', () => prefill('перевод @')]
     ].concat(owner ? [['✨ Выдать себе…', () => prefill('@megold ')]] : []);
     if (kind === 'prime') return [
-      ['💎 Баланс', () => sendText('баланс')], ['🧾 История', () => sendText('история')], ['🎁 Подарки', () => sendText('подарки')], ['❓ Помощь', () => sendText('помощь')], ['💸 Перевод…', () => prefill('перевод @')]
+      ['💎 Баланс', () => sendText('баланс')], ['🧾 История', () => sendText('история')], ['🎁 Подарки', () => sendText('подарки')], ['❓ Помощь', () => sendText('помощь')], ['🪙 Получить gold', () => sendText('купить')], ['💸 Перевод…', () => prefill('перевод @')]
     ].concat(owner ? [['✨ Выдать…', () => prefill('праймики @')]] : []);
     return [];
   }
