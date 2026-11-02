@@ -68,3 +68,41 @@ body.in-bot #callAudioBtn,body.in-bot #callVideoBtn{display:none!important}
 body.bot-sys #inputBar{display:none!important}
 #botSysNote{text-align:center;color:var(--mut);font-size:13px;padding:12px 14px calc(var(--sab,0px) + 12px)}
 #userOverlay.tg-prof #uWrite{display:none}#userOverlay.tg-prof .row-btns{margin:14px 14px 0}#userOverlay.tg-prof #uBlock{width:100%}
+
+/* анимированные эмодзи */
+.ae{width:52px;height:52px;object-fit:contain;display:block;filter:drop-shadow(0 3px 6px rgba(0,0,0,.35))}
+.ae-fb{font-size:42px;line-height:1.1;display:inline-block;animation:aeBob 2.2s ease-in-out infinite}
+@keyframes aeBob{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-5px) rotate(4deg)}}
+.gf-e{display:flex;justify-content:center}
+/* карточка подарка в чате */
+.gift-msg{margin:2px 0 4px}
+.gm-load{padding:10px;color:var(--mut)}
+.gm{display:flex;gap:12px;align-items:center;border-radius:20px;padding:12px 16px 12px 10px;color:#fff;min-width:230px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.16);cursor:pointer;position:relative;overflow:hidden}
+.gm-e .ae{width:78px;height:78px}.gm-e .ae-fb{font-size:62px}
+.gm-h{font-size:12px;opacity:.9;font-weight:700}
+.gm-n{font-size:18px;font-weight:800;margin-top:2px;text-shadow:0 1px 3px rgba(0,0,0,.4)}
+.gm-s{font-size:12.5px;font-weight:800;margin-top:3px;opacity:.95}
+.gm-t{margin-top:6px;background:rgba(0,0,0,.25);border-radius:12px;padding:5px 9px;font-size:13px}
+/* окно подарка (как в Telegram) */
+.gs-ov{position:fixed;inset:0;z-index:320;background:rgba(0,0,0,.55);display:flex;align-items:flex-end;justify-content:center;animation:gsFade .2s}
+@keyframes gsFade{from{opacity:0}}
+.gs{width:min(520px,100%);max-height:94dvh;overflow-y:auto;background:var(--p1);border-radius:28px 28px 0 0;padding:10px 18px calc(var(--sab,0px) + 18px);animation:bmUp .28s cubic-bezier(.2,.9,.3,1);text-align:center}
+.gs-grab{width:42px;height:4px;border-radius:9px;background:var(--line2);margin:0 auto 6px}
+.gs-halo{width:210px;height:210px;margin:6px auto 0;display:flex;align-items:center;justify-content:center;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--g1) 55%,transparent),transparent 68%)}
+.gs-halo .ae{width:170px;height:170px;filter:drop-shadow(0 10px 18px rgba(0,0,0,.45))}.gs-halo .ae-fb{font-size:130px}
+.gs-t{font-size:26px;font-weight:800;margin-top:6px}
+.gs-n{color:var(--mut);margin-top:4px;font-size:15px}
+.gs-m{margin:10px auto 0;max-width:90%;background:var(--p3);border-radius:14px;padding:9px 12px;font-size:14px}
+.gs-tab{margin-top:18px;border:1px solid var(--line2);border-radius:18px;overflow:hidden;text-align:left}
+.gs-r{display:flex;border-top:1px solid var(--line2)}.gs-r:first-child{border-top:0}
+.gs-k{width:36%;padding:15px 14px;font-weight:800;border-right:1px solid var(--line2)}
+.gs-v{flex:1;padding:15px 14px;display:flex;align-items:center;font-size:16px;min-width:0}
+.gs-who{display:flex;align-items:center;gap:9px;min-width:0}.gs-who b{color:var(--neon);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gs-who .ava{width:30px!important;height:30px!important;font-size:13px!important;border-radius:50%!important}
+.gs-mut{color:var(--mut)}
+.gs-hide{margin-top:14px;font-size:14px;color:var(--mut)}.gs-hide button{border:0;background:none;color:var(--neon);font:800 14px var(--font);cursor:pointer}
+.gs-ok{margin-top:16px;width:100%;min-height:54px;border:0;border-radius:99px;background:var(--neon);color:var(--p1);font:800 17px var(--font);cursor:pointer}
+/* создатель */
+.ow-b{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ow-b button{border:0;border-radius:14px;background:var(--p3);color:var(--tx);padding:12px 6px;font:800 13px var(--font);cursor:pointer}
+.ow-i{margin-top:8px;font-size:13px;color:var(--mut)}
