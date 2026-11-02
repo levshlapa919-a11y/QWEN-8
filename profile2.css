@@ -106,3 +106,9 @@ body.bot-sys #inputBar{display:none!important}
 .ow-b{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .ow-b button{border:0;border-radius:14px;background:var(--p3);color:var(--tx);padding:12px 6px;font:800 13px var(--font);cursor:pointer}
 .ow-i{margin-top:8px;font-size:13px;color:var(--mut)}
+
+/* магазин: плитки не сжимаются, когда их много */
+.sh-grid{grid-auto-rows:minmax(122px,max-content);align-content:start}
+.sh-grid .sg{min-height:122px;flex:none;justify-content:center}
+.gift-grid{grid-auto-rows:minmax(104px,max-content)}
+.gift-grid .gf{min-height:104px}
