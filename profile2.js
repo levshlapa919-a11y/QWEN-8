@@ -17,7 +17,7 @@
     const e = im.dataset.e; if (im.dataset.t === '0' && /fe0f/.test(im.src)) { im.dataset.t = '1'; im.src = im.src.replace(/_fe0f/g, ''); return; }
     const sp = document.createElement('span'); sp.className = 'ae-fb'; sp.textContent = e; im.replaceWith(sp);
   }, true);
-  const gi = g => g.image_url ? `<img class="ae gi" alt="${E(g.name)}" src="${E(g.image_url)}" loading="lazy">` : gi(g);
+  const gi = g => g.image_url ? `<img class="ae gi" alt="${E(g.name)}" src="${E(g.image_url)}" loading="lazy">` : ae(g.emoji);
   const say = (t, k) => { try { toast(t, k); } catch (e) { } };
 
   /* ---------- подарки: карточки ---------- */
