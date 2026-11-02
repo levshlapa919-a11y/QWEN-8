@@ -1,0 +1,11 @@
+.mines-card{width:min(300px,72vw);margin:2px 0 4px}
+.mn-head{font-size:14px;line-height:1.4;margin-bottom:8px}
+.mn-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.mn-c{aspect-ratio:1;border:0;border-radius:14px;background:color-mix(in srgb,var(--p3) 90%,#fff 6%);font-size:18px;line-height:1;padding:0;cursor:pointer;color:var(--tx);transition:transform .12s,background .2s;display:flex;align-items:center;justify-content:center}
+.mn-c.closed:not(:disabled):active{transform:scale(.9)}
+.mn-c.ok{background:color-mix(in srgb,var(--neon) 28%,var(--p3))}
+.mn-c.bomb{background:color-mix(in srgb,var(--red) 30%,var(--p3))}
+.mn-c.dim{opacity:.55}
+.mn-c:disabled{cursor:default}
+.mn-cash{display:block;width:100%;margin-top:8px;min-height:44px;border:0;border-radius:99px;background:color-mix(in srgb,var(--red) 70%,#000);color:#fff;font:800 15px var(--font);cursor:pointer}
+.mn-cash:disabled{background:var(--p3);color:var(--mut);cursor:default}
