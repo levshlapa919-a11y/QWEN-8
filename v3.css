@@ -187,3 +187,16 @@ body[data-theme="blue"]{--glass:rgba(8,18,32,.74);--glow:0 0 22px rgba(60,140,25
 .m-file.big{cursor:default}
 .m-file.big .bg-btns{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
 .m-file.big .bg-btns button{border:0;border-radius:99px;background:var(--neon);color:var(--p1);font:800 13px var(--font);padding:8px 14px;cursor:pointer}
+
+/* ===== не даём широкому шрифту раздувать экран: кнопки всегда на месте ===== */
+@media (max-width:900px){
+  .app{grid-template-columns:minmax(0,1fr)!important}
+  .side,.main{min-width:0;max-width:100vw;overflow-x:hidden}
+}
+.side-head{min-width:0}
+.side-brand{min-width:0;flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:clamp(15px,5vw,22px)!important}
+.side-actions{flex:none;display:flex;gap:6px}
+.side-actions .icon-btn{flex:none}
+.search,.me{min-width:0;max-width:100%}
+.me-name{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.me .icon-btn{flex:none}
