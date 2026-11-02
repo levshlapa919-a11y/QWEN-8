@@ -130,3 +130,16 @@ body.bot-sys #inputBar{display:none!important}
 svg.ae.gi-svg{width:62px;height:62px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.35))}
 .gm-e svg.ae.gi-svg{width:78px;height:78px}
 .gs-halo svg.ae.gi-svg{width:176px;height:176px}
+
+/* NFT-иконки живые: плавают и поблёскивают */
+.gf.nft svg.ae,.sg svg.ae{animation:nftFloat 3.4s ease-in-out infinite}
+.gf.nft:nth-child(2n) svg.ae,.sg:nth-child(2n) svg.ae{animation-delay:-1.2s}.gf.nft:nth-child(3n) svg.ae,.sg:nth-child(3n) svg.ae{animation-delay:-2.2s}
+@keyframes nftFloat{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-4px) rotate(2deg)}}
+.gs-halo svg.ae.gi-svg{animation:nftFloatBig 3.6s ease-in-out infinite}
+@keyframes nftFloatBig{0%,100%{transform:translateY(0) rotate(-3deg) scale(1)}50%{transform:translateY(-10px) rotate(3deg) scale(1.04)}}
+.gs-ow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.gs-ow button{border:0;border-radius:14px;background:var(--p3);color:var(--tx);padding:12px;font:800 13px var(--font);cursor:pointer}
+/* Юпик */
+.yp{margin-left:6px;font-size:12.5px;font-weight:800;color:#ffb02e;white-space:nowrap}
+.yp.dim,.yp-h.dim{filter:grayscale(1);opacity:.65}
+.yp-h{margin-left:8px;font-size:12px;font-weight:800;background:rgba(255,176,46,.16);color:#ffb02e;border-radius:99px;padding:2px 8px;white-space:nowrap}

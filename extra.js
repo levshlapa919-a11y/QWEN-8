@@ -182,10 +182,18 @@
     registered = !error;
   }
   async function heartbeat() {
-    if (!SID || !registered || !ME) return;
+    if (!ME) return;
+    const cur = await getSid();
+    if (!cur) return;
+    if (cur !== SID || !registered) { await registerDevice(); return; }   /* сменился аккаунт/сеанс — просто перерегистрируем, никого не выкидываем */
     const { data, error } = await sb.from('user_devices').select('session_id').eq('session_id', SID).maybeSingle();
     if (error) return;
-    if (!data) { registered = false; tst('Этот сеанс завершён на другом устройстве', 'red'); try { await sb.auth.signOut(); } catch (e) { } setTimeout(() => location.reload(), 900); return; }
+    if (!data) {
+      /* строки нет: выходим только если сервер сам признал сеанс недействительным */
+      const u = await sb.auth.getUser();
+      if (u && u.error && /session|jwt|not found|expired/i.test(String(u.error.message || ''))) { registered = false; tst('Этот сеанс завершён на другом устройстве', 'red'); try { await sb.auth.signOut(); } catch (e) { } setTimeout(() => location.reload(), 900); return; }
+      await registerDevice(); return;
+    }
     sb.from('user_devices').update({ last_active: new Date().toISOString() }).eq('session_id', SID).then(() => { });
   }
   const icon = n => /iPhone|Android/.test(n) ? '📱' : '💻';

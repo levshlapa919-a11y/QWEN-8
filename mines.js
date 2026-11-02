@@ -82,20 +82,24 @@
       _og(chat);
       try {
         const list = document.getElementById('giList'); if (!list) return;
-        const old = document.getElementById('giAddBot'); if (old) old.remove();
-        if (chat.type !== 'group' || chat.members.some(m => m.id === BOT)) return;
-        const b = document.createElement('button');
-        b.id = 'giAddBot'; b.type = 'button'; b.className = 'btn primary'; b.style.margin = '12px 0 4px';
-        b.textContent = '🪙 Добавить Gold Bot в группу';
-        b.onclick = async () => {
-          b.disabled = true;
-          const { error } = await sb.rpc('add_gold_bot', { p_chat: chat.id });
-          if (error) { b.disabled = false; b.textContent = 'Не удалось, попробуй ещё раз'; return; }
-          try { await loadChats(); } catch (e) { }
-          document.getElementById('groupInfoOverlay').classList.remove('open');
-          if (typeof toast === 'function') toast('Gold Bot в группе! Напиши «помощь» 🪙');
-        };
-        list.after(b);
+        document.querySelectorAll('.giAddBot').forEach(x => x.remove());
+        if (chat.type !== 'group') return;
+        const PRIME = '00000000-0000-4000-8000-00000000b002';
+        [[BOT, '🪙 Добавить Gold Bot в группу'], [PRIME, '💎 Добавить Праймики в группу']].forEach(([id, label]) => {
+          if (chat.members.some(m => m.id === id)) return;
+          const b = document.createElement('button');
+          b.className = 'btn primary giAddBot'; b.type = 'button'; b.style.margin = '10px 0 0'; b.style.width = '100%';
+          b.textContent = label;
+          b.onclick = async () => {
+            b.disabled = true;
+            const { error } = await sb.rpc('add_chat_bot', { p_chat: chat.id, p_bot: id });
+            if (error) { b.disabled = false; b.textContent = 'Не удалось, попробуй ещё раз'; return; }
+            try { await loadChats(); } catch (e) { }
+            document.getElementById('groupInfoOverlay').classList.remove('open');
+            if (typeof toast === 'function') toast('Бот добавлен! Напиши «помощь» 🪙');
+          };
+          list.after(b);
+        });
       } catch (e) { }
     };
   }

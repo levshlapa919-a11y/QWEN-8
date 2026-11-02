@@ -1,6 +1,8 @@
 <!doctype html>
 <html lang="ru">
 <head>
+<script>try{for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(/^sb-.*-auth-token$/.test(k)&&localStorage.getItem(k)){document.documentElement.classList.add('has-session');break}}}catch(e){}</script>
+<style>html.has-session #authScreen,html.has-session #welcome,html.has-session #setupScreen{display:none!important}html.has-session body{background:#0b1f2a}</style>
 <meta charset="utf-8">
 <script>try{document.documentElement.setAttribute("data-ui",localStorage.getItem("golda_ui")||"new")}catch(e){document.documentElement.setAttribute("data-ui","new")}</script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -273,7 +275,7 @@ body[data-theme="light"] .settings-row{background:rgba(0,0,0,.02)}
 <link rel="stylesheet" href="polish.css?v=2">
 <link rel="stylesheet" href="extra.css?v=1">
 <link rel="stylesheet" href="mines.css?v=1">
-<link rel="stylesheet" href="profile2.css?v=7">
+<link rel="stylesheet" href="profile2.css?v=8">
 </head>
 <body data-theme="dark">
 <div class="bg-grid"></div><div class="orb o1"></div><div class="orb o2"></div>
@@ -698,7 +700,7 @@ function hideUpdateScreen(){$('#updateScreen').classList.remove('show');}
 async function checkOwnerUpdateFlag(){if(!ME||ME.email===OWNER_EMAIL)return;const {data:owner}=await sb.from('profiles').select('about').eq('email',OWNER_EMAIL).maybeSingle();if(owner&&owner.about==='__UPDATING__')showUpdateScreen();else hideUpdateScreen();}
 function checkUpdateFlag(profile){if(profile&&profile.id){const u=USERS.find(x=>x.id===profile.id);if(u&&u.email===OWNER_EMAIL){if(ME&&ME.email!==OWNER_EMAIL){if(profile.about==='__UPDATING__')showUpdateScreen();else hideUpdateScreen();}}}}
 
-function showOnly(screen){$('#authScreen').classList.toggle('hidden',screen!=='auth');$('#setupScreen').classList.toggle('hidden',screen!=='setup');$('#app').classList.toggle('hidden',screen!=='app');}
+function showOnly(screen){if(screen!=='app')document.documentElement.classList.remove('has-session');$('#authScreen').classList.toggle('hidden',screen!=='auth');$('#setupScreen').classList.toggle('hidden',screen!=='setup');$('#app').classList.toggle('hidden',screen!=='app');}
 
 let mode='login';
 function setMode(m){mode=m;$('#tabLogin').classList.toggle('active',m==='login');$('#tabReg').classList.toggle('active',m==='reg');$('#unameWrap').classList.toggle('hidden',m!=='reg');$('#authSubmit').textContent=m==='login'?'Войти':'Создать аккаунт';$('#authMsg').textContent='';}
@@ -855,7 +857,7 @@ function fallbackNotif(title,opts){try{const n=new Notification(title,opts);n.on
 
 function playNotifSound(){try{const ctx=new (window.AudioContext||window.webkitAudioContext)();const osc=ctx.createOscillator();const gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);osc.frequency.value=800;osc.type='sine';gain.gain.setValueAtTime(0.3,ctx.currentTime);gain.gain.exponentialRampToValueAtTime(0.01,ctx.currentTime+0.3);osc.start(ctx.currentTime);osc.stop(ctx.currentTime+0.3);}catch(e){}}
 
-(async function boot(){try{const {data:{session}}=await sb.auth.getSession();if(session)await enterApp();else showOnly('auth');}catch(err){console.error(err);showOnly('auth');}})();
+(async function boot(){try{const {data:{session}}=await sb.auth.getSession();if(session)await enterApp();else showOnly('auth');}catch(err){console.error(err);showOnly('auth');}setTimeout(function(){if($('#app').classList.contains('hidden'))document.documentElement.classList.remove('has-session');},8000);})();
 </script>
 <script src="push.js?v=4"></script>
 <script src="call.js?v=2"></script>
@@ -865,9 +867,10 @@ function playNotifSound(){try{const ctx=new (window.AudioContext||window.webkitA
 <script src="scream.js?v=2"></script>
 <script src="auth.js?v=2"></script>
 <script src="slim.js?v=2"></script>
-<script src="extra.js?v=1"></script>
-<script src="mines.js?v=2"></script>
-<script src="gifticons.js?v=1"></script>
-<script src="profile2.js?v=7"></script>
+<script src="extra.js?v=2"></script>
+<script src="mines.js?v=3"></script>
+<script src="gifticons.js?v=2"></script>
+<script src="profile2.js?v=8"></script>
+<script src="resume.js?v=1"></script>
 </body>
 </html>

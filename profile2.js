@@ -17,7 +17,7 @@
     const e = im.dataset.e; if (im.dataset.t === '0' && /fe0f/.test(im.src)) { im.dataset.t = '1'; im.src = im.src.replace(/_fe0f/g, ''); return; }
     const sp = document.createElement('span'); sp.className = 'ae-fb'; sp.textContent = e; im.replaceWith(sp);
   }, true);
-  const gi = g => g.image_url ? `<img class="ae gi" alt="${E(g.name)}" src="${E(g.image_url)}" loading="lazy">` : (window.giftSVG && window.giftSVG(g.name)) || ae(g.emoji);
+  const gi = g => g.image_url ? `<img class="ae gi" alt="${E(g.name)}" src="${E(g.image_url)}" loading="lazy">` : (g.kind === 'nft' && window.giftSVG && window.giftSVG(g.name)) || ae(g.emoji);
   /* красивый фон подарка: свечение + узор из самой иконки (как у NFT) */
   const pat = em => { const t = `<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><g font-size='17' text-anchor='middle' opacity='.2'><text x='16' y='22'>${em}</text><text x='48' y='54'>${em}</text></g><g fill='white' opacity='.35'><circle cx='50' cy='14' r='1.4'/><circle cx='12' cy='50' r='1.4'/></g></svg>`; return "url('data:image/svg+xml," + encodeURIComponent(t).replace(/'/g, '%27') + "')"; };
   const bgOf = g => `radial-gradient(circle at 50% 36%,rgba(255,255,255,.42),rgba(255,255,255,0) 58%),${pat(g.emoji)},linear-gradient(160deg,${g.bg1},${g.bg2})`;
@@ -49,9 +49,10 @@
       ${ug.msg ? `<div class="gs-m">${E(ug.msg)}</div>` : ''}
       <div class="gs-tab">${rows.map(r => `<div class="gs-r"><div class="gs-k">${r[0]}</div><div class="gs-v">${r[1]}</div></div>`).join('')}</div>
       ${mine ? `<div class="gs-hide">Подарок ${ug.hidden ? 'скрыт из' : 'виден в'} вашем профиле. <button type="button" id="gsHide">${ug.hidden ? 'Показать' : 'Скрыть'} ›</button></div>` : ''}
-      <button class="gs-ok" type="button">OK</button>${mine ? '<button class="gs-del" type="button" id="gsDel">🗑 Удалить из профиля</button>' : ''}</div>`;
+      <button class="gs-ok" type="button">OK</button>${mine ? '<button class="gs-del" type="button" id="gsDel">🗑 Удалить из профиля</button>' : (isOwner() ? '<div class="gs-ow"><button type="button" id="gsOwTake">👑 Забрать себе</button><button type="button" id="gsOwDel">🗑 Удалить</button></div>' : '')}</div>`;
     o.onclick = async ev => {
       if (ev.target === o || ev.target.closest('.gs-ok')) return o.remove();
+      if (ev.target.id === 'gsOwDel' || ev.target.id === 'gsOwTake') { const take = ev.target.id === 'gsOwTake'; const { data } = await sb.rpc(take ? 'owner_take_gift' : 'owner_delete_gift', { p_id: ug.id }); if (data) { say(take ? 'Подарок теперь у тебя' : 'Подарок удалён'); o.remove(); if (onChange) onChange(); } else say('Не получилось', 'red'); return; }
       if (ev.target.id === 'gsDel') { const b = ev.target; if (!b.dataset.s) { b.dataset.s = 1; b.textContent = 'Точно удалить? Нажми ещё раз'; return; } const { error } = await sb.rpc('delete_gift', { p_id: ug.id }); if (!error) { say('Подарок удалён'); o.remove(); if (onChange) onChange(); } else say('Не удалось удалить', 'red'); return; }
       if (ev.target.id === 'gsHide') { const h = !ug.hidden; const { error } = await sb.rpc('hide_gift', { p_id: ug.id, p_hide: h }); if (!error) { ug.hidden = h; say(h ? 'Подарок скрыт из профиля' : 'Подарок снова в профиле'); o.remove(); if (onChange) onChange(); } }
     };
@@ -178,12 +179,17 @@
     if (!box) { box = document.createElement('div'); box.id = 'uOwner'; box.className = 'tg-sec'; $('#uGiftSec').after(box); }
     if (!isOwner() || hide) { box.style.display = 'none'; return; }
     box.style.display = '';
-    box.innerHTML = '<div class="tg-sec-h">👑 Создатель</div><div class="ow-b"><button type="button" id="owTake">💰 Забрать gold</button><button type="button" id="owName">✏️ Сменить юзернейм</button></div><div class="ow-i" id="owInfo"></div>';
+    box.innerHTML = '<div class="tg-sec-h">👑 Создатель</div><div class="ow-b"><button type="button" id="owTake">💰 Забрать gold</button><button type="button" id="owName">✏️ Сменить юзернейм</button><button type="button" id="owPrime">💎 Забрать праймики</button></div><div class="ow-i" id="owInfo"></div>';
     sb.from('gold_wallets').select('balance').eq('user_id', u.id).maybeSingle().then(r => { const i = $('#owInfo'); if (i) i.textContent = 'У пользователя: ' + fmt((r.data && r.data.balance) || 0) + ' gold'; });
     $('#owTake').onclick = () => ask('Сколько gold забрать у @' + u.username + '?', 'Например 500', '', async v => {
       const n = parseInt(String(v).replace(/\s/g, ''), 10); if (!(n > 0)) return say('Введи число больше нуля', 'red');
       const { data } = await sb.rpc('owner_take_gold', { p_user: u.id, p_amount: n });
       if (data && data.ok) { say('Забрано ' + fmt(data.taken) + ' gold'); $('#owInfo').textContent = 'У пользователя: ' + fmt(data.balance) + ' gold'; } else say('Не получилось', 'red');
+    });
+    $('#owPrime').onclick = () => ask('Сколько праймиков забрать у @' + u.username + '?', 'Например 10', '', async v => {
+      const n = parseInt(String(v).replace(/\s/g, ''), 10); if (!(n > 0)) return say('Введи число больше нуля', 'red');
+      const { data } = await sb.rpc('owner_take_prime', { p_user: u.id, p_amount: n });
+      if (data && data.ok) say('Забрано ' + fmt(data.taken) + ' праймиков'); else say('Не получилось', 'red');
     });
     $('#owName').onclick = () => ask('Новый юзернейм для @' + u.username, 'латиница, цифры, _ (3–20)', u.username, async v => {
       const { data } = await sb.rpc('owner_set_username', { p_user: u.id, p_name: v });
@@ -230,7 +236,7 @@
       ['💸 Перевод…', () => prefill('перевод @')]
     ].concat(owner ? [['✨ Выдать себе…', () => prefill('@megold ')]] : []);
     if (kind === 'prime') return [
-      ['💎 Баланс', () => sendText('баланс')], ['🧾 История', () => sendText('история')], ['🎁 Подарки', () => sendText('подарки')], ['❓ Помощь', () => sendText('помощь')], ['🪙 Получить gold', () => sendText('купить')], ['💸 Перевод…', () => prefill('перевод @')]
+      ['💎 Баланс', () => sendText('баланс')], ['🧾 История', () => sendText('история')], ['🎁 Подарки', () => sendText('подарки')], ['❓ Помощь', () => sendText('помощь')], ['🪙 Получить gold', () => sendText('купить')], ['💱 Обмен ×1', () => sendText('обмен 1')], ['💱 Обмен ×5', () => sendText('обмен 5')], ['💱 Курс', () => sendText('курс')], ['💸 Перевод…', () => prefill('перевод @')]
     ].concat(owner ? [['✨ Выдать…', () => prefill('праймики @')]] : []);
     return [];
   }
@@ -256,4 +262,29 @@
     else if (note) note.remove();
   }
   setInterval(tickBot, 500);
+
+  /* ---------- Юпик: огонёк за ежедневную переписку ---------- */
+  const STREAK = {};
+  const msk = off => new Date(Date.now() + 3 * 3600e3 + off * 864e5).toISOString().slice(0, 10);
+  async function loadStreaks() {
+    if (!meId()) return;
+    const { data } = await sb.from('chat_streak').select('chat_id,streak,last_day'); if (!data) return;
+    const t = msk(0), y = msk(-1);
+    data.forEach(r => { STREAK[r.chat_id] = (r.last_day && r.last_day >= y && r.streak > 0) ? { n: r.streak, today: r.last_day === t } : null; });
+    paintStreaks();
+  }
+  function paintStreaks() {
+    document.querySelectorAll('.chat-item').forEach(el => {
+      const st = STREAK[el.dataset.id], nm = el.querySelector('.ci-name'); if (!nm) return;
+      let b = nm.querySelector('.yp'); if (!st) { if (b) b.remove(); return; }
+      if (!b) { b = document.createElement('span'); b.className = 'yp'; nm.appendChild(b); }
+      b.textContent = '🔥' + st.n; b.classList.toggle('dim', !st.today);
+    });
+    const st = typeof CURRENT !== 'undefined' && CURRENT ? STREAK[CURRENT] : null, nm = document.querySelector('.h-name');
+    if (nm) { let b = nm.querySelector('.yp-h'); if (!st) { if (b) b.remove(); } else { if (!b) { b = document.createElement('span'); b.className = 'yp-h'; nm.appendChild(b); } b.textContent = '🔥 Юпик ' + st.n; b.title = 'Юпик: ' + st.n + ' дн. подряд — пишите друг другу каждый день'; b.classList.toggle('dim', !st.today); } }
+  }
+  setInterval(() => { if (document.visibilityState === 'visible') loadStreaks(); }, 40000);
+  setInterval(paintStreaks, 1500);
+  setTimeout(loadStreaks, 2500);
+  window.refreshYupik = loadStreaks;
 })();
