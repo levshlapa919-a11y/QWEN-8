@@ -143,3 +143,15 @@ svg.ae.gi-svg{width:62px;height:62px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.35
 .yp{margin-left:6px;font-size:12.5px;font-weight:800;color:#ffb02e;white-space:nowrap}
 .yp.dim,.yp-h.dim{filter:grayscale(1);opacity:.65}
 .yp-h{margin-left:8px;font-size:12px;font-weight:800;background:rgba(255,176,46,.16);color:#ffb02e;border-radius:99px;padding:2px 8px;white-space:nowrap}
+.yp-chip{display:inline-flex;align-items:center;gap:4px;margin-top:3px;border:0;border-radius:99px;padding:2px 10px;font:700 12px var(--font);background:rgba(255,255,255,.08);color:var(--mut);cursor:pointer;filter:grayscale(.8)}
+.yp-chip.on{background:rgba(255,160,40,.2);color:#ffb02e;filter:none;animation:ypPulse 2s ease-in-out infinite}
+.yp-chip.warn{background:rgba(255,160,40,.12);color:#e0a050;filter:grayscale(.3)}
+@keyframes ypPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,176,46,.0)}50%{box-shadow:0 0 12px 2px rgba(255,176,46,.45)}}
+.yp-big{font-size:84px;line-height:1.1;text-align:center;animation:giFloat 2s ease-in-out infinite}
+
+/* NFT: яркий контур, свечение, голографический перелив */
+svg.gi-svg [fill^="url(#a"],svg.gi-svg [fill^="url(#b"]{stroke:var(--ol);stroke-width:2.6;stroke-linejoin:round;paint-order:stroke}
+svg.ae.gi-svg{filter:drop-shadow(0 0 7px color-mix(in srgb,var(--gl) 70%,transparent)) drop-shadow(0 4px 8px rgba(0,0,0,.35))}
+svg.ae.gi-svg.holo{animation-name:nftFloat,holoShift;animation-duration:3.4s,6s;animation-iteration-count:infinite,infinite;animation-timing-function:ease-in-out,linear}
+@keyframes holoShift{0%,100%{filter:drop-shadow(0 0 9px rgba(255,120,220,.8)) hue-rotate(0deg)}50%{filter:drop-shadow(0 0 12px rgba(120,160,255,.9)) hue-rotate(35deg)}}
+.gs-halo svg.ae.gi-svg.holo{animation-name:nftFloatBig,holoShift}

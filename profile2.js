@@ -96,7 +96,7 @@
       <div class="sh-grid" id="shGrid"></div>
       <div class="sh-buy" id="shBuy"></div>`;
     document.body.appendChild(o);
-    const paintBal = () => o.querySelector('#shBal').textContent = '💎 ' + fmt(bal);
+    const paintBal = () => { o.querySelector('#shBal').innerHTML = '💎 ' + fmt(bal) + ' <button type="button" id="shEx" style="border:0;background:var(--neon);color:var(--p1);border-radius:99px;padding:2px 9px;font:800 12px var(--font);margin-left:4px;cursor:pointer">＋ обмен</button>'; const x = o.querySelector('#shEx'); if (x) x.onclick = ev => { ev.stopPropagation(); openExchange(() => sb.from('prime_wallets').select('balance').maybeSingle().then(r => { bal = (r.data && r.data.balance) || 0; paintBal(); })); }; };
     function grid() {
       o.querySelector('#shGrid').innerHTML = gifts.filter(g => g.kind === tab).sort((a, b) => tab === 'nft' ? b.price - a.price : a.price - b.price).map(g => {
         const left = g.supply ? g.supply - g.sold : null, out = left !== null && left <= 0;
@@ -198,6 +198,19 @@
     });
   }
 
+  function openExchange(done) {
+    sb.from('gold_wallets').select('balance').eq('user_id', meId()).maybeSingle().then(r => {
+      const g = (r.data && r.data.balance) || 0, max = Math.floor(g / 5000);
+      ask('Обмен: сколько праймиков получить? (у тебя ' + fmt(g) + ' gold — хватит на ' + fmt(max) + ')', 'Например 2 (за 10 000 gold)', max > 0 ? '1' : '', async v => {
+        const n = parseInt(String(v).replace(/\s/g, ''), 10); if (!(n > 0)) return say('Введи число больше нуля', 'red');
+        const { data } = await sb.rpc('exchange_gold', { p_primes: n });
+        if (data && data.ok) { say('Обменяно: +' + fmt(n) + ' 💎'); if (done) done(); const b = $('#shBal'); if (b) b.textContent = '💎 ' + fmt(data.prime); }
+        else say(data && data.error === 'no_gold' ? 'Не хватает gold: нужно ' + fmt(n * 5000) : 'Не получилось', 'red');
+      });
+    });
+  }
+  window.openGoldExchange = openExchange;
+
   /* ---------- мой профиль: баланс праймиков и подарки ---------- */
   const _om = window.openMyProfile;
   if (typeof _om === 'function') {
@@ -207,13 +220,15 @@
         const modal = ov.querySelector('.modal'); let sec = $('#mGiftSec');
         if (!sec) {
           sec = document.createElement('div'); sec.id = 'mGiftSec'; sec.className = 'tg-sec';
-          sec.innerHTML = '<div class="tg-sec-h">💎 Праймики: <b id="mPrime">…</b></div><div class="tg-sec-h" style="margin-top:14px">🎁 Мои подарки <span id="mGiftCnt" class="tg-cnt"></span></div><div class="gift-grid" id="mGifts"></div>';
+          sec.innerHTML = '<div class="tg-sec-h">🪙 Gold: <b id="mGold">…</b></div><div class="tg-sec-h" style="margin-top:6px">💎 Праймики: <b id="mPrime">…</b></div><button type="button" class="btn primary" id="mExch" style="width:100%;margin:6px 0 4px">💱 Обменять gold на праймики</button><div class="ow-i">Курс: 5 000 gold = 1 праймик</div><div class="tg-sec-h" style="margin-top:14px">🎁 Мои подарки <span id="mGiftCnt" class="tg-cnt"></span></div><div class="gift-grid" id="mGifts"></div>';
           modal.querySelector('.pf-ava').after(sec);
           const sg = document.createElement('button'); sg.type = 'button'; sg.className = 'btn ghost'; sg.id = 'mGiftSelf'; sg.style.cssText = 'margin-top:12px;width:100%';
           sg.textContent = '🎁 Подарить подарок себе'; sg.onclick = () => openShop(meId()); sec.appendChild(sg);
         }
         loadGifts(meId(), $('#mGifts'), $('#mGiftCnt'));
-        sb.from('prime_wallets').select('balance').maybeSingle().then(r => { $('#mPrime').textContent = fmt((r.data && r.data.balance) || 0); });
+        const refBal = () => { sb.from('prime_wallets').select('balance').maybeSingle().then(r => { const e = $('#mPrime'); if (e) e.textContent = fmt((r.data && r.data.balance) || 0); }); sb.from('gold_wallets').select('balance').eq('user_id', meId()).maybeSingle().then(r => { const e = $('#mGold'); if (e) e.textContent = fmt((r.data && r.data.balance) || 0); }); };
+        refBal(); window._refBal = refBal;
+        const eb = $('#mExch'); if (eb) eb.onclick = () => openExchange(refBal);
       } catch (e) { console.error(e); }
     };
   }
@@ -268,23 +283,43 @@
   const msk = off => new Date(Date.now() + 3 * 3600e3 + off * 864e5).toISOString().slice(0, 10);
   async function loadStreaks() {
     if (!meId()) return;
-    const { data } = await sb.from('chat_streak').select('chat_id,streak,last_day'); if (!data) return;
+    const { data } = await sb.from('chat_streak').select('chat_id,streak,last_day,pend_day,pend_users'); if (!data) return;
     const t = msk(0), y = msk(-1);
-    data.forEach(r => { STREAK[r.chat_id] = (r.last_day && r.last_day >= y && r.streak > 0) ? { n: r.streak, today: r.last_day === t } : null; });
+    data.forEach(r => { const alive = r.last_day && r.last_day >= y && r.streak > 0; STREAK[r.chat_id] = { n: alive ? r.streak : 0, today: r.last_day === t, me: r.pend_day === t && (r.pend_users || []).includes(meId()), other: r.pend_day === t && (r.pend_users || []).some(x => x !== meId()) }; });
     paintStreaks();
+  }
+  function streakChat() {
+    if (typeof CHATS === 'undefined' || typeof CURRENT === 'undefined' || !CURRENT) return null;
+    const c = CHATS.find(x => x.id === CURRENT); if (!c || c.type !== 'direct') return null;
+    const o = (c.members || []).find(m => m.id !== meId()); return o && !BOTS[o.id] ? { c, o } : null;
   }
   function paintStreaks() {
     document.querySelectorAll('.chat-item').forEach(el => {
       const st = STREAK[el.dataset.id], nm = el.querySelector('.ci-name'); if (!nm) return;
-      let b = nm.querySelector('.yp'); if (!st) { if (b) b.remove(); return; }
+      let b = nm.querySelector('.yp'); if (!st || !st.n) { if (b) b.remove(); return; }
       if (!b) { b = document.createElement('span'); b.className = 'yp'; nm.appendChild(b); }
       b.textContent = '🔥' + st.n; b.classList.toggle('dim', !st.today);
     });
-    const st = typeof CURRENT !== 'undefined' && CURRENT ? STREAK[CURRENT] : null, nm = document.querySelector('.h-name');
-    if (nm) { let b = nm.querySelector('.yp-h'); if (!st) { if (b) b.remove(); } else { if (!b) { b = document.createElement('span'); b.className = 'yp-h'; nm.appendChild(b); } b.textContent = '🔥 Юпик ' + st.n; b.title = 'Юпик: ' + st.n + ' дн. подряд — пишите друг другу каждый день'; b.classList.toggle('dim', !st.today); } }
+    const sc = streakChat(), box = document.querySelector('#headInfo > div:last-child');
+    let ch = document.getElementById('ypChip');
+    if (!sc || !box) { if (ch) ch.remove(); return; }
+    const st = STREAK[CURRENT] || { n: 0 };
+    if (!ch) { ch = document.createElement('button'); ch.id = 'ypChip'; ch.type = 'button'; box.appendChild(ch); ch.onclick = ev => { ev.stopPropagation(); showYupik(); }; }
+    ch.className = 'yp-chip' + (st.n && st.today ? ' on' : st.n ? ' warn' : '');
+    ch.innerHTML = '🔥 <b>Юпик</b> ' + (st.n || 0) + (st.n ? ' ' + (st.n % 10 === 1 && st.n !== 11 ? 'день' : (st.n % 10 >= 2 && st.n % 10 <= 4 && (st.n < 12 || st.n > 14) ? 'дня' : 'дней')) : '');
   }
-  setInterval(() => { if (document.visibilityState === 'visible') loadStreaks(); }, 40000);
-  setInterval(paintStreaks, 1500);
-  setTimeout(loadStreaks, 2500);
+  function showYupik() {
+    const sc = streakChat(); if (!sc) return; const st = STREAK[CURRENT] || { n: 0 };
+    const name = E(sc.o.display_name || sc.o.username);
+    const o = document.createElement('div'); o.className = 'gs-ov';
+    o.innerHTML = `<div class="gs"><div class="gs-grab"></div><div class="yp-big">🔥</div><div class="gs-t">Юпик: ${st.n || 0}</div><div class="gs-n">Пишите друг другу каждый день — огонёк растёт. Пропустите день — он погаснет.</div>
+      <div class="gs-tab"><div class="gs-r"><div class="gs-k">Ты</div><div class="gs-v">${st.me ? '✅ написал(а) сегодня' : '⏳ ещё не писал(а)'}</div></div><div class="gs-r"><div class="gs-k">${name}</div><div class="gs-v">${st.other ? '✅ написал(а) сегодня' : '⏳ ещё не писал(а)'}</div></div></div>
+      <button class="gs-ok" type="button">Понятно</button></div>`;
+    o.onclick = ev => { if (ev.target === o || ev.target.closest('.gs-ok')) o.remove(); };
+    document.body.appendChild(o);
+  }
+  setInterval(() => { if (document.visibilityState === 'visible') loadStreaks(); }, 30000);
+  setInterval(paintStreaks, 1000);
+  setTimeout(loadStreaks, 2000);
   window.refreshYupik = loadStreaks;
 })();

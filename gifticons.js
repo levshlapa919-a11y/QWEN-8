@@ -5,7 +5,7 @@
     gold: ['#fff4b0', '#f6b928', '#a8610a'], silver: ['#ffffff', '#c7d2e2', '#76869f'], ruby: ['#ffb8c6', '#f0305c', '#8a0f2e'],
     sapph: ['#c4e6ff', '#3d8df2', '#173f80'], emer: ['#c9ffdc', '#2fcf74', '#0b6b3a'], amet: ['#ecd0ff', '#a05df2', '#4b1f96'],
     rose: ['#ffd3e8', '#f362ab', '#8b1c5b'], aqua: ['#cafcff', '#2fc8de', '#0b6b82'], copper: ['#ffd6b0', '#ec8440', '#8c3b0d'],
-    peach: ['#ffe6cf', '#ff9b6e', '#c24f2b'], ink: ['#8a90ab', '#2f3450', '#12141f']
+    peach: ['#ffe6cf', '#ff9b6e', '#c24f2b'], ink: ['#8a90ab', '#2f3450', '#12141f'], holo: ['#ffd6f6', '#9a6bff', '#2a2fd0']
   };
   const M = {
     crown: '<path d="M16 72 L11 32 L33 52 L50 22 L67 52 L89 32 L84 72 Z" fill="url(#A)"/><rect x="16" y="70" width="68" height="14" rx="5" fill="url(#B)"/><circle cx="50" cy="62" r="6" fill="#ff4f78"/><circle cx="29" cy="62" r="4.2" fill="#5fd0ff"/><circle cx="71" cy="62" r="4.2" fill="#5fd0ff"/><path d="M22 66 L19 42 L33 56 L50 32" stroke="url(#W)" stroke-width="3.2" fill="none" stroke-linecap="round"/>',
@@ -80,7 +80,7 @@
     bear: '<circle cx="24" cy="26" r="14" fill="url(#B)"/><circle cx="76" cy="26" r="14" fill="url(#B)"/><circle cx="50" cy="56" r="36" fill="url(#A)"/><ellipse cx="50" cy="66" rx="16" ry="12" fill="#fff" fill-opacity=".55"/><circle cx="38" cy="50" r="4" fill="#222"/><circle cx="62" cy="50" r="4" fill="#222"/><ellipse cx="50" cy="62" rx="5" ry="3.6" fill="#3a2418"/><path d="M50 66 V70 M44 72 Q50 76 56 72" stroke="#3a2418" stroke-width="2" fill="none" stroke-linecap="round"/>'
   };
   const MAP = {
-    'Plush Pepe': ['frog', 'emer'], 'Vintage Cigar': ['cigar', 'copper'], 'Voodoo Doll': ['voodoo', 'peach'], 'Kissed Frog': ['prince', 'emer'], 'Sharp Tongue': ['tongue', 'rose'],
+    'Plush Pepe': ['frog', 'holo'], 'Vintage Cigar': ['cigar', 'copper'], 'Voodoo Doll': ['voodoo', 'peach'], 'Kissed Frog': ['prince', 'emer'], 'Sharp Tongue': ['tongue', 'rose'],
     'Santa Hat': ['santa', 'ruby'], 'Big Year': ['burst', 'gold'], 'Snoop Dogg': ['dog', 'copper'], 'Flying Broom': ['broom', 'copper'], 'Witch Hat': ['witch', 'amet'],
     'Record Player': ['vinyl', 'gold'], 'Tama Gadget': ['gadget', 'rose'], 'Mad Pumpkin': ['pumpkin', 'peach'], 'Westside Sign': ['wsign', 'sapph'], 'Low Rider': ['car', 'ruby'],
     'Candy Cane': ['candycane', 'ruby'], 'Jester Hat': ['jester', 'amet'], 'Holiday Drink': ['mug', 'copper'], 'Spiced Wine': ['wine', 'ruby'], 'Desk Calendar': ['calendar', 'sapph'],
@@ -99,6 +99,7 @@
     'Pet Snake': ['snake', 'amet'], 'Whip Cupcake': ['cake', 'amet'], 'Sleigh Bell': ['bell', 'gold'], 'Ice Cream': ['icecream', 'rose'], 'Toy Bear': ['bear', 'copper'],
     'Алмаз': ['gem', 'aqua'], 'Корона': ['crown', 'gold'], 'Галактика': ['orb', 'sapph'], 
   };
+  const LEG = ['Plush Pepe', 'Heart Locket', "Durov's Cap", 'Precious Peach', 'Heroic Helmet', 'Astral Shard', 'Mini Oscar', 'Perfume Bottle', 'Eternal Rose', 'Алмаз', 'Корона', 'Единорог', 'Феникс', 'Дракон', 'Галактика', 'Золотая Голда', 'Призрак'];
   let N = 0;
   function svg(name) {
     const m = MAP[name]; if (!m) return null; const p = PAL[m[1]], u = 'i' + (++N);
@@ -106,7 +107,10 @@
     if (body === '@frogcrown') body = M.frog + '<path d="M30 20 L32 4 L42 14 L50 0 L58 14 L68 4 L70 20 Z" fill="#ffd34d" stroke="#a8610a" stroke-width="2"/>';
     if (body === '@bead') { body = '<circle cx="50" cy="50" r="30" fill="none" stroke="url(#B)" stroke-width="4"/>'; for (let i = 0; i < 12; i++) { const a = i / 12 * 6.2832, x = 50 + 30 * Math.cos(a), y = 50 + 30 * Math.sin(a); body += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${i % 3 === 0 ? 8 : 6}" fill="url(#A)"/>`; } body += '<path d="M44 48 L50 38 L56 48 Z" fill="url(#W)" opacity=".7"/>'; }
     body = body.replace(/#A\)/g, '#a' + u + ')').replace(/#B\)/g, '#b' + u + ')').replace(/#W\)/g, '#w' + u + ')').replace(/#G\)/g, '#g' + u + ')').replace(/#R\)/g, '#r' + u + ')');
-    return `<svg class="ae gi-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="a${u}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${p[0]}"/><stop offset=".55" stop-color="${p[1]}"/><stop offset="1" stop-color="${p[2]}"/></linearGradient><linearGradient id="b${u}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${p[1]}"/><stop offset="1" stop-color="${p[2]}"/></linearGradient><linearGradient id="w${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient><linearGradient id="g${u}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".5" stop-color="#8fd8ff"/><stop offset="1" stop-color="#2a7ee0"/></linearGradient><radialGradient id="r${u}" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset=".35" stop-color="${p[0]}" stop-opacity=".75"/><stop offset="1" stop-color="${p[2]}"/></radialGradient></defs><ellipse cx="50" cy="94" rx="28" ry="3.6" fill="#000" opacity=".25"/>${body}</svg>`;
+    const holo = m[1] === 'holo', cls = 'ae gi-svg' + (LEG.includes(name) ? ' holo' : ''), rot = (d, o) => `<animateTransform attributeName="gradientTransform" type="rotate" from="${o} .5 .5" to="${o + 360} .5 .5" dur="${d}s" repeatCount="indefinite"/>`;
+    const stopsA = holo ? `<stop offset="0" stop-color="#ff7ad0"/><stop offset=".35" stop-color="#a06bff"/><stop offset=".7" stop-color="#4a6bff"/><stop offset="1" stop-color="#29d3ff"/>` : `<stop offset="0" stop-color="${p[0]}"/><stop offset=".55" stop-color="${p[1]}"/><stop offset="1" stop-color="${p[2]}"/>`;
+    const spk = (x, y, sc, dly) => `<path transform="translate(${x} ${y}) scale(${sc})" d="M0 -9 L2.4 -2.4 L9 0 L2.4 2.4 L0 9 L-2.4 2.4 L-9 0 L-2.4 -2.4 Z" fill="#fff"><animate attributeName="opacity" values="0;1;0" dur="2.6s" begin="${dly}s" repeatCount="indefinite"/></path>`;
+    return `<svg class="${cls}" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="--ol:${p[2]};--gl:${p[1]}"><defs><linearGradient id="a${u}" x1="0" y1="0" x2="1" y2="1">${stopsA}${rot(holo ? 5 : 9, 0)}</linearGradient><linearGradient id="b${u}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${p[1]}"/><stop offset="1" stop-color="${p[2]}"/>${rot(12, 90)}</linearGradient><linearGradient id="w${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient><linearGradient id="g${u}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".5" stop-color="#8fd8ff"/><stop offset="1" stop-color="#2a7ee0"/></linearGradient><radialGradient id="r${u}" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset=".35" stop-color="${p[0]}" stop-opacity=".75"/><stop offset="1" stop-color="${p[2]}"/></radialGradient></defs><ellipse cx="50" cy="94" rx="28" ry="3.6" fill="#000" opacity=".25"/>${body}${spk(88, 14, .8, 0)}${spk(10, 30, .6, .9)}${spk(84, 70, .5, 1.7)}</svg>`;
   }
   window.giftSVG = svg; window.GIFT_ICON_NAMES = Object.keys(MAP);
 })();
