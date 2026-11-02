@@ -18,12 +18,15 @@
     const sp = document.createElement('span'); sp.className = 'ae-fb'; sp.textContent = e; im.replaceWith(sp);
   }, true);
   const gi = g => g.image_url ? `<img class="ae gi" alt="${E(g.name)}" src="${E(g.image_url)}" loading="lazy">` : ae(g.emoji);
+  /* красивый фон подарка: свечение + узор из самой иконки (как у NFT) */
+  const pat = em => { const t = `<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><g font-size='17' text-anchor='middle' opacity='.2'><text x='16' y='22'>${em}</text><text x='48' y='54'>${em}</text></g><g fill='white' opacity='.35'><circle cx='50' cy='14' r='1.4'/><circle cx='12' cy='50' r='1.4'/></g></svg>`; return "url('data:image/svg+xml," + encodeURIComponent(t).replace(/'/g, '%27') + "')"; };
+  const bgOf = g => `radial-gradient(circle at 50% 36%,rgba(255,255,255,.42),rgba(255,255,255,0) 58%),${pat(g.emoji)},linear-gradient(160deg,${g.bg1},${g.bg2})`;
   const say = (t, k) => { try { toast(t, k); } catch (e) { } };
 
   /* ---------- подарки: карточки ---------- */
   function giftCard(ug) {
     const g = ug.gifts || {};
-    return `<button type="button" class="gf ${g.kind === 'nft' ? 'nft' : ''} r-${E(g.rarity)}" data-ug="${E(ug.id)}" style="background:linear-gradient(160deg,${E(g.bg1)},${E(g.bg2)})"><span class="gf-e">${gi(g)}</span><span class="gf-n">${E(g.name)}</span>${ug.serial ? `<span class="gf-s">#${ug.serial}</span>` : ''}</button>`;
+    return `<button type="button" class="gf ${g.kind === 'nft' ? 'nft' : ''} r-${E(g.rarity)}" data-ug="${E(ug.id)}" style="background:${bgOf(g)}"><span class="gf-e">${gi(g)}</span><span class="gf-n">${E(g.name)}</span>${ug.serial ? `<span class="gf-s">#${ug.serial}</span>` : ''}</button>`;
   }
   async function loadGifts(uid, box, cnt) {
     box.innerHTML = '<div class="gf-empty">Загрузка…</div>';
@@ -41,7 +44,7 @@
     if (!mine) rows.push(['Кому', `<span class="gs-who">${to ? avatarHTML(to, 's') : ''}<b>${E(to ? (to.display_name || to.username) : '—')}</b></span>`]);
     rows.push(['Дата', E(dt(ug.created_at))], ['Стоимость', '💎 ' + fmt(g.price)]);
     if (ug.serial) rows.push(['NFT', `#${ug.serial}${g.supply ? ' из ' + g.supply : ''} · ${RAR[g.rarity] || ''}`]);
-    o.innerHTML = `<div class="gs" style="--g1:${E(g.bg1)};--g2:${E(g.bg2)}"><div class="gs-grab"></div><div class="gs-halo">${gi(g)}</div>
+    o.innerHTML = `<div class="gs" style="--g1:${E(g.bg1)};--g2:${E(g.bg2)};--pt:${bgOf(g)}"><div class="gs-grab"></div><div class="gs-halo">${gi(g)}</div>
       <div class="gs-t">${mine ? 'Подарок Вам' : 'Подарок для ' + E(to ? (to.display_name || to.username) : '')}</div><div class="gs-n">${E(g.name)}</div>
       ${ug.msg ? `<div class="gs-m">${E(ug.msg)}</div>` : ''}
       <div class="gs-tab">${rows.map(r => `<div class="gs-r"><div class="gs-k">${r[0]}</div><div class="gs-v">${r[1]}</div></div>`).join('')}</div>
@@ -67,7 +70,7 @@
   function giftMsgBody(ug) {
     if (!ug) return '<div class="gm-load">🎁 Подарок…</div>';
     const g = ug.gifts, to = who(ug.owner_id), from = who(ug.from_id);
-    return `<div class="gm" style="background:linear-gradient(160deg,${E(g.bg1)},${E(g.bg2)})"><div class="gm-e">${gi(g)}</div><div class="gm-i"><div class="gm-h">🎁 ${E(from ? (from.display_name || from.username) : '')} → ${E(to ? (to.display_name || to.username) : '')}</div><div class="gm-n">${E(g.name)}</div><div class="gm-s">${ug.serial ? `NFT #${ug.serial}${g.supply ? ' из ' + g.supply : ''} · ` : ''}💎 ${fmt(g.price)}</div>${ug.msg ? `<div class="gm-t">${E(ug.msg)}</div>` : ''}</div></div>`;
+    return `<div class="gm r-${E(g.rarity)}" style="background:${bgOf(g)}"><div class="gm-e">${gi(g)}</div><div class="gm-i"><div class="gm-h">🎁 ${E(from ? (from.display_name || from.username) : '')} → ${E(to ? (to.display_name || to.username) : '')}</div><div class="gm-n">${E(g.name)}</div><div class="gm-s">${ug.serial ? `NFT #${ug.serial}${g.supply ? ' из ' + g.supply : ''} · ` : ''}💎 ${fmt(g.price)}</div>${ug.msg ? `<div class="gm-t">${E(ug.msg)}</div>` : ''}</div></div>`;
   }
   window.mediaHTML = function (md) { if (md && md.kind === 'gift') return `<div class="gift-msg" data-id="${E(md.id)}">${giftMsgBody(GC[md.id])}</div>`; return _mh(md); };
   window.previewOf = function (lm, chat) { const md = window.parseMedia(lm.content); if (md && md.kind === 'gift') return (lm.sender_id === meId() ? 'Вы: ' : '') + '🎁 Подарок'; return _pv(lm, chat); };
@@ -96,7 +99,7 @@
     function grid() {
       o.querySelector('#shGrid').innerHTML = gifts.filter(g => g.kind === tab).sort((a, b) => tab === 'nft' ? b.price - a.price : a.price - b.price).map(g => {
         const left = g.supply ? g.supply - g.sold : null, out = left !== null && left <= 0;
-        return `<button type="button" class="sg ${out ? 'out' : ''} ${sel && sel.id === g.id ? 'sel' : ''}" data-id="${g.id}" style="background:linear-gradient(160deg,${E(g.bg1)},${E(g.bg2)})"><span class="gf-e">${gi(g)}</span><span class="gf-n">${E(g.name)}</span><span class="sg-p">💎 ${fmt(g.price)}</span>${left !== null ? `<span class="gf-s">${out ? 'распродано' : 'осталось ' + left}</span>` : ''}</button>`;
+        return `<button type="button" class="sg r-${E(g.rarity)} ${out ? 'out' : ''} ${sel && sel.id === g.id ? 'sel' : ''}" data-id="${g.id}" style="background:${bgOf(g)}"><span class="gf-e">${gi(g)}</span><span class="gf-n">${E(g.name)}</span><span class="sg-p">💎 ${fmt(g.price)}</span>${left !== null ? `<span class="gf-s">${out ? 'распродано' : 'осталось ' + left}</span>` : ''}</button>`;
       }).join('');
     }
     function buy() {
