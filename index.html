@@ -619,7 +619,7 @@ body[data-theme="light"] .settings-row{background:rgba(0,0,0,.02)}
 'use strict';
 const SUPABASE_URL='https://zuxvcqdttptahwinlnpz.supabase.co';
 const SUPABASE_ANON_KEY='sb_publishable_crUm-uK9Hs0o_xgD5eVdyg_TaOgO3lH';
-const sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{lock:async function(n,t,fn){return await fn();}}});
 const OWNER_EMAIL='levshlapa919@gmail.com';
 const SCREAM_IMAGE='https://i.imgur.com/8QzJk9g.jpeg';
 const SCREAM_AUDIO='https://www.myinstants.com/media/sounds/jeff-the-killer-scream.mp3';
@@ -863,7 +863,7 @@ function fallbackNotif(title,opts){try{const n=new Notification(title,opts);n.on
 
 function playNotifSound(){try{const ctx=new (window.AudioContext||window.webkitAudioContext)();const osc=ctx.createOscillator();const gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);osc.frequency.value=800;osc.type='sine';gain.gain.setValueAtTime(0.3,ctx.currentTime);gain.gain.exponentialRampToValueAtTime(0.01,ctx.currentTime+0.3);osc.start(ctx.currentTime);osc.stop(ctx.currentTime+0.3);}catch(e){}}
 
-(async function boot(){try{const {data:{session}}=await sb.auth.getSession();if(session)await enterApp();else showOnly('auth');}catch(err){console.error(err);showOnly('auth');}setTimeout(function(){if($('#app').classList.contains('hidden'))document.documentElement.classList.remove('has-session');},8000);})();
+(async function boot(){try{const gs=await Promise.race([sb.auth.getSession(),new Promise(r=>setTimeout(()=>r(null),7000))]);if(gs===null){window.__errs&&window.__errs.push('getSession timeout');showOnly('auth');}else if(gs.data.session)await Promise.race([enterApp(),new Promise(r=>setTimeout(r,12000))]);else showOnly('auth');}catch(err){console.error(err);showOnly('auth');}setTimeout(function(){if($('#app').classList.contains('hidden'))document.documentElement.classList.remove('has-session');},8000);})();
 </script>
 <script>setTimeout(function(){try{var app=document.getElementById('app');var up=document.getElementById('updateScreen');var ok=(app&&!app.classList.contains('hidden')&&getComputedStyle(app).display!=='none')||(up&&up.classList.contains('show'));
 if(!ok){document.documentElement.classList.remove('has-session');var er=(window.__errs||[]).slice(0,3).join(' | ');var d=document.createElement('div');d.style.cssText='position:fixed;inset:0;z-index:99999;background:#0b1230;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center;font:16px system-ui,sans-serif';
