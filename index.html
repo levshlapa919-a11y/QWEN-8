@@ -609,6 +609,10 @@ body[data-theme="light"] .settings-row{background:rgba(0,0,0,.02)}
 <div id="toasts"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>if(!window.supabase)document.write('<script src="https://fastly.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"><\/script>')</script>
+<script>if(!window.supabase)document.write('<script src="https://unpkg.com/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"><\/script>')</script>
+<script>if(!window.supabase)document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/supabase-js/2.39.3/umd/supabase.min.js"><\/script>')</script>
+<script>if(!window.supabase)document.write('<script src="https://gcore.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"><\/script>')</script>
 <script>
 'use strict';
 const SUPABASE_URL='https://zuxvcqdttptahwinlnpz.supabase.co';
@@ -859,6 +863,7 @@ function playNotifSound(){try{const ctx=new (window.AudioContext||window.webkitA
 
 (async function boot(){try{const {data:{session}}=await sb.auth.getSession();if(session)await enterApp();else showOnly('auth');}catch(err){console.error(err);showOnly('auth');}setTimeout(function(){if($('#app').classList.contains('hidden'))document.documentElement.classList.remove('has-session');},8000);})();
 </script>
+<script>setTimeout(function(){try{var u=document.getElementById('updateScreen');if(u&&getComputedStyle(u).display!=='none'&&u.offsetParent!==null){var t=u.querySelector('.update-sub');if(t)t.innerHTML=(window.supabase?'Загрузка затянулась.':'Не удаётся загрузить библиотеку (сеть или провайдер блокирует).')+' Проверь интернет/VPN и <a href="#" onclick="location.reload();return false" style="color:#9bb4ff">перезагрузи</a>.'}}catch(e){}},12000)</script>
 <script src="push.js?v=4"></script>
 <script src="call.js?v=2"></script>
 <script src="features.js?v=3"></script>
@@ -869,7 +874,7 @@ function playNotifSound(){try{const ctx=new (window.AudioContext||window.webkitA
 <script src="slim.js?v=2"></script>
 <script src="extra.js?v=2"></script>
 <script src="mines.js?v=3"></script>
-<script src="gifticons.js?v=4"></script>
+<script src="gifticons.js?v=5"></script>
 <script src="profile2.js?v=9"></script>
 <script src="resume.js?v=1"></script>
 </body>

@@ -1,5 +1,5 @@
 /* golda-mesenger service worker: push + офлайн-оболочка */
-const CACHE = 'golda-shell-v22';
+const CACHE = 'golda-shell-v24';
 const SHELL = ['./', './index.html', './manifest.json', './mobile.css', './push.js', './icon-192.png'];
 
 self.addEventListener('install', e => {
@@ -26,7 +26,13 @@ self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
-  if (url.origin !== location.origin) return; // supabase, шрифты и т.д. не трогаем
+  if (url.origin !== location.origin) {
+    // библиотека supabase-js с CDN: кладём в кэш, чтобы дальше работала даже если CDN недоступен
+    if (/(jsdelivr|unpkg|cdnjs)/.test(url.hostname)) {
+      e.respondWith(caches.match(req).then(hit => hit || fetch(req).then(res => { if (res.ok) { const c2 = res.clone(); caches.open(CACHE).then(c => c.put(req, c2)).catch(() => {}); } return res; })));
+    }
+    return;
+  }
   e.respondWith(
     fetch(req).then(res => {
       const copy = res.clone();
