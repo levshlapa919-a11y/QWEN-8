@@ -2,6 +2,8 @@
 <html lang="ru">
 <head>
 <script>try{for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(/^sb-.*-auth-token$/.test(k)&&localStorage.getItem(k)){document.documentElement.classList.add('has-session');break}}}catch(e){}</script>
+<script>window.__errs=[];window.addEventListener('error',function(e){try{window.__errs.push((e.message||'err')+' '+(e.filename||'').split('/').pop()+':'+(e.lineno||''))}catch(_){}} ,true);window.addEventListener('unhandledrejection',function(e){try{window.__errs.push('promise: '+(e.reason&&e.reason.message||e.reason))}catch(_){}});window.__reset=function(){try{(navigator.serviceWorker?navigator.serviceWorker.getRegistrations():Promise.resolve([])).then(function(r){return Promise.all(r.map(function(x){return x.unregister()}))}).then(function(){return window.caches?caches.keys().then(function(k){return Promise.all(k.map(function(x){return caches.delete(x)}))}):0}).then(function(){location.replace(location.pathname+'?r='+Date.now())},function(){location.reload()})}catch(e){location.reload()}};</script>
+
 <style>html.has-session #authScreen,html.has-session #welcome,html.has-session #setupScreen{display:none!important}html.has-session body{background:#0b1f2a}</style>
 <meta charset="utf-8">
 <script>try{document.documentElement.setAttribute("data-ui",localStorage.getItem("golda_ui")||"new")}catch(e){document.documentElement.setAttribute("data-ui","new")}</script>
@@ -863,7 +865,9 @@ function playNotifSound(){try{const ctx=new (window.AudioContext||window.webkitA
 
 (async function boot(){try{const {data:{session}}=await sb.auth.getSession();if(session)await enterApp();else showOnly('auth');}catch(err){console.error(err);showOnly('auth');}setTimeout(function(){if($('#app').classList.contains('hidden'))document.documentElement.classList.remove('has-session');},8000);})();
 </script>
-<script>setTimeout(function(){try{var u=document.getElementById('updateScreen');if(u&&getComputedStyle(u).display!=='none'&&u.offsetParent!==null){var t=u.querySelector('.update-sub');if(t)t.innerHTML=(window.supabase?'Загрузка затянулась.':'Не удаётся загрузить библиотеку (сеть или провайдер блокирует).')+' Проверь интернет/VPN и <a href="#" onclick="location.reload();return false" style="color:#9bb4ff">перезагрузи</a>.'}}catch(e){}},12000)</script>
+<script>setTimeout(function(){try{var app=document.getElementById('app');var up=document.getElementById('updateScreen');var ok=(app&&!app.classList.contains('hidden')&&getComputedStyle(app).display!=='none')||(up&&up.classList.contains('show'));
+if(!ok){document.documentElement.classList.remove('has-session');var er=(window.__errs||[]).slice(0,3).join(' | ');var d=document.createElement('div');d.style.cssText='position:fixed;inset:0;z-index:99999;background:#0b1230;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center;font:16px system-ui,sans-serif';
+d.innerHTML='<div style="font-size:42px">⚠️</div><div style="font-size:18px;font-weight:700">Сайт не загрузился</div><div style="opacity:.8">'+(window.supabase?'Загрузка затянулась.':'Не грузится библиотека с сервера (сеть/провайдер/VPN).')+'</div><button onclick="location.reload()" style="padding:12px 22px;border:0;border-radius:14px;background:#7b9bff;font-weight:700;font-size:16px">Перезагрузить</button><button onclick="__reset()" style="padding:12px 22px;border:1px solid #7b9bff;border-radius:14px;background:none;color:#fff;font-size:16px">Сбросить кэш</button>'+(er?'<small style="opacity:.6;word-break:break-all;max-width:90%">'+er.replace(/</g,'&lt;')+'</small>':'');document.body.appendChild(d)}}catch(e){}},9000)</script>
 <script src="push.js?v=4"></script>
 <script src="call.js?v=2"></script>
 <script src="features.js?v=3"></script>
