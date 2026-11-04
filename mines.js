@@ -3,7 +3,7 @@
   'use strict';
   const BOT = '00000000-0000-4000-8000-000000901d07';
   const E = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const fmt = n => String(Math.floor(+n || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  const fmt = n => { let s = String(n == null ? 0 : n).split('.')[0]; if (!/^-?\d+$/.test(s)) s = String(Math.floor(+n || 0)); return s.replace(/\B(?=(\d{3})+(?!\d))/g, ' '); };
   const CACHE = {};
   const _pm = window.parseMedia, _mh = window.mediaHTML, _pv = window.previewOf;
 

@@ -3,7 +3,9 @@
   'use strict';
   const $ = s => document.querySelector(s);
   const E = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const fmt = n => String(Math.floor(+n || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  const fmt = n => { let s = String(n == null ? 0 : n).split('.')[0]; if (!/^-?\d+$/.test(s)) s = String(Math.floor(+n || 0)); return s.replace(/\B(?=(\d{3})+(?!\d))/g, ' '); };
+  const bigN = v => { const s = String(v).replace(/\s/g, ''); return /^\d{1,60}$/.test(s) && /[1-9]/.test(s) ? s.replace(/^0+/, '') : null; };
+  const bv = r => (r.data && (r.data.balance_t != null ? r.data.balance_t : r.data.balance)) || 0;
   const GOLD = '00000000-0000-4000-8000-000000901d07', GOLDA = '00000000-0000-4000-8000-00000000b001', PRIME = '00000000-0000-4000-8000-00000000b002';
   const OWNERS = ['03d24548-56f1-4329-a7f0-466c18b8a8c9', '6c02c4d5-c674-432d-9a5c-86e31c465790'];
   const isOwner = () => OWNERS.includes(meId());
@@ -88,15 +90,15 @@
   /* ---------- магазин подарков ---------- */
   async function openShop(uid) {
     const u = (typeof PROFILES !== 'undefined' && PROFILES[uid]) || (typeof USERS !== 'undefined' && USERS.find(x => x.id === uid)) || {};
-    const [gr, wr] = await Promise.all([sb.from('gifts').select('*').order('price', { ascending: false }), sb.from('prime_wallets').select('balance').maybeSingle()]);
-    const gifts = gr.data || []; let bal = (wr.data && wr.data.balance) || 0, tab = 'gift', sel = null;
+    const [gr, wr] = await Promise.all([sb.from('gifts').select('*').order('price', { ascending: false }), sb.from('prime_wallets').select('balance_t').maybeSingle()]);
+    const gifts = gr.data || []; let bal = bv(wr), tab = 'gift', sel = null;
     const o = document.createElement('div'); o.className = 'xo shop';
     o.innerHTML = `<div class="xo-top"><button class="icon-btn x" type="button" data-x>✕</button><div class="xo-title">Подарок для ${E(u.display_name || u.username || '')}</div><div class="sh-bal" id="shBal"></div></div>
       <div class="sh-tabs"><button data-t="gift" class="on">🎁 Подарки</button><button data-t="nft">💎 NFT</button></div>
       <div class="sh-grid" id="shGrid"></div>
       <div class="sh-buy" id="shBuy"></div>`;
     document.body.appendChild(o);
-    const paintBal = () => { o.querySelector('#shBal').innerHTML = '💎 ' + fmt(bal) + ' <button type="button" id="shEx" style="border:0;background:var(--neon);color:var(--p1);border-radius:99px;padding:2px 9px;font:800 12px var(--font);margin-left:4px;cursor:pointer">＋ обмен</button>'; const x = o.querySelector('#shEx'); if (x) x.onclick = ev => { ev.stopPropagation(); openExchange(() => sb.from('prime_wallets').select('balance').maybeSingle().then(r => { bal = (r.data && r.data.balance) || 0; paintBal(); })); }; };
+    const paintBal = () => { o.querySelector('#shBal').innerHTML = '💎 ' + fmt(bal) + ' <button type="button" id="shEx" style="border:0;background:var(--neon);color:var(--p1);border-radius:99px;padding:2px 9px;font:800 12px var(--font);margin-left:4px;cursor:pointer">＋ обмен</button>'; const x = o.querySelector('#shEx'); if (x) x.onclick = ev => { ev.stopPropagation(); openExchange(() => sb.from('prime_wallets').select('balance_t').maybeSingle().then(r => { bal = (r.data && r.data.balance) || 0; paintBal(); })); }; };
     function grid() {
       o.querySelector('#shGrid').innerHTML = gifts.filter(g => g.kind === tab).sort((a, b) => tab === 'nft' ? b.price - a.price : a.price - b.price).map(g => {
         const left = g.supply ? g.supply - g.sold : null, out = left !== null && left <= 0;
@@ -180,14 +182,14 @@
     if (!isOwner() || hide) { box.style.display = 'none'; return; }
     box.style.display = '';
     box.innerHTML = '<div class="tg-sec-h">👑 Создатель</div><div class="ow-b"><button type="button" id="owTake">💰 Забрать gold</button><button type="button" id="owName">✏️ Сменить юзернейм</button><button type="button" id="owPrime">💎 Забрать праймики</button></div><div class="ow-i" id="owInfo"></div>';
-    sb.from('gold_wallets').select('balance').eq('user_id', u.id).maybeSingle().then(r => { const i = $('#owInfo'); if (i) i.textContent = 'У пользователя: ' + fmt((r.data && r.data.balance) || 0) + ' gold'; });
+    sb.from('gold_wallets').select('balance_t').eq('user_id', u.id).maybeSingle().then(r => { const i = $('#owInfo'); if (i) i.textContent = 'У пользователя: ' + fmt(bv(r)) + ' gold'; });
     $('#owTake').onclick = () => ask('Сколько gold забрать у @' + u.username + '?', 'Например 500', '', async v => {
-      const n = parseInt(String(v).replace(/\s/g, ''), 10); if (!(n > 0)) return say('Введи число больше нуля', 'red');
+      const n = bigN(v); if (!n) return say('Введи число больше нуля', 'red');
       const { data } = await sb.rpc('owner_take_gold', { p_user: u.id, p_amount: n });
       if (data && data.ok) { say('Забрано ' + fmt(data.taken) + ' gold'); $('#owInfo').textContent = 'У пользователя: ' + fmt(data.balance) + ' gold'; } else say('Не получилось', 'red');
     });
     $('#owPrime').onclick = () => ask('Сколько праймиков забрать у @' + u.username + '?', 'Например 10', '', async v => {
-      const n = parseInt(String(v).replace(/\s/g, ''), 10); if (!(n > 0)) return say('Введи число больше нуля', 'red');
+      const n = bigN(v); if (!n) return say('Введи число больше нуля', 'red');
       const { data } = await sb.rpc('owner_take_prime', { p_user: u.id, p_amount: n });
       if (data && data.ok) say('Забрано ' + fmt(data.taken) + ' праймиков'); else say('Не получилось', 'red');
     });
@@ -199,13 +201,13 @@
   }
 
   function openExchange(done) {
-    sb.from('gold_wallets').select('balance').eq('user_id', meId()).maybeSingle().then(r => {
-      const g = (r.data && r.data.balance) || 0, max = Math.floor(g / 5000);
-      ask('Обмен: сколько праймиков получить? (у тебя ' + fmt(g) + ' gold — хватит на ' + fmt(max) + ')', 'Например 2 (за 10 000 gold)', max > 0 ? '1' : '', async v => {
-        const n = parseInt(String(v).replace(/\s/g, ''), 10); if (!(n > 0)) return say('Введи число больше нуля', 'red');
+    sb.from('gold_wallets').select('balance_t').eq('user_id', meId()).maybeSingle().then(r => {
+      const g = String(bv(r)), max = (BigInt(g.split('.')[0]) / 5000n).toString();
+      ask('Обмен: сколько праймиков получить? (у тебя ' + fmt(g) + ' gold — хватит на ' + fmt(max) + ')', 'Например 2 (за 10 000 gold)', max !== '0' ? '1' : '', async v => {
+        const n = bigN(v); if (!n) return say('Введи число больше нуля', 'red');
         const { data } = await sb.rpc('exchange_gold', { p_primes: n });
         if (data && data.ok) { say('Обменяно: +' + fmt(n) + ' 💎'); if (done) done(); const b = $('#shBal'); if (b) b.textContent = '💎 ' + fmt(data.prime); }
-        else say(data && data.error === 'no_gold' ? 'Не хватает gold: нужно ' + fmt(n * 5000) : 'Не получилось', 'red');
+        else say(data && data.error === 'no_gold' ? 'Не хватает gold: нужно ' + fmt((BigInt(n) * 5000n).toString()) : 'Не получилось', 'red');
       });
     });
   }
@@ -226,7 +228,7 @@
           sg.textContent = '🎁 Подарить подарок себе'; sg.onclick = () => openShop(meId()); sec.appendChild(sg);
         }
         loadGifts(meId(), $('#mGifts'), $('#mGiftCnt'));
-        const refBal = () => { sb.from('prime_wallets').select('balance').maybeSingle().then(r => { const e = $('#mPrime'); if (e) e.textContent = fmt((r.data && r.data.balance) || 0); }); sb.from('gold_wallets').select('balance').eq('user_id', meId()).maybeSingle().then(r => { const e = $('#mGold'); if (e) e.textContent = fmt((r.data && r.data.balance) || 0); }); };
+        const refBal = () => { sb.from('prime_wallets').select('balance_t').maybeSingle().then(r => { const e = $('#mPrime'); if (e) e.textContent = fmt(bv(r)); }); sb.from('gold_wallets').select('balance_t').eq('user_id', meId()).maybeSingle().then(r => { const e = $('#mGold'); if (e) e.textContent = fmt(bv(r)); }); };
         refBal(); window._refBal = refBal;
         const eb = $('#mExch'); if (eb) eb.onclick = () => openExchange(refBal);
       } catch (e) { console.error(e); }
