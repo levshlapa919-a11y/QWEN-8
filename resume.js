@@ -29,4 +29,25 @@
     if (document.visibilityState !== 'visible' || !alive()) return;
     try { if (typeof rtChannel !== 'undefined' && rtChannel && rtChannel.state !== 'joined') resync(); } catch (e) { }
   }, 15000);
+
+  /* режим прокси (без WebSocket): новые сообщения подтягиваем опросом */
+  (function () {
+    if (!window.GOLDA_API) return;
+    let wm = new Date(Date.now() - 20000).toISOString(), polling = false, tick = 0;
+    setInterval(async () => {
+      if (polling || document.visibilityState !== 'visible' || !alive()) return; polling = true; tick++;
+      try {
+        const { data } = await sb.from('messages').select('*').gt('created_at', wm).order('created_at', { ascending: true }).limit(100);
+        if (data && data.length) {
+          wm = data[data.length - 1].created_at;
+          let unknown = false;
+          for (const m of data) { if (!CHATS.find(c => c.id === m.chat_id)) unknown = true; }
+          if (unknown && typeof loadChats === 'function') { await loadChats(); }
+          for (const m of data) { if (typeof onMsgInsert === 'function') onMsgInsert(m); }
+        }
+        if (tick % 6 === 0 && window.refreshYupik) window.refreshYupik();
+      } catch (e) { }
+      polling = false;
+    }, 4000);
+  })();
 })();
