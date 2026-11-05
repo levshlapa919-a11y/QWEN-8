@@ -11,12 +11,17 @@
     return new Promise(function (res) {
       var c = typeof AbortController === 'function' ? new AbortController() : null;
       var t = setTimeout(function () { if (c) c.abort(); res(false); }, 5000);
-      fetch(base + '/auth/v1/health', { mode: 'no-cors', cache: 'no-store', signal: c ? c.signal : undefined })
-        .then(function () { clearTimeout(t); res(true); }, function () { clearTimeout(t); res(false); });
+      fetch(base + '/auth/v1/settings', { cache: 'no-store', headers: { apikey: 'sb_publishable_crUm-uK9Hs0o_xgD5eVdyg_TaOgO3lH', 'x-client-info': 'probe' }, signal: c ? c.signal : undefined })
+        .then(function (r) { clearTimeout(t); res(r.status < 500); }, function () { clearTimeout(t); res(false); });
     });
   }
   function firstOk(list) { return list.reduce(function (p, b) { return p.then(function (r) { return r ? r : probe(b).then(function (ok) { return ok ? b : null; }); }); }, Promise.resolve(null)); }
   var cur = get(K);
+  window.GOLDA_SWITCH = function () {
+    var all = [''].concat(PROXIES), i = all.indexOf(cur || ''), next = all[(i + 1) % all.length];
+    set(K, next || null); try { sessionStorage.removeItem('golda_api_rl'); sessionStorage.setItem('golda_api_sw', String((+sessionStorage.getItem('golda_api_sw') || 0) + 1)); } catch (e) {}
+    location.reload(); return true;
+  };
   if (cur && PROXIES.indexOf(cur) < 0) { set(K, null); cur = null; }
   window.GOLDA_API = cur || '';
   window.addEventListener('load', function () {
