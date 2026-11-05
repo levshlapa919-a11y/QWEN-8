@@ -16,6 +16,7 @@
     });
   }
   function firstOk(list) { return list.reduce(function (p, b) { return p.then(function (r) { return r ? r : probe(b).then(function (ok) { return ok ? b : null; }); }); }, Promise.resolve(null)); }
+  try { var q = location.search.match(/[?&]proxy=(\w+)/); if (q) { if (q[1] === 'off') set(K, null); else if (q[1] === 'yandex') set(K, PROXIES[0]); else if (q[1] === 'deno') set(K, PROXIES[1]); history.replaceState(null, '', location.pathname + location.hash); } } catch (e) {}
   var cur = get(K);
   window.GOLDA_SWITCH = function () {
     var all = [''].concat(PROXIES), i = all.indexOf(cur || ''), next = all[(i + 1) % all.length];
