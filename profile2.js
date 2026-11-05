@@ -222,7 +222,7 @@
         const modal = ov.querySelector('.modal'); let sec = $('#mGiftSec');
         if (!sec) {
           sec = document.createElement('div'); sec.id = 'mGiftSec'; sec.className = 'tg-sec';
-          sec.innerHTML = '<div class="tg-sec-h">🪙 Gold: <b id="mGold">…</b></div><div class="tg-sec-h" style="margin-top:6px">💎 Праймики: <b id="mPrime">…</b></div><button type="button" class="btn primary" id="mExch" style="width:100%;margin:6px 0 4px">💱 Обменять gold на праймики</button><div class="ow-i">Курс: 5 000 gold = 1 праймик</div><div class="tg-sec-h" style="margin-top:14px">🎁 Мои подарки <span id="mGiftCnt" class="tg-cnt"></span></div><div class="gift-grid" id="mGifts"></div>';
+          sec.innerHTML = '<div class="tg-sec-h">🪙 Gold: <b id="mGold">…</b></div><div class="tg-sec-h" style="margin-top:6px">💎 Праймики: <b id="mPrime">…</b></div><button type="button" class="btn primary" id="mExch" style="width:100%;margin:6px 0 4px">💱 Обменять gold на праймики</button><div class="ow-i">Курс: 1 000 gold = 1 праймик</div><div class="tg-sec-h" style="margin-top:14px">🎁 Мои подарки <span id="mGiftCnt" class="tg-cnt"></span></div><div class="gift-grid" id="mGifts"></div>';
           modal.querySelector('.pf-ava').after(sec);
           const sg = document.createElement('button'); sg.type = 'button'; sg.className = 'btn ghost'; sg.id = 'mGiftSelf'; sg.style.cssText = 'margin-top:12px;width:100%';
           sg.textContent = '🎁 Подарить подарок себе'; sg.onclick = () => openShop(meId()); sec.appendChild(sg);
