@@ -2,7 +2,7 @@
    Сначала пробуем напрямую (supabase.co). Если не достучались — пробуем прокси по очереди и запоминаем рабочий. */
 (function () {
   var DIRECT = 'https://zuxvcqdttptahwinlnpz.supabase.co';
-  var PROXIES = ['https://qwen-8-na41ghp7kcc8.levshlapa919-a11y.deno.net', 'https://golda-api.levshlapa919.workers.dev'];
+  var PROXIES = ['https://d5dgkfm514j6f8gd2fsi.g2n58e0c.apigw.yandexcloud.net', 'https://qwen-8-na41ghp7kcc8.levshlapa919-a11y.deno.net', 'https://golda-api.levshlapa919.workers.dev'];
   var K = 'golda_api_proxy';
   function get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function set(k, v) { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} }
