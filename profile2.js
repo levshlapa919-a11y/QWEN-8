@@ -202,12 +202,12 @@
 
   function openExchange(done) {
     sb.from('gold_wallets').select('balance_t').eq('user_id', meId()).maybeSingle().then(r => {
-      const g = String(bv(r)), max = (BigInt(g.split('.')[0]) / 5000n).toString();
-      ask('Обмен: сколько праймиков получить? (у тебя ' + fmt(g) + ' gold — хватит на ' + fmt(max) + ')', 'Например 2 (за 10 000 gold)', max !== '0' ? '1' : '', async v => {
+      const g = String(bv(r)), max = (BigInt(g.split('.')[0]) / 1000n).toString();
+      ask('Обмен: сколько праймиков получить? (у тебя ' + fmt(g) + ' gold — хватит на ' + fmt(max) + ')', 'Например 2 (за 2 000 gold)', max !== '0' ? '1' : '', async v => {
         const n = bigN(v); if (!n) return say('Введи число больше нуля', 'red');
         const { data } = await sb.rpc('exchange_gold', { p_primes: n });
         if (data && data.ok) { say('Обменяно: +' + fmt(n) + ' 💎'); if (done) done(); const b = $('#shBal'); if (b) b.textContent = '💎 ' + fmt(data.prime); }
-        else say(data && data.error === 'no_gold' ? 'Не хватает gold: нужно ' + fmt((BigInt(n) * 5000n).toString()) : 'Не получилось', 'red');
+        else say(data && data.error === 'no_gold' ? 'Не хватает gold: нужно ' + fmt((BigInt(n) * 1000n).toString()) : 'Не получилось', 'red');
       });
     });
   }
@@ -250,7 +250,7 @@
       ['💰 Баланс', () => sendText('баланс')], ['🎁 Бонус', () => sendText('бонус')], ['🏆 Топ', () => sendText('топ')], ['❓ Помощь', () => sendText('помощь')],
       ['🔴 Красное', () => sendText('рулетка ' + bet + ' к')], ['⚫ Чёрное', () => sendText('рулетка ' + bet + ' ч')], ['🟢 Зеро', () => sendText('рулетка ' + bet + ' з')], ['💣 Мины', () => sendText('мины ' + bet)],
       ['🪙 Орёл', () => sendText('монетка ' + bet + ' орёл')], ['🪙 Решка', () => sendText('монетка ' + bet + ' решка')], ['🎲 Кости', () => sendText('кости ' + bet)],
-      ['💸 Перевод…', () => prefill('перевод @')]
+      ['💱 Обменять на праймики', () => openExchange()], ['💱 Обмен ×1', () => sendText('обмен 1')], ['💱 Курс', () => sendText('курс')], ['💸 Перевод…', () => prefill('перевод @')]
     ].concat(owner ? [['✨ Выдать себе…', () => prefill('@megold ')]] : []);
     if (kind === 'prime') return [
       ['💎 Баланс', () => sendText('баланс')], ['🧾 История', () => sendText('история')], ['🎁 Подарки', () => sendText('подарки')], ['❓ Помощь', () => sendText('помощь')], ['🪙 Получить gold', () => sendText('купить')], ['💱 Обмен ×1', () => sendText('обмен 1')], ['💱 Обмен ×5', () => sendText('обмен 5')], ['💱 Курс', () => sendText('курс')], ['💸 Перевод…', () => prefill('перевод @')]
