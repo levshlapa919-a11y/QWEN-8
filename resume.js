@@ -48,6 +48,6 @@
         if (tick % 6 === 0 && window.refreshYupik) window.refreshYupik();
       } catch (e) { }
       polling = false;
-    }, 4000);
+    }, 1500);
   })();
 })();

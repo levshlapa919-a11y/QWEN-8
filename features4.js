@@ -110,6 +110,23 @@
     });
   }
 
+  /* ---------- аватар бота (создатель) ---------- */
+  const BOTIDS = ['00000000-0000-4000-8000-00000000b001', '00000000-0000-4000-8000-00000000b002', '00000000-0000-4000-8000-00000000b003', '00000000-0000-4000-8000-000000901d07'];
+  let owner = null; (async function () { const r = await rpc('am_owner'); owner = !!r.data; })();
+  const _ou = window.openUserModal;
+  if (typeof _ou === 'function') window.openUserModal = function (u) {
+    _ou.apply(this, arguments);
+    if (!u || BOTIDS.indexOf(u.id) < 0) return;
+    setTimeout(async () => {
+      if (owner === null) { const r = await rpc('am_owner'); owner = !!r.data; } if (!owner) return;
+      const sec = Q('#uGiftSec'); if (!sec) return; let box = Q('#uBotAva'); if (!box) { box = document.createElement('div'); box.id = 'uBotAva'; box.className = 'tg-sec'; sec.before(box); }
+      box.innerHTML = '<div class="tg-sec-h">👑 Создатель</div><button class="f2-btn ghost" id="baBtn">🖼 Сменить аватарку бота</button><button class="f2-btn ghost" id="baDel">Убрать аватарку</button>';
+      const save = async url => { const r = await rpc('owner_set_bot_avatar', { p_bot: u.id, p_url: url }); if (!r.data || !r.data.ok) return tst('Не вышло', 'red'); try { PROFILES[u.id] = Object.assign(PROFILES[u.id] || {}, { avatar_url: url || null }); u.avatar_url = url || null; renderChatList(); if (CURRENT) renderChatHeader(); const a = Q('#uAva'); if (a) a.innerHTML = avatarHTML(u, 'l'); } catch (e) { } tst('Аватарка бота обновлена ✔'); };
+      Q('#baBtn', box).onclick = () => { const i = document.createElement('input'); i.type = 'file'; i.accept = 'image/*'; i.onchange = async () => { const f = i.files[0]; if (!f) return; if (f.size > 5 * 1024 * 1024) return tst('Файл больше 5 МБ', 'red'); tst('Загружаю…'); const ext = (f.name.match(/\.([a-z0-9]{2,5})$/i) || [, 'png'])[1].toLowerCase(); let path = ME.id + '/bot_' + u.id.slice(-4) + '_' + Date.now() + '.' + ext; let up = await sb.storage.from('avatars').upload(path, f, { contentType: f.type || 'image/png' }); if (up.error) return tst('Не загрузилось: ' + up.error.message, 'red'); save(sb.storage.from('avatars').getPublicUrl(path).data.publicUrl); }; i.click(); };
+      Q('#baDel', box).onclick = () => save('');
+    }, 300);
+  };
+
   setInterval(() => { if (!ready()) return; checkChannel(); if (!window.__f4f && ME) { window.__f4f = 1; loadFolders(); } }, 800);
   mountQuick();
   window.F4 = { channels: channelsUI, search: searchUI, packs: packsUI, helper: openHelper };
