@@ -63,3 +63,4 @@
 .f4-chbar{padding:14px;text-align:center;color:var(--mut);background:var(--p1);border-top:1px solid var(--line2);font-size:14px}
 .f4-hit{padding:9px 0;border-bottom:1px solid var(--line2);cursor:pointer;font-size:14px}.f4-hit mark{background:color-mix(in srgb,var(--accent,#7f9be6) 40%,transparent);color:inherit;border-radius:3px}
 .f4-pv{display:flex;gap:4px;margin-top:4px}.f4-pv img{width:34px;height:34px;object-fit:contain}
+.f5-dots{margin-left:auto;background:var(--p2);border:1px solid var(--line2);color:var(--tx);border-radius:10px;width:34px;height:34px;font-size:18px;cursor:pointer;flex:none}
