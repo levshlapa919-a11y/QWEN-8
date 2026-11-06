@@ -112,5 +112,11 @@
     if (!ready()) return setTimeout(ping, 3000);
     try { const k = 'g3_ping', d = new Date().toISOString().slice(0, 10); if (localStorage.getItem(k) === d) return; const r = await rpc('daily_state'); if (r.data && !r.data.today_done) { localStorage.setItem(k, d); const t = document.createElement('div'); t.className = 'g3-toast'; t.innerHTML = '🔥 Ежедневная награда ждёт! <b>Забрать</b>'; t.onclick = () => { t.remove(); hub('tasks'); }; document.body.appendChild(t); setTimeout(() => t.remove(), 9000); } } catch (e) { }
   }, 4000);
+  (function addBtn() {
+    const a = Q('.side-actions'); if (!a) return setTimeout(addBtn, 800);
+    if (Q('#btnHub')) return;
+    const b = document.createElement('button'); b.className = 'icon-btn'; b.id = 'btnHub'; b.title = 'Задания, рейтинг, рынок'; b.textContent = '🏆'; b.style.fontSize = '16px';
+    b.onclick = () => hub('tasks'); a.insertBefore(b, a.firstChild);
+  })();
   window.F3 = { hub };
 })();
