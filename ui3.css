@@ -1,0 +1,146 @@
+/* golda-mesenger — интерфейс «Nova». Действует только при <html data-ui="nova">.
+   «Aurora» (data-ui="new") и «Классический» (data-ui="classic") остаются как были — переключатель в Настройках. */
+
+html[data-ui="nova"] body{
+  --nv-a:var(--neon);
+  --nv-b:color-mix(in srgb,var(--neon) 48%,#8b5cf6);
+  --nv-grad:linear-gradient(135deg,var(--nv-a),var(--nv-b));
+  --nv-glass:color-mix(in srgb,var(--p1) 62%,transparent);
+  --nv-glass2:color-mix(in srgb,var(--p2) 70%,transparent);
+  --nv-tx:#06101c;--nv-time:rgba(6,16,28,.6);
+  --nv-spring:cubic-bezier(.34,1.56,.64,1);--nv-ease:cubic-bezier(.22,.9,.3,1);
+  --nv-r:26px;
+}
+html[data-ui="nova"] body[data-theme="light"]{--nv-tx:#fff;--nv-time:rgba(255,255,255,.78)}
+html[data-ui="nova"] body[data-theme="dark"],html[data-ui="nova"] body[data-theme="green"]{--nv-tx:#02140a;--nv-time:rgba(2,20,10,.6)}
+html[data-ui="nova"] body[data-theme="orange"]{--nv-tx:#1d0e00;--nv-time:rgba(29,14,0,.6)}
+
+/* ---------- живой фон ---------- */
+html[data-ui="nova"] body::before{
+  content:"";position:fixed;inset:-20%;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(40% 36% at 15% 12%,color-mix(in srgb,var(--nv-a) 30%,transparent),transparent 70%),
+    radial-gradient(36% 34% at 88% 18%,color-mix(in srgb,var(--nv-b) 28%,transparent),transparent 70%),
+    radial-gradient(46% 40% at 60% 100%,color-mix(in srgb,var(--nv-a) 20%,transparent),transparent 70%);
+  filter:blur(30px);animation:nvDrift 26s ease-in-out infinite alternate}
+@keyframes nvDrift{0%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(-3%,2%,0) scale(1.08)}100%{transform:translate3d(3%,-3%,0) scale(1.02)}}
+html[data-ui="nova"] .bg-grid{opacity:.18}
+
+/* ---------- каркас ---------- */
+html[data-ui="nova"] .app,html[data-ui="nova"] .main,html[data-ui="nova"] .side{position:relative;z-index:1}
+@media (min-width:901px){
+  html[data-ui="nova"] .app{grid-template-columns:372px 1fr;gap:16px;padding:16px}
+  html[data-ui="nova"] .side,html[data-ui="nova"] .main{border-radius:32px;border:1px solid color-mix(in srgb,var(--nv-a) 16%,var(--line));box-shadow:0 30px 80px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.05)}
+  html[data-ui="nova"] .main{height:calc(100dvh - 32px);overflow:hidden;background:var(--nv-glass);backdrop-filter:blur(22px) saturate(1.2);-webkit-backdrop-filter:blur(22px) saturate(1.2)}
+}
+html[data-ui="nova"] .side{background:var(--nv-glass);backdrop-filter:blur(22px) saturate(1.2);-webkit-backdrop-filter:blur(22px) saturate(1.2)}
+html[data-ui="nova"] .side-brand{font-weight:900;letter-spacing:.01em;background:var(--nv-grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+html[data-ui="nova"] .side-brand b{color:inherit}
+
+/* ---------- кнопки и касания ---------- */
+html[data-ui="nova"] .icon-btn{border-radius:50%;background:color-mix(in srgb,var(--p3) 60%,transparent);border:0;transition:transform .25s var(--nv-spring),background .2s,box-shadow .25s}
+html[data-ui="nova"] .icon-btn:hover{background:color-mix(in srgb,var(--nv-a) 22%,var(--p3));transform:translateY(-1px) scale(1.06)}
+html[data-ui="nova"] .icon-btn:active,html[data-ui="nova"] .btn:active,html[data-ui="nova"] .f2-chip:active,html[data-ui="nova"] .f2-opt:active{transform:scale(.9)}
+html[data-ui="nova"] .btn.primary,html[data-ui="nova"] .f2-btn{background:var(--nv-grad);color:var(--nv-tx);border:0;border-radius:99px;box-shadow:0 10px 28px color-mix(in srgb,var(--nv-a) 38%,transparent);transition:transform .2s var(--nv-spring),box-shadow .2s}
+html[data-ui="nova"] .btn.primary:hover,html[data-ui="nova"] .f2-btn:hover{transform:translateY(-2px);box-shadow:0 14px 34px color-mix(in srgb,var(--nv-a) 48%,transparent)}
+html[data-ui="nova"] .f2-btn.ghost{background:var(--p3);color:var(--tx);box-shadow:none}
+.nv-rip{position:absolute;border-radius:50%;background:currentColor;opacity:.22;transform:scale(0);pointer-events:none;animation:nvRip .6s ease-out forwards}
+@keyframes nvRip{to{transform:scale(1);opacity:0}}
+
+/* ---------- поиск и список чатов ---------- */
+html[data-ui="nova"] .search .inp{border-radius:99px;padding-left:42px;background:color-mix(in srgb,var(--p3) 55%,transparent);border:1px solid transparent;transition:border-color .2s,box-shadow .25s,background .2s}
+html[data-ui="nova"] .search .inp:focus{border-color:var(--nv-a);box-shadow:0 0 0 4px color-mix(in srgb,var(--nv-a) 18%,transparent);background:var(--p2)}
+html[data-ui="nova"] .chat-item{border:0;border-radius:22px;padding:11px 12px;margin-bottom:4px;background:transparent;transition:background .2s,transform .3s var(--nv-spring)}
+html[data-ui="nova"] #chatList.nv-first .chat-item{animation:nvRise .5s var(--nv-ease) both;animation-delay:calc(var(--i,0)*45ms)}
+html[data-ui="nova"] .chat-item::before{content:"";position:absolute;left:2px;top:50%;width:4px;height:0;border-radius:4px;background:var(--nv-grad);transform:translateY(-50%);transition:height .3s var(--nv-spring)}
+html[data-ui="nova"] .chat-item:hover{background:color-mix(in srgb,var(--p3) 55%,transparent);transform:translateX(3px)}
+html[data-ui="nova"] .chat-item.active{background:linear-gradient(120deg,color-mix(in srgb,var(--nv-a) 22%,var(--p2)),color-mix(in srgb,var(--nv-b) 12%,var(--p2)));box-shadow:0 10px 30px color-mix(in srgb,var(--nv-a) 16%,transparent)}
+html[data-ui="nova"] .chat-item.active::before{height:56%}
+@keyframes nvRise{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+html[data-ui="nova"] .ava{border-radius:50%}
+html[data-ui="nova"] .ava-wrap .ava{box-shadow:0 0 0 2px var(--p1),0 0 0 3.5px color-mix(in srgb,var(--nv-a) 40%,transparent)}
+html[data-ui="nova"] .dot.on{background:#32e38b;box-shadow:0 0 0 2px var(--p1),0 0 12px #32e38b;animation:nvPulse 2.4s ease-in-out infinite}
+@keyframes nvPulse{50%{box-shadow:0 0 0 2px var(--p1),0 0 4px #32e38b}}
+html[data-ui="nova"] .badge{background:var(--nv-grad);color:var(--nv-tx);font-weight:800;box-shadow:0 4px 16px color-mix(in srgb,var(--nv-a) 50%,transparent);animation:nvBounce .5s var(--nv-spring)}
+@keyframes nvBounce{from{transform:scale(0)}to{transform:scale(1)}}
+html[data-ui="nova"] .me{margin:8px;border:0;border-radius:24px;background:var(--nv-glass2)}
+html[data-ui="nova"] #f4Quick button,html[data-ui="nova"] .f4-t,html[data-ui="nova"] .f6-chip{transition:transform .2s var(--nv-spring),background .2s}
+html[data-ui="nova"] #f4Quick button:hover{transform:translateY(-2px)}
+
+/* ---------- шапка чата ---------- */
+html[data-ui="nova"] .chat-head{margin:12px 12px 0;border:0;border-radius:99px;background:var(--nv-glass2);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);padding:8px 12px;box-shadow:0 10px 30px rgba(0,0,0,.2)}
+html[data-ui="nova"] .h-name{font-weight:800}
+html[data-ui="nova"] .chat-menu{border-radius:22px;border:0;background:var(--p1);box-shadow:0 24px 60px rgba(0,0,0,.5);transform-origin:top right;transition:opacity .2s,transform .3s var(--nv-spring)}
+html[data-ui="nova"] .menu-i{border-radius:14px;transition:background .15s,transform .2s var(--nv-spring)}
+html[data-ui="nova"] .menu-i:hover{background:var(--p3);transform:translateX(3px)}
+
+/* ---------- сообщения ---------- */
+html[data-ui="nova"] #msgScroll{background:none;scroll-behavior:smooth}
+html[data-ui="nova"] .msg{animation:none;max-width:min(80%,620px)}
+html[data-ui="nova"] .msg:nth-last-child(-n+10){animation:nvPop .45s var(--nv-spring) both}
+html[data-ui="nova"] .msg.own:nth-last-child(-n+10){animation-name:nvPopR}
+html[data-ui="nova"] .msg.nv-in{animation:nvPop .45s var(--nv-spring) both}
+html[data-ui="nova"] .msg.own.nv-in{animation-name:nvPopR}
+@keyframes nvPop{from{opacity:0;transform:translate(-14px,10px) scale(.88)}to{opacity:1;transform:none}}
+@keyframes nvPopR{from{opacity:0;transform:translate(14px,10px) scale(.88)}to{opacity:1;transform:none}}
+html[data-ui="nova"] .bubble{background:var(--nv-glass2);border:1px solid color-mix(in srgb,var(--nv-a) 12%,var(--line));border-radius:6px 24px 24px 24px;box-shadow:0 6px 22px rgba(0,0,0,.2);backdrop-filter:blur(8px);transition:transform .25s var(--nv-spring),box-shadow .25s}
+html[data-ui="nova"] .msg:hover .bubble{transform:translateY(-1px);box-shadow:0 12px 30px rgba(0,0,0,.28)}
+html[data-ui="nova"] .msg.own .bubble{background:var(--nv-grad);border:0;border-radius:24px 6px 24px 24px;color:var(--nv-tx);box-shadow:0 12px 32px color-mix(in srgb,var(--nv-a) 30%,transparent)}
+html[data-ui="nova"] .msg.own .m-text,html[data-ui="nova"] .msg.own .m-text a{color:var(--nv-tx)}
+html[data-ui="nova"] .msg.own .m-time,html[data-ui="nova"] .msg.own .tick{color:var(--nv-time)}
+html[data-ui="nova"] .m-text{line-height:1.5}
+html[data-ui="nova"] .day{background:var(--nv-glass2);border-radius:99px;padding:5px 14px;letter-spacing:.12em;backdrop-filter:blur(8px);animation:nvRise .5s var(--nv-ease) both}
+html[data-ui="nova"] .m-img,html[data-ui="nova"] .m-video{border-radius:20px}
+html[data-ui="nova"] .rxc,html[data-ui="nova"] .rxc.mine{border-radius:99px;transition:transform .25s var(--nv-spring)}
+html[data-ui="nova"] .rxc:hover{transform:scale(1.12)}
+html[data-ui="nova"] .rx .rxc{animation:nvBounce .4s var(--nv-spring)}
+html[data-ui="nova"] .tg-sec,html[data-ui="nova"] .poll-opt,html[data-ui="nova"] .g3-cell{border-radius:18px}
+html[data-ui="nova"] .loading{height:42px;border-radius:99px;margin:14px auto;max-width:220px;color:transparent;background:linear-gradient(90deg,var(--p2) 25%,color-mix(in srgb,var(--nv-a) 22%,var(--p2)) 50%,var(--p2) 75%);background-size:200% 100%;animation:nvShimmer 1.2s linear infinite}
+@keyframes nvShimmer{to{background-position:-200% 0}}
+
+/* ---------- поле ввода ---------- */
+html[data-ui="nova"] .input-bar{background:transparent;border:0;padding:10px 14px 14px}
+html[data-ui="nova"] .ib-inner{border:1.5px solid color-mix(in srgb,var(--nv-a) 20%,transparent);border-radius:99px;padding:6px;background:var(--nv-glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 16px 44px rgba(0,0,0,.34);transition:border-color .25s,box-shadow .3s}
+html[data-ui="nova"] .ib-inner:focus-within{border-color:var(--nv-a);box-shadow:0 16px 44px rgba(0,0,0,.34),0 0 0 5px color-mix(in srgb,var(--nv-a) 14%,transparent)}
+html[data-ui="nova"] .ib-inner .inp{background:transparent;border:0;box-shadow:none}
+html[data-ui="nova"] .ib-inner .icon-btn{background:transparent}
+html[data-ui="nova"] .send{width:46px;height:46px;border-radius:50%;background:var(--nv-grad);color:var(--nv-tx);box-shadow:0 8px 22px color-mix(in srgb,var(--nv-a) 45%,transparent);transition:transform .3s var(--nv-spring),opacity .2s,width .3s var(--nv-spring),margin .3s}
+html[data-ui="nova"] .send:hover{transform:scale(1.08) rotate(-8deg)}
+html[data-ui="nova"] .send:active{transform:scale(.88)}
+html[data-ui="nova"] .ib-inner.nv-empty .send{transform:scale(.3);opacity:0;width:0;margin:0;pointer-events:none;box-shadow:none}
+
+/* ---------- окна ---------- */
+html[data-ui="nova"] .overlay{backdrop-filter:blur(0);transition:backdrop-filter .3s}
+html[data-ui="nova"] .overlay.open{backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);animation:nvFade .25s ease both}
+html[data-ui="nova"] .overlay .modal{border-radius:30px!important;border:1px solid color-mix(in srgb,var(--nv-a) 14%,var(--line))!important;background:color-mix(in srgb,var(--p1) 92%,transparent)!important;animation:nvModal .45s var(--nv-spring) both}
+html[data-ui="nova"] .f2-ov{animation:nvFade .22s ease both;backdrop-filter:blur(8px)}
+html[data-ui="nova"] .f2-card{border-radius:28px;animation:nvModal .45s var(--nv-spring) both}
+html[data-ui="nova"] .ms-ov .ms-card,html[data-ui="nova"] .gs{animation-timing-function:var(--nv-spring)}
+@keyframes nvFade{from{opacity:0}to{opacity:1}}
+@keyframes nvModal{from{opacity:0;transform:translateY(32px) scale(.94)}to{opacity:1;transform:none}}
+html[data-ui="nova"] .settings-row,html[data-ui="nova"] .f6-row,html[data-ui="nova"] .g3-task{transition:background .2s,transform .25s var(--nv-spring)}
+html[data-ui="nova"] .f6-row:hover{transform:translateY(-1px)}
+html[data-ui="nova"] .adm-tab{transition:background .25s,color .2s,transform .25s var(--nv-spring)}
+
+/* ---------- пустой экран, тосты ---------- */
+html[data-ui="nova"] .big-g{background:var(--nv-grad);-webkit-background-clip:text;background-clip:text;color:transparent;animation:nvFloat 5s ease-in-out infinite}
+@keyframes nvFloat{50%{transform:translateY(-10px) rotate(-3deg)}}
+html[data-ui="nova"] .toast{border-radius:99px;backdrop-filter:blur(14px)}
+
+/* ---------- мобильные переходы ---------- */
+@media (max-width:900px){
+  html[data-ui="nova"] .app.chat-open .main{animation:nvSlideIn .38s var(--nv-ease) both}
+  html[data-ui="nova"] .app:not(.chat-open) .side{animation:nvSlideBack .38s var(--nv-ease) both}
+  html[data-ui="nova"] .side,html[data-ui="nova"] .main{background:transparent;backdrop-filter:none}
+  html[data-ui="nova"] .chat-head{margin:8px 8px 0}
+  html[data-ui="nova"] .overlay .modal{border-radius:30px 30px 0 0!important}
+}
+@keyframes nvSlideIn{from{opacity:.4;transform:translateX(44px)}to{opacity:1;transform:none}}
+@keyframes nvSlideBack{from{opacity:.4;transform:translateX(-30px)}to{opacity:1;transform:none}}
+
+/* ---------- тонкие детали ---------- */
+html[data-ui="nova"] ::-webkit-scrollbar{width:6px;height:6px}
+html[data-ui="nova"] ::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--nv-a) 30%,transparent);border-radius:9px}
+html[data-ui="nova"] ::selection{background:color-mix(in srgb,var(--nv-a) 40%,transparent)}
+html[data-ui="nova"] a,html[data-ui="nova"] button{-webkit-tap-highlight-color:transparent}
+@media (prefers-reduced-motion:reduce){html[data-ui="nova"] *,html[data-ui="nova"] *::before{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}

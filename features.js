@@ -17,7 +17,7 @@
     document.documentElement.setAttribute('data-ui', v);
     try { localStorage.setItem(UI_KEY, v); } catch (_) {}
     document.querySelectorAll('.ui-opt').forEach(b => b.classList.toggle('active', b.dataset.ui === v));
-    const sub = $q('#uiModeSub'); if (sub) sub.textContent = v === 'new' ? 'Новый (Aurora)' : 'Классический';
+    const sub = $q('#uiModeSub'); if (sub) sub.textContent = v === 'nova' ? 'Nova (новый, с анимациями)' : v === 'new' ? 'Aurora (прежний новый)' : 'Классический';
   }
   function injectUiRow() {
     const sec = [...document.querySelectorAll('#settingsOverlay .settings-section')].find(x => x.textContent.includes('Внешний вид'));
@@ -27,14 +27,15 @@
     wrap.innerHTML = `
       <div class="settings-row" style="cursor:default"><div class="settings-row-left"><div class="settings-row-icon">✨</div>
         <div><div class="settings-row-title">Интерфейс</div><div class="settings-row-sub" id="uiModeSub"></div></div></div></div>
-      <div class="font-size-options" style="grid-template-columns:repeat(2,1fr);margin-bottom:12px">
-        <button class="font-size-opt ui-opt" data-ui="new" type="button">✨ Новый</button>
+      <div class="font-size-options" style="grid-template-columns:repeat(3,1fr);margin-bottom:12px">
+        <button class="font-size-opt ui-opt" data-ui="nova" type="button">🌌 Nova</button>
+        <button class="font-size-opt ui-opt" data-ui="new" type="button">✨ Aurora</button>
         <button class="font-size-opt ui-opt" data-ui="classic" type="button">Классический</button>
       </div>`;
     const label = sec.querySelector('.settings-label');
     sec.insertBefore(wrap, label.nextSibling);
     wrap.querySelectorAll('.ui-opt').forEach(b => b.onclick = () => applyUi(b.dataset.ui));
-    applyUi(document.documentElement.getAttribute('data-ui') || 'new');
+    applyUi(document.documentElement.getAttribute('data-ui') || 'nova');
   }
   injectUiRow();
 

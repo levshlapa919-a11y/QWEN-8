@@ -8,7 +8,7 @@
 
 <style>html.has-session #authScreen,html.has-session #welcome,html.has-session #setupScreen{display:none!important}html.has-session body{background:#0b1f2a}</style>
 <meta charset="utf-8">
-<script>try{document.documentElement.setAttribute("data-ui",localStorage.getItem("golda_ui")||"new")}catch(e){document.documentElement.setAttribute("data-ui","new")}</script>
+<script>try{if(!localStorage.getItem("golda_ui_nova")){localStorage.setItem("golda_ui_nova","1");localStorage.setItem("golda_ui","nova")}document.documentElement.setAttribute("data-ui",localStorage.getItem("golda_ui")||"nova")}catch(e){document.documentElement.setAttribute("data-ui","nova")}</script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#050b07" id="themeMeta">
 <title>golda-mesenger</title>
@@ -280,7 +280,8 @@ body[data-theme="light"] .settings-row{background:rgba(0,0,0,.02)}
 <link rel="stylesheet" href="extra.css?v=1">
 <link rel="stylesheet" href="mines.css?v=1">
 <link rel="stylesheet" href="profile2.css?v=9">
-<link rel="stylesheet" href="features2.css?v=6">
+<link rel="stylesheet" href="features2.css?v=7">
+<link rel="stylesheet" href="ui3.css?v=2">
 </head>
 <body data-theme="dark">
 <div class="bg-grid"></div><div class="orb o1"></div><div class="orb o2"></div>
@@ -745,7 +746,7 @@ function renderMsgList(list,chat){let html='',lastDay='';for(const m of list){co
 function appendMsg(m,chat){const wrap=document.createElement('div');wrap.innerHTML=msgHTML(m,chat);const ph=$('#messages').querySelector('.empty-note');if(ph)ph.remove();$('#messages').appendChild(wrap.firstElementChild);}
 const scrollBottom=()=>requestAnimationFrame(()=>{$('#msgScroll').scrollTop=$('#msgScroll').scrollHeight;});
 
-async function openChat(id){const chat=CHATS.find(c=>c.id===id);if(!chat)return;CURRENT=id;UNREAD[id]=0;$('#emptyState').classList.add('hidden');$('#chatView').classList.remove('hidden');$('#app').classList.add('chat-open');$('#msgInput').value='';$('#msgInput').style.height='auto';renderChatHeader();renderBlockBanner();renderChatList();$('#messages').innerHTML='<div class="loading">Загрузка сообщений…</div>';const {data}=await sb.from('messages').select('id,chat_id,sender_id,content,created_at').eq('chat_id',id).order('created_at',{ascending:true}).limit(300);if(CURRENT!==id)return;MSG_IDS=new Set((data||[]).map(m=>m.id));renderMsgList(data||[],chat);scrollBottom();}
+async function openChat(id){const chat=CHATS.find(c=>c.id===id);if(!chat)return;CURRENT=id;UNREAD[id]=0;$('#emptyState').classList.add('hidden');$('#chatView').classList.remove('hidden');$('#app').classList.add('chat-open');$('#msgInput').value='';$('#msgInput').style.height='auto';renderChatHeader();renderBlockBanner();renderChatList();$('#messages').innerHTML='<div class="loading">Загрузка сообщений…</div>';const {data}=await sb.from('messages').select('*').eq('chat_id',id).order('created_at',{ascending:false}).limit(300);if(CURRENT!==id)return;const list=(data||[]).slice().reverse();window.__firstTs=list.length?list[0].created_at:null;window.__moreOlder=(data||[]).length>=300;MSG_IDS=new Set(list.map(m=>m.id));renderMsgList(list,chat);scrollBottom();}
 function closeChat(){CURRENT=null;MOD_CHAT_ID=null;IMPERSONATE_USER=null;$('#chatView').classList.add('hidden');$('#emptyState').classList.remove('hidden');$('#app').classList.remove('chat-open');$('#chatMenu').classList.remove('open');$('#modBanner').classList.add('hidden');renderChatList();}
 $('#backBtn').onclick=closeChat;
 
@@ -873,7 +874,7 @@ if(!ok){document.documentElement.classList.remove('has-session');var er=(window.
 d.innerHTML='<div style="font-size:42px">⚠️</div><div style="font-size:18px;font-weight:700">Сайт не загрузился</div><div style="opacity:.8">'+(window.supabase?'Загрузка затянулась.':'Не грузится библиотека с сервера (сеть/провайдер/VPN).')+'</div><button onclick="location.reload()" style="padding:12px 22px;border:0;border-radius:14px;background:#7b9bff;font-weight:700;font-size:16px">Перезагрузить</button><button onclick="__reset()" style="padding:12px 22px;border:1px solid #7b9bff;border-radius:14px;background:none;color:#fff;font-size:16px">Сбросить кэш</button>'+(er?'<small style="opacity:.6;word-break:break-all;max-width:90%">'+er.replace(/</g,'&lt;')+'</small>':'');document.body.appendChild(d);var dg=document.createElement('small');dg.style.cssText='opacity:.75;max-width:92%;word-break:break-all';dg.textContent='v27 · проверяю связь…';d.appendChild(dg);var t0=Date.now(),R=[];function T(n,u){return new Promise(function(res){var c=new AbortController();var tm=setTimeout(function(){c.abort()},6000);fetch(u,{mode:'no-cors',cache:'no-store',signal:c.signal}).then(function(){R.push(n+': OK '+(Date.now()-t0)+'ms')},function(e){R.push(n+': ОШИБКА')}).then(function(){clearTimeout(tm);res()})})}Promise.all([T('base','https://zuxvcqdttptahwinlnpz.supabase.co/auth/v1/health'),T('cdn','https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/package.json'),T('site',location.origin+location.pathname)]).then(function(){dg.textContent='v27 · '+R.join(' · ')+(navigator.onLine?'':' · offline')})}}catch(e){}},9000)</script>
 <script src="push.js?v=4"></script>
 <script src="call.js?v=2"></script>
-<script src="features.js?v=3"></script>
+<script src="features.js?v=4"></script>
 <script src="v3.js?v=5"></script>
 <script src="bigfile.js?v=1"></script>
 <script src="scream.js?v=2"></script>
@@ -889,5 +890,7 @@ d.innerHTML='<div style="font-size:42px">⚠️</div><div style="font-size:18px;
 <script src="features4.js?v=3"></script>
 <script src="features5.js?v=1"></script>
 <script src="features6.js?v=1"></script>
+<script src="core-fix.js?v=1"></script>
+<script src="ui3.js?v=2"></script>
 </body>
 </html>
