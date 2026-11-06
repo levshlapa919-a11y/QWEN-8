@@ -58,3 +58,8 @@
 .tr-arrow{font-size:20px;color:var(--accent,#7f9be6)}.tr-b{display:flex;gap:8px;margin-top:10px}
 .tr-b button{flex:1;padding:10px 6px;border:0;border-radius:12px;font:700 13px inherit;font-family:inherit;color:#fff;cursor:pointer}.tr-ok{background:#2bb673}.tr-no{background:#d9534f}.tr-b button:disabled{opacity:.5}
 .tr-st{margin-top:8px;text-align:center;font-size:13px;color:var(--mut)}
+.f4-quick{display:flex;gap:6px;overflow-x:auto;padding:0 12px 8px}.f4-quick button{flex:none;border:1px solid var(--line2);background:var(--p2);color:var(--tx);border-radius:99px;padding:6px 12px;font:inherit;font-size:13px;cursor:pointer}
+.f4-folders{display:flex;gap:6px;overflow-x:auto;padding:0 12px 8px}.f4-t{flex:none;border:0;background:transparent;color:var(--mut);padding:5px 10px;border-radius:99px;font:inherit;font-size:13px;cursor:pointer}.f4-t.on{background:var(--accent,#7f9be6);color:#fff}.f4-t.add{border:1px dashed var(--line2)}
+.f4-chbar{padding:14px;text-align:center;color:var(--mut);background:var(--p1);border-top:1px solid var(--line2);font-size:14px}
+.f4-hit{padding:9px 0;border-bottom:1px solid var(--line2);cursor:pointer;font-size:14px}.f4-hit mark{background:color-mix(in srgb,var(--accent,#7f9be6) 40%,transparent);color:inherit;border-radius:3px}
+.f4-pv{display:flex;gap:4px;margin-top:4px}.f4-pv img{width:34px;height:34px;object-fit:contain}
