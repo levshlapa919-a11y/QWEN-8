@@ -299,5 +299,5 @@
     decorateMenu();
   }, 700);
   setInterval(() => { if (!document.hidden && CURRENT) refreshPin(); }, 20000);
-  window.F2 = { poll: createPollUI, once: sendOnceUI, ttl: ttlUI, schedule: scheduleUI, pass: passUI };
+  window.F2 = { modal: modal, poll: createPollUI, once: sendOnceUI, ttl: ttlUI, schedule: scheduleUI, pass: passUI };
 })();
