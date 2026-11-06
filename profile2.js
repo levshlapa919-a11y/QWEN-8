@@ -3,7 +3,7 @@
   'use strict';
   const $ = s => document.querySelector(s);
   const E = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const fmt = n => { let s = String(n == null ? 0 : n).split('.')[0]; if (!/^-?\d+$/.test(s)) s = String(Math.floor(+n || 0)); return s.replace(/\B(?=(\d{3})+(?!\d))/g, ' '); };
+  const fmt = n => { let s = String(n == null ? 0 : n).split('.')[0]; if (/^-?inf/i.test(s)) return s[0] === '-' ? '-∞' : '∞'; if (!/^-?\d+$/.test(s)) s = String(Math.floor(+n || 0)); return s.replace(/\B(?=(\d{3})+(?!\d))/g, ' '); };
   const bigN = v => { const s = String(v).replace(/\s/g, ''); return /^\d{1,60}$/.test(s) && /[1-9]/.test(s) ? s.replace(/^0+/, '') : null; };
   const bv = r => (r.data && (r.data.balance_t != null ? r.data.balance_t : r.data.balance)) || 0;
   const GOLD = '00000000-0000-4000-8000-000000901d07', GOLDA = '00000000-0000-4000-8000-00000000b001', PRIME = '00000000-0000-4000-8000-00000000b002';
@@ -202,7 +202,7 @@
 
   function openExchange(done) {
     sb.from('gold_wallets').select('balance_t').eq('user_id', meId()).maybeSingle().then(r => {
-      const g = String(bv(r)), max = (BigInt(g.split('.')[0]) / 500n).toString();
+      const g = String(bv(r)), max = /inf/i.test(g) ? '∞' : (BigInt(g.split('.')[0]) / 500n).toString();
       ask('Обмен: сколько праймиков получить? (у тебя ' + fmt(g) + ' gold — хватит на ' + fmt(max) + ')', 'Например 2 (за 1 000 gold)', max !== '0' ? '1' : '', async v => {
         const n = bigN(v); if (!n) return say('Введи число больше нуля', 'red');
         const { data } = await sb.rpc('exchange_gold', { p_primes: n });

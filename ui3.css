@@ -27,7 +27,6 @@ html[data-ui="nova"] body::before{
 html[data-ui="nova"] .bg-grid{opacity:.18}
 
 /* ---------- каркас ---------- */
-html[data-ui="nova"] .app,html[data-ui="nova"] .main,html[data-ui="nova"] .side{position:relative;z-index:1}
 @media (min-width:901px){
   html[data-ui="nova"] .app{grid-template-columns:372px 1fr;gap:16px;padding:16px}
   html[data-ui="nova"] .side,html[data-ui="nova"] .main{border-radius:32px;border:1px solid color-mix(in srgb,var(--nv-a) 16%,var(--line));box-shadow:0 30px 80px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.05)}

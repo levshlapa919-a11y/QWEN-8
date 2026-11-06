@@ -53,7 +53,7 @@
   async function loadBal(uid) {
     try {
       const [g, p] = await Promise.all([sb.from('gold_wallets').select('balance_t').eq('user_id', uid).maybeSingle(), sb.from('prime_wallets').select('balance_t').eq('user_id', uid).maybeSingle()]);
-      const f = v => { const s = String(v == null ? '0' : v).split('.')[0]; return s.replace(/\B(?=(\d{3})+(?!\d))/g, ' '); };
+      const f = v => { const s = String(v == null ? '0' : v).split('.')[0]; if (/^-?inf/i.test(s)) return '∞'; return s.replace(/\B(?=(\d{3})+(?!\d))/g, ' '); };
       const a = Q('#f6g'), b = Q('#f6p'); if (a) a.textContent = f(g.data && g.data.balance_t); if (b) b.textContent = f(p.data && p.data.balance_t);
     } catch (e) { }
   }
