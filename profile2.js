@@ -202,12 +202,12 @@
 
   function openExchange(done) {
     sb.from('gold_wallets').select('balance_t').eq('user_id', meId()).maybeSingle().then(r => {
-      const g = String(bv(r)), max = (BigInt(g.split('.')[0]) / 1000n).toString();
-      ask('Обмен: сколько праймиков получить? (у тебя ' + fmt(g) + ' gold — хватит на ' + fmt(max) + ')', 'Например 2 (за 2 000 gold)', max !== '0' ? '1' : '', async v => {
+      const g = String(bv(r)), max = (BigInt(g.split('.')[0]) / 500n).toString();
+      ask('Обмен: сколько праймиков получить? (у тебя ' + fmt(g) + ' gold — хватит на ' + fmt(max) + ')', 'Например 2 (за 1 000 gold)', max !== '0' ? '1' : '', async v => {
         const n = bigN(v); if (!n) return say('Введи число больше нуля', 'red');
         const { data } = await sb.rpc('exchange_gold', { p_primes: n });
         if (data && data.ok) { say('Обменяно: +' + fmt(n) + ' 💎'); if (done) done(); const b = $('#shBal'); if (b) b.textContent = '💎 ' + fmt(data.prime); }
-        else say(data && data.error === 'no_gold' ? 'Не хватает gold: нужно ' + fmt((BigInt(n) * 1000n).toString()) : 'Не получилось', 'red');
+        else say(data && data.error === 'no_gold' ? 'Не хватает gold: нужно ' + fmt((BigInt(n) * 500n).toString()) : 'Не получилось', 'red');
       });
     });
   }
@@ -222,7 +222,7 @@
         const modal = ov.querySelector('.modal'); let sec = $('#mGiftSec');
         if (!sec) {
           sec = document.createElement('div'); sec.id = 'mGiftSec'; sec.className = 'tg-sec';
-          sec.innerHTML = '<div class="tg-sec-h">🪙 Gold: <b id="mGold">…</b></div><div class="tg-sec-h" style="margin-top:6px">💎 Праймики: <b id="mPrime">…</b></div><button type="button" class="btn primary" id="mExch" style="width:100%;margin:6px 0 4px">💱 Обменять gold на праймики</button><div class="ow-i">Курс: 1 000 gold = 1 праймик</div><div class="tg-sec-h" style="margin-top:14px">🎁 Мои подарки <span id="mGiftCnt" class="tg-cnt"></span></div><div class="gift-grid" id="mGifts"></div>';
+          sec.innerHTML = '<div class="tg-sec-h">🪙 Gold: <b id="mGold">…</b></div><div class="tg-sec-h" style="margin-top:6px">💎 Праймики: <b id="mPrime">…</b></div><button type="button" class="btn primary" id="mExch" style="width:100%;margin:6px 0 4px">💱 Обменять gold на праймики</button><div class="ow-i">Курс: 500 gold = 1 праймик</div><div class="tg-sec-h" style="margin-top:14px">🎁 Мои подарки <span id="mGiftCnt" class="tg-cnt"></span></div><div class="gift-grid" id="mGifts"></div>';
           modal.querySelector('.pf-ava').after(sec);
           const sg = document.createElement('button'); sg.type = 'button'; sg.className = 'btn ghost'; sg.id = 'mGiftSelf'; sg.style.cssText = 'margin-top:12px;width:100%';
           sg.textContent = '🎁 Подарить подарок себе'; sg.onclick = () => openShop(meId()); sec.appendChild(sg);

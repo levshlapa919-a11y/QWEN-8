@@ -99,6 +99,31 @@
     });
   }
 
+  /* ---------- карточка обмена в чате ---------- */
+  const _pm = window.parseMedia, _mh = window.mediaHTML, _pv = window.previewOf;
+  window.parseMedia = function (c) { const m = String(c == null ? '' : c).match(/^\[\[trade\|([0-9a-f-]{36})\]\]/); return m ? { kind: 'trade', id: m[1], cap: '' } : _pm(c); };
+  window.mediaHTML = function (md) { return md && md.kind === 'trade' ? `<div class="tr-card" data-trade="${E(md.id)}"><div class="tr-h">🔄 Обмен NFT…</div></div>` : _mh(md); };
+  window.previewOf = function (lm, chat) { const md = window.parseMedia(lm.content); return md && md.kind === 'trade' ? (lm.sender_id === ME.id ? 'Вы: ' : '') + '🔄 Обмен NFT' : _pv(lm, chat); };
+  const side = (g, who) => `<div class="tr-side"><div class="tr-who">${E(who)}</div><div class="tr-img">${gimg(g || {})}</div><b>${E(g ? g.name : '?')}</b><small>${g && g.serial ? '#' + g.serial : ''} ${g ? RAR[g.rarity] || '' : ''}</small></div>`;
+  const STAT = { pending: '', done: '✅ Обмен состоялся', declined: '❌ Отклонено', cancelled: '🚫 Отменено', void: '⚠️ Недействителен (NFT изменились)' };
+  function paintTrade(el, s) {
+    if (!s) { el.innerHTML = '<div class="tr-h">🔄 Обмен NFT</div><div class="tr-st">Недоступно</div>'; return; }
+    const btns = s.status !== 'pending' ? `<div class="tr-st">${STAT[s.status] || ''}</div>` : s.incoming ? `<div class="tr-b"><button class="tr-ok" data-a="1">✅ Принять</button><button class="tr-no" data-a="0">❌ Отказаться</button></div>` : `<div class="tr-b"><button class="tr-no" data-a="0">🚫 Отменить предложение</button></div><div class="tr-st">⏳ Ждём ответа ${E(s.to_name)}</div>`;
+    el.innerHTML = `<div class="tr-h">🔄 Предложение обмена NFT</div><div class="tr-row">${side(s.give, s.from_name)}<div class="tr-arrow">⇄</div>${side(s.want, s.to_name)}</div>${btns}`;
+  }
+  async function hydrateTrades() { if (!ready()) return; for (const el of QA('.tr-card:not([data-h])')) { el.dataset.h = '1'; const r = await rpc('trade_state', { p_id: el.dataset.trade }); paintTrade(el, r.data || null); } }
+  document.addEventListener('click', async e => {
+    const b = e.target.closest('.tr-card [data-a]'); if (!b) return; const el = b.closest('.tr-card'); b.disabled = true;
+    const x = await rpc('answer_trade', { p_id: el.dataset.trade, p_accept: b.dataset.a === '1' }); const ok = x.data && x.data.ok;
+    if (b.dataset.a === '1') tst(ok ? 'Обмен состоялся 🔄' : 'Обмен невозможен: NFT изменились', ok ? '' : 'red');
+    const r = await rpc('trade_state', { p_id: el.dataset.trade }); paintTrade(el, r.data || null);
+  });
+  new MutationObserver(() => hydrateTrades()).observe(document.body, { childList: true, subtree: true });
+  setInterval(async () => { if (document.hidden || !ready()) return; for (const el of QA('.tr-card[data-h]').slice(-5)) { const r = await rpc('trade_state', { p_id: el.dataset.trade }); if (r.data) paintTrade(el, r.data); } }, 5000);
+
+  /* ---------- приветственные 15 праймиков ---------- */
+  (async function welcome() { if (!ready()) return setTimeout(welcome, 2500); const r = await rpc('claim_welcome'); if (r.data && r.data.ok) { tst('🎁 Приветственный бонус: +15 праймиков!'); } })();
+
   /* ---------- вход в меню ---------- */
   function deco() {
     const menu = Q('#chatMenu'); if (!menu || Q('[data-f3m]', menu) || !menu.children.length) return;

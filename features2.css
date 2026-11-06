@@ -52,3 +52,9 @@
 .g3-bd{display:flex;gap:6px;flex-wrap:wrap}.g3-bd span{border:1px solid var(--line2);background:var(--p2);border-radius:99px;padding:3px 10px;font-size:13px}
 .g3-top{font-weight:700;margin-bottom:6px}
 .g3-toast{position:fixed;left:50%;transform:translateX(-50%);bottom:90px;z-index:650;background:var(--p1);border:1px solid var(--accent,#7f9be6);border-radius:99px;padding:10px 18px;cursor:pointer;box-shadow:0 8px 30px rgba(0,0,0,.4);font-size:14px}
+.tr-card{min-width:250px;max-width:310px}.tr-h{font-weight:700;margin-bottom:8px}
+.tr-row{display:flex;align-items:center;gap:6px}.tr-side{flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;gap:2px;padding:8px 4px;border:1px solid var(--line2);border-radius:14px;background:var(--p2);font-size:12px;min-width:0}
+.tr-who{font-size:11px;color:var(--mut);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tr-img img{width:58px;height:58px;object-fit:contain}.tr-img span{font-size:40px;line-height:58px}
+.tr-arrow{font-size:20px;color:var(--accent,#7f9be6)}.tr-b{display:flex;gap:8px;margin-top:10px}
+.tr-b button{flex:1;padding:10px 6px;border:0;border-radius:12px;font:700 13px inherit;font-family:inherit;color:#fff;cursor:pointer}.tr-ok{background:#2bb673}.tr-no{background:#d9534f}.tr-b button:disabled{opacity:.5}
+.tr-st{margin-top:8px;text-align:center;font-size:13px;color:var(--mut)}
