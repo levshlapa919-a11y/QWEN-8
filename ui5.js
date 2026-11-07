@@ -129,7 +129,6 @@
           <div class="lab">Фон чата</div><div class="sws wl" data-sws="wall">${WALL.map(w => `<i data-v="${w[0]}" title="${w[1]}" style="background:${w[2]}" class="${wall === w[0] ? 'on' : ''}"></i>`).join('')}</div>
         </div>
         ${row('anim', '#8e5cf0', 'Анимации', 'Плавные переходы и эффекты', sw(LS.g('golda_motion', 'on') === 'on'), 'motion')}
-        <div class="ctl"><div class="lab">Вид приложения</div><div class="seg" data-seg="ui">${[['clean', 'Clean'], ['pulse', 'Pulse'], ['nova', 'Nova'], ['new', 'Aurora'], ['classic', 'Классика']].map(a => `<button data-v="${a[0]}" class="${ui === a[0] ? 'on' : ''}">${a[1]}</button>`).join('')}</div></div>
       </div>
       <div class="sec"><h4>Чаты</h4>
         ${row('enter', '#3390ec', 'Enter отправляет', 'Выкл — Enter переносит строку, Ctrl+Enter отправляет', sw(LS.g('golda_enter', '1') === '1'), 'enter')}
