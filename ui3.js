@@ -1,7 +1,7 @@
 /* ui3: мелкая «механика» интерфейса Nova — ripple, анимация новых сообщений, поле ввода, каскад чатов */
 (function () {
   'use strict';
-  const on = () => document.documentElement.getAttribute('data-ui') === 'nova' || document.documentElement.getAttribute('data-ui') === 'pulse';
+  const on = () => document.documentElement.getAttribute('data-ui') === 'nova' || document.documentElement.getAttribute('data-ui') === 'pulse' || document.documentElement.getAttribute('data-ui') === 'clean';
   const Q = (s, r) => (r || document).querySelector(s);
 
   /* ripple на кнопках */

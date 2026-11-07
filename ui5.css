@@ -1,0 +1,199 @@
+/* ui5 «Clean»: спокойный интерфейс настоящего мессенджера — системный шрифт, без неона и свечения,
+   боковое меню, экран настроек, тонкие анимации. */
+html[data-ui="clean"]{--font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;--mono:var(--font);--ac:#3390ec;--br:18px;--cl-ease:cubic-bezier(.2,.8,.2,1);--cl-spring:cubic-bezier(.34,1.4,.64,1)}
+html[data-ui="clean"] body[data-theme="dark"]{--bg:#0e1621;--p1:#17212b;--p2:#1f2c3a;--p3:#263648;--line:rgba(255,255,255,.07);--line2:rgba(255,255,255,.14);--tx:#f2f5f8;--mut:#7f91a4;--mut2:#5d6f82;--own:#2b5278;--own-tx:#fff;--oth:#182533;--oth-tx:#f2f5f8;--cl-row:#17212b;--cl-hover:#202b36}
+html[data-ui="clean"] body[data-theme="light"]{--bg:#e7ebf0;--p1:#ffffff;--p2:#f1f3f5;--p3:#e6e9ed;--line:rgba(0,0,0,.08);--line2:rgba(0,0,0,.16);--tx:#0f1419;--mut:#707579;--mut2:#9aa0a6;--own:#eeffde;--own-tx:#0f1419;--oth:#ffffff;--oth-tx:#0f1419;--cl-row:#ffffff;--cl-hover:#f4f4f5}
+html[data-ui="clean"] body[data-theme]{--neon:var(--ac);--red:#e5484d;--gold:#e0a21b}
+html[data-ui="clean"] body[data-theme="dark"]{--ac-t:var(--ac)}
+html[data-ui="clean"] body{background:var(--bg);font-family:var(--font);-webkit-font-smoothing:antialiased}
+html[data-ui="clean"] body::before,html[data-ui="clean"] #appParticles,html[data-ui="clean"] .bg-grid{display:none!important}
+html[data-ui="clean"] *{text-shadow:none!important}
+html[data-ui="clean"] .side,html[data-ui="clean"] .chat-head,html[data-ui="clean"] .input-bar,html[data-ui="clean"] .main,html[data-ui="clean"] .overlay .modal{backdrop-filter:none;-webkit-backdrop-filter:none}
+@media (min-width:901px){
+  html[data-ui="clean"] .app{grid-template-columns:400px 1fr;gap:0;padding:0}
+  html[data-ui="clean"] .side{border-radius:0;border:0;border-right:1px solid var(--line);box-shadow:none;background:var(--cl-row)}
+  html[data-ui="clean"] .main{border-radius:0;border:0;box-shadow:none;background:var(--bg)}
+}
+html[data-ui="clean"] .side{background:var(--cl-row)}
+/* шапка списка */
+html[data-ui="clean"] .side-head{display:flex;align-items:center;gap:10px;padding:calc(8px + env(safe-area-inset-top)) 12px 4px}
+html[data-ui="clean"] .side-brand,html[data-ui="clean"] .side-actions{display:none}
+html[data-ui="clean"] #clMenu{width:40px;height:40px;border:0;border-radius:50%;background:transparent;color:var(--mut);display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none;transition:background .2s,transform .2s var(--cl-spring)}
+html[data-ui="clean"] #clMenu:hover{background:var(--cl-hover)}html[data-ui="clean"] #clMenu:active{transform:scale(.88)}
+html[data-ui="clean"] #clMenu svg{transition:transform .35s var(--cl-ease)}
+html[data-ui="clean"] .search{flex:1;padding:0;position:static;margin:0}
+html[data-ui="clean"] .search .inp{height:40px;border:0;border-radius:20px;background:var(--p2);padding-left:40px;font-size:15px;transition:box-shadow .2s,background .2s}
+html[data-ui="clean"] .search .inp:focus{box-shadow:0 0 0 2px var(--ac);background:var(--p1)}
+html[data-ui="clean"] .search svg{left:14px}
+html[data-ui="clean"] .side-head{flex:none}
+html[data-ui="clean"] .side>.search{display:none}
+html[data-ui="clean"] #f4Quick,html[data-ui="clean"] .me{display:none!important}
+html[data-ui="clean"] #f4Folders{padding:2px 12px 6px;gap:4px}
+html[data-ui="clean"] #f4Folders button,html[data-ui="clean"] .f4-t{border:0;background:transparent;color:var(--mut);border-radius:0;font:600 14px var(--font);padding:8px 10px;position:relative}
+html[data-ui="clean"] #f4Folders .on,html[data-ui="clean"] .f4-t.on{color:var(--ac);background:transparent}
+html[data-ui="clean"] #f4Folders .on::after{content:"";position:absolute;left:10px;right:10px;bottom:0;height:3px;border-radius:3px;background:var(--ac)}
+/* список чатов */
+html[data-ui="clean"] #chatList{padding:0 0 90px}
+html[data-ui="clean"] .chat-item{gap:12px;padding:8px 14px;margin:0;border-radius:0;border:0;position:relative;background:transparent;transition:background .15s}
+html[data-ui="clean"] .chat-item:hover{background:var(--cl-hover);transform:none}
+html[data-ui="clean"] .chat-item:active{background:var(--p3)}
+html[data-ui="clean"] .chat-item.active{background:var(--ac);color:#fff}
+html[data-ui="clean"] .chat-item.active .ci-name,html[data-ui="clean"] .chat-item.active .ci-time,html[data-ui="clean"] .chat-item.active .ci-prev{color:#fff}
+html[data-ui="clean"] .chat-item.active .ci-prev{opacity:.82}
+html[data-ui="clean"] .chat-item.active .badge{background:#fff;color:var(--ac)}
+html[data-ui="clean"] .chat-item::before{display:none}
+html[data-ui="clean"] .chat-item:not(.active):not(:last-child)::after{content:"";position:absolute;left:78px;right:0;bottom:0;height:1px;background:var(--line)}
+html[data-ui="clean"] .chat-item .ava,html[data-ui="clean"] .ava-wrap .ava{width:54px;height:54px;border-radius:50%;box-shadow:none}
+html[data-ui="clean"] .ci-name{font-weight:600;font-size:16px;color:var(--tx)}
+html[data-ui="clean"] .ci-time{font-size:12.5px;color:var(--mut)}
+html[data-ui="clean"] .ci-prev{font-size:14.5px;color:var(--mut)}
+html[data-ui="clean"] .badge{background:var(--ac);color:#fff;border-radius:99px;min-width:22px;height:22px;font-weight:600;font-size:12.5px;box-shadow:none}
+html[data-ui="clean"] .dot.on{background:#4fae4e;box-shadow:0 0 0 2px var(--cl-row)}
+/* кнопка нового чата */
+html[data-ui="clean"] #clFab{position:fixed;z-index:30;width:56px;height:56px;border-radius:50%;border:0;background:var(--ac);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.32);transition:transform .25s var(--cl-spring),box-shadow .2s;animation:clFab .5s var(--cl-spring) .2s both}
+@keyframes clFab{from{transform:scale(0) rotate(-90deg)}to{transform:none}}
+html[data-ui="clean"] #clFab:hover{transform:scale(1.06)}html[data-ui="clean"] #clFab:active{transform:scale(.9)}
+@media (min-width:901px){html[data-ui="clean"] #clFab{left:324px;bottom:24px}}
+@media (max-width:900px){html[data-ui="clean"] #clFab{right:18px;bottom:calc(env(safe-area-inset-bottom) + 18px)}html[data-ui="clean"] #slimNav{display:none!important}html[data-ui="clean"] .chat-list{padding-bottom:90px!important}html[data-ui="clean"] body.chat-view #clFab,html[data-ui="clean"] .app.chat-open ~ #clFab{display:none}}
+html[data-ui="clean"] .app.chat-open #clFab{display:none}
+/* чат */
+html[data-ui="clean"] .chat-head{background:var(--p1);border:0;border-bottom:1px solid var(--line);box-shadow:none;border-radius:0;margin:0;padding:6px 10px;min-height:56px;position:relative;z-index:5}
+html[data-ui="clean"] .chat-head .ava{width:40px;height:40px;box-shadow:none}
+html[data-ui="clean"] .h-name{font-weight:600;font-size:16px;color:var(--tx)}
+html[data-ui="clean"] .h-sub{font-size:13px;color:var(--mut)}
+html[data-ui="clean"] .icon-btn{border:0;background:transparent;color:var(--mut);border-radius:50%;box-shadow:none;transition:background .2s,transform .2s var(--cl-spring)}
+html[data-ui="clean"] .icon-btn:hover{background:var(--cl-hover);color:var(--tx);transform:none}
+html[data-ui="clean"] .icon-btn:active{transform:scale(.88)}
+html[data-ui="clean"] .main{background:var(--bg)}
+html[data-ui="clean"] #msgScroll{background:var(--bg)}
+html[data-ui="clean"] body[data-wall="dots"] #msgScroll{background-image:radial-gradient(color-mix(in srgb,var(--tx) 9%,transparent) 1.2px,transparent 1.4px);background-size:22px 22px}
+html[data-ui="clean"] body[data-wall="g1"] #msgScroll{background:linear-gradient(160deg,#1d3b5c,#14263d 55%,#2a1f4a)}
+html[data-ui="clean"] body[data-wall="g2"] #msgScroll{background:linear-gradient(160deg,#173d34,#0f2a28 55%,#163a2a)}
+html[data-ui="clean"] body[data-wall="g3"] #msgScroll{background:linear-gradient(160deg,#4a2230,#2a1620 55%,#3a2a1a)}
+html[data-ui="clean"] body[data-wall="s1"] #msgScroll{background:#c9dcb8}
+html[data-ui="clean"] body[data-wall="s2"] #msgScroll{background:#cfe0ef}
+html[data-ui="clean"] .msg .ava{display:none}
+html[data-ui="clean"] .msg.own .m-name{display:none}
+html[data-ui="clean"] .m-name{font-size:13px;font-weight:600;color:var(--ac);margin-bottom:1px}
+html[data-ui="clean"] .bubble{background:var(--oth);color:var(--oth-tx);border:0;border-radius:var(--br) var(--br) var(--br) 5px;box-shadow:0 1px 1px rgba(0,0,0,.14);padding:6px 11px 5px;max-width:min(520px,calc(100vw - 72px));width:fit-content;min-width:60px}
+html[data-ui="clean"] .msg.own .bubble{background:var(--own);color:var(--own-tx);border-radius:var(--br) var(--br) 5px var(--br)}
+html[data-ui="clean"] .m-text{font-size:var(--font-size,15.5px);line-height:1.38}
+html[data-ui="clean"] .m-time{font-size:11.5px;color:var(--mut);opacity:.85}
+html[data-ui="clean"] .msg.own .m-time{color:color-mix(in srgb,var(--own-tx) 62%,transparent)}
+html[data-ui="clean"] .msg:hover .bubble{transform:none}
+html[data-ui="clean"] .msg.pl-in{animation:clIn .32s var(--cl-ease) both;transform-origin:0 100%}
+html[data-ui="clean"] .msg.own.pl-in{transform-origin:100% 100%}
+@keyframes clIn{from{opacity:0;transform:translateY(10px) scale(.94)}to{opacity:1;transform:none}}
+html[data-ui="clean"] .day{background:color-mix(in srgb,var(--tx) 14%,transparent);color:var(--tx);border:0;border-radius:99px;font:600 13px var(--font);box-shadow:none;padding:3px 12px;backdrop-filter:blur(6px)}
+html[data-ui="clean"] .rxc{border:0;border-radius:99px;background:color-mix(in srgb,var(--ac) 18%,transparent)}
+html[data-ui="clean"] .rxc.mine{background:var(--ac);color:#fff}
+/* ввод */
+html[data-ui="clean"] .input-bar{background:var(--p1);border:0;border-top:1px solid var(--line);box-shadow:none;border-radius:0;margin:0;padding:6px 8px calc(6px + env(safe-area-inset-bottom))}
+html[data-ui="clean"] .ib-inner{background:transparent;border:0;box-shadow:none;padding:0;gap:2px}
+html[data-ui="clean"] .ib-inner .inp,html[data-ui="clean"] #msgInput{background:transparent;border:0;box-shadow:none;font-size:16px;color:var(--tx)}
+html[data-ui="clean"] .send{border-radius:50%;background:var(--ac);color:#fff;border:0;box-shadow:none;transition:transform .3s var(--cl-spring),width .25s,opacity .2s,margin .25s}
+html[data-ui="clean"] .send:hover{transform:scale(1.06)}
+html[data-ui="clean"] .ib-inner.nv-empty .send{transform:scale(0);width:0;margin:0;opacity:0;padding:0;overflow:hidden}
+/* кнопки и поля */
+html[data-ui="clean"] .btn.primary,html[data-ui="clean"] .f2-btn{background:var(--ac);color:#fff;border:0;border-radius:12px;font-weight:600;box-shadow:none;transition:filter .15s,transform .15s}
+html[data-ui="clean"] .btn.primary:hover,html[data-ui="clean"] .f2-btn:hover{filter:brightness(1.08)}
+html[data-ui="clean"] .btn.primary:active,html[data-ui="clean"] .f2-btn:active{transform:scale(.96)}
+html[data-ui="clean"] .btn.ghost,html[data-ui="clean"] .f2-btn.ghost{background:transparent;color:var(--ac);border:0}
+html[data-ui="clean"] .inp,html[data-ui="clean"] .f2-in{border-radius:12px;border:1px solid var(--line2);background:var(--p1);color:var(--tx)}
+html[data-ui="clean"] .inp:focus,html[data-ui="clean"] .f2-in:focus{border-color:var(--ac);box-shadow:0 0 0 1px var(--ac)}
+/* окна */
+html[data-ui="clean"] .overlay{background:rgba(0,0,0,.45);backdrop-filter:none}
+html[data-ui="clean"] .overlay .modal,html[data-ui="clean"] .f2-card,html[data-ui="clean"] .gs{background:var(--p1);color:var(--tx);border:0;border-radius:16px;box-shadow:0 16px 48px rgba(0,0,0,.35)}
+html[data-ui="clean"] .overlay.open .modal,html[data-ui="clean"] .f2-card{animation:clModal .28s var(--cl-ease) both}
+@keyframes clModal{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:none}}
+html[data-ui="clean"] .m-title{font-weight:600}
+html[data-ui="clean"] .chat-menu{background:var(--p1);border:0;border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,.35);animation:clMenu .2s var(--cl-ease) both;transform-origin:top right}
+@keyframes clMenu{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:none}}
+html[data-ui="clean"] .toast{border-radius:12px;font-weight:500;box-shadow:0 6px 20px rgba(0,0,0,.35)}
+html[data-ui="clean"] .big-g{background:var(--p2);color:var(--mut);box-shadow:none;animation:none}
+@media (max-width:900px){
+  html[data-ui="clean"] .app.chat-open .main{animation:clPage .3s var(--cl-ease) both}
+  @keyframes clPage{from{transform:translateX(32px);opacity:.3}to{transform:none;opacity:1}}
+}
+/* --- боковое меню --- */
+#clDrawer{position:fixed;inset:0;z-index:200;pointer-events:none;visibility:hidden}
+#clDrawer.open{pointer-events:auto;visibility:visible}
+#clDrawer .sc{position:absolute;inset:0;background:rgba(0,0,0,.5);opacity:0;transition:opacity .28s}
+#clDrawer.open .sc{opacity:1}
+#clDrawer .pn{position:absolute;left:0;top:0;bottom:0;width:min(330px,84vw);background:var(--p1);color:var(--tx);transform:translateX(-102%);transition:transform .32s var(--cl-ease);display:flex;flex-direction:column;overflow-y:auto;box-shadow:8px 0 32px rgba(0,0,0,.3)}
+#clDrawer.open .pn{transform:none}
+#clDrawer .hd{padding:calc(20px + env(safe-area-inset-top)) 18px 14px;background:color-mix(in srgb,var(--ac) 22%,var(--p1));position:relative}
+#clDrawer .hd .ava{width:64px;height:64px}
+#clDrawer .hd b{display:block;font:600 17px var(--font);margin-top:10px}
+#clDrawer .hd small{color:var(--mut);font-size:13.5px}
+#clDrawer .tg{position:absolute;right:12px;top:calc(14px + env(safe-area-inset-top));width:38px;height:38px;border:0;border-radius:50%;background:transparent;color:var(--tx);cursor:pointer;display:flex;align-items:center;justify-content:center}
+#clDrawer .tg:hover{background:rgba(255,255,255,.1)}
+#clDrawer .it{display:flex;align-items:center;gap:22px;width:100%;padding:12px 20px;border:0;background:transparent;color:var(--tx);font:500 15.5px var(--font);cursor:pointer;text-align:left;transition:background .15s;opacity:0;transform:translateX(-14px)}
+#clDrawer.open .it{animation:clItem .35s var(--cl-ease) both;animation-delay:calc(var(--i)*.03s + .08s)}
+@keyframes clItem{to{opacity:1;transform:none}}
+#clDrawer .it:hover{background:var(--cl-hover)}
+#clDrawer .it svg{color:var(--mut);flex:none}
+#clDrawer .sp{height:1px;background:var(--line);margin:6px 0}
+#clDrawer .ft{margin-top:auto;padding:14px 20px;color:var(--mut2);font-size:12.5px}
+/* --- настройки --- */
+#clSet{position:fixed;inset:0;z-index:190;background:var(--bg);color:var(--tx);display:none;flex-direction:column;font-family:var(--font)}
+#clSet.open{display:flex;animation:clSetIn .32s var(--cl-ease) both}
+@keyframes clSetIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}}
+#clSet .bar{display:flex;align-items:center;gap:8px;padding:calc(6px + env(safe-area-inset-top)) 8px 6px;background:var(--p1);border-bottom:1px solid var(--line);flex:none}
+#clSet .bar b{font:600 19px var(--font)}
+#clSet .bar button{width:42px;height:42px;border:0;border-radius:50%;background:transparent;color:var(--tx);cursor:pointer;display:flex;align-items:center;justify-content:center}
+#clSet .bar button:hover{background:var(--cl-hover)}
+#clSet .bd{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(30px + env(safe-area-inset-bottom))}
+#clSet .wrap{max-width:640px;margin:0 auto}
+#clSet .prof{display:flex;flex-direction:column;align-items:center;padding:24px 16px 18px;background:var(--p1);margin-bottom:10px;cursor:pointer}
+#clSet .prof .ava{width:92px;height:92px}
+#clSet .prof b{font:600 20px var(--font);margin-top:12px}
+#clSet .prof small{color:var(--mut);font-size:14px;margin-top:2px}
+#clSet .sec{background:var(--p1);margin-bottom:10px;overflow:hidden}
+@media (min-width:700px){#clSet .sec,#clSet .prof{border-radius:14px}#clSet .bd{padding-top:12px}}
+#clSet h4{margin:0;padding:14px 18px 6px;color:var(--ac);font:600 14px var(--font)}
+#clSet .rw{display:flex;align-items:center;gap:16px;padding:11px 18px;cursor:pointer;transition:background .15s;min-height:54px;position:relative}
+#clSet .rw:hover{background:var(--cl-hover)}
+#clSet .rw:active{background:var(--p3)}
+#clSet .ic{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;flex:none}
+#clSet .tx{flex:1;min-width:0}
+#clSet .tx div{font-size:16px}
+#clSet .tx small{display:block;color:var(--mut);font-size:13.5px;margin-top:1px}
+#clSet .vl{color:var(--mut);font-size:14.5px;flex:none}
+#clSet .rw.red .tx div{color:var(--red)}
+#clSet .sw{width:44px;height:26px;border-radius:99px;background:var(--p3);position:relative;flex:none;transition:background .25s}
+#clSet .sw::after{content:"";position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.4);transition:transform .28s var(--cl-spring)}
+#clSet .sw.on{background:var(--ac)}#clSet .sw.on::after{transform:translateX(18px)}
+#clSet .ctl{padding:4px 18px 14px}
+#clSet .ctl .lab{display:flex;justify-content:space-between;font-size:15px;margin:8px 0 4px}
+#clSet .ctl .lab span{color:var(--mut)}
+#clSet input[type=range]{width:100%;accent-color:var(--ac)}
+#clSet .seg{display:flex;background:var(--p2);border-radius:10px;padding:3px;margin:4px 0}
+#clSet .seg button{flex:1;border:0;background:transparent;color:var(--tx);font:500 14px var(--font);padding:8px;border-radius:8px;cursor:pointer;transition:background .2s,color .2s}
+#clSet .seg button.on{background:var(--ac);color:#fff}
+#clSet .sws{display:flex;gap:12px;flex-wrap:wrap;padding:6px 0}
+#clSet .sws i{width:36px;height:36px;border-radius:50%;cursor:pointer;display:block;position:relative;transition:transform .2s var(--cl-spring)}
+#clSet .sws i:active{transform:scale(.85)}
+#clSet .sws i.on::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid var(--tx)}
+#clSet .sws.wl i{border-radius:12px;width:44px;height:60px;border:1px solid var(--line2)}
+#clSet .sws.wl i.on::after{border-radius:15px}
+#clSet .prev{margin:6px 0 4px;padding:12px;border-radius:12px;background:var(--bg);display:flex;flex-direction:column;gap:6px}
+#clSet .prev .bubble{margin:0}
+#clSet .prev .own{align-self:flex-end}
+html[data-motion="off"] *{animation:none!important;transition:none!important}
+@media (prefers-reduced-motion:reduce){html[data-ui="clean"] *{animation:none!important;transition:none!important}}
+#clMenu,#clFab{display:none}
+html[data-ui="clean"] #clMenu,html[data-ui="clean"] #clFab{display:flex}
+html[data-ui="clean"] .msg.own .bubble,html[data-ui="clean"] .msg .bubble{box-shadow:0 1px 1px rgba(0,0,0,.14)!important;filter:none}
+html[data-ui="clean"] .day{text-transform:none;letter-spacing:0}
+html[data-ui="clean"] .side-tabs{display:flex;gap:0;padding:0 8px;margin:0;background:transparent;border:0;border-bottom:1px solid var(--line);border-radius:0}
+html[data-ui="clean"] .stab{flex:1;border:0;background:transparent;color:var(--mut);font:600 14.5px var(--font);padding:10px 8px;border-radius:0;position:relative;box-shadow:none;transition:color .2s}
+html[data-ui="clean"] .stab.on{background:transparent;color:var(--ac);box-shadow:none;border:0}
+html[data-ui="clean"] .stab::after{content:"";position:absolute;left:18%;right:18%;bottom:-1px;height:3px;border-radius:3px 3px 0 0;background:var(--ac);transform:scaleX(0);transition:transform .3s var(--cl-ease)}
+html[data-ui="clean"] .stab.on::after{transform:scaleX(1)}
+html[data-ui="clean"] .search .inp::placeholder{color:var(--mut)}
+html[data-ui="clean"] #chatList{--x:0}
+html[data-ui="clean"] .side-head{flex-wrap:wrap;row-gap:0}
+html[data-ui="clean"] .side-head .side-tabs{order:3;flex:1 0 100%;margin:4px -12px 0;padding:0 12px}
+html[data-ui="clean"] .chat-item,html[data-ui="clean"] .chat-item.active,html[data-ui="clean"] .chat-item:hover{box-shadow:none!important}
+html[data-ui="clean"] #clFab{width:56px!important;height:56px!important;min-width:56px;padding:0}
