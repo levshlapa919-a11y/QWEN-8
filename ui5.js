@@ -136,6 +136,7 @@
       <div class="sec"><h4>Аккаунт</h4>
         ${row('user', '#3390ec', 'Мой профиль', 'Имя, фото, о себе', '', 'profile')}
         ${row('coin', '#e0a21b', 'Кошелёк', 'gold и праймики', '<span class="vl" id="clBal">…</span>', 'wallet')}
+        ${row('users', '#3390ec', 'Поделиться профилем', 'Ссылка, по которой тебя найдут', '', 'share')}
         ${row('lock', '#6c5ce7', 'Код-пароль', 'Защита и скрытые чаты', '', 'pass')}
       </div>
       <div class="sec"><h4>Конфиденциальность</h4>
@@ -195,6 +196,7 @@
       const rw = e.target.closest('.rw'); if (!rw) return; const id = rw.dataset.id;
       switch (id) {
         case 'profile': closeSet(); call(window.openMyProfile); break;
+        case 'share': window.LIVE && window.LIVE.shareProfile(); break;
         case 'seen-list': showSeen(); break;
         case 'hide-seen': { const on = LS.g('golda_hide_seen', '0') === '1'; LS.s('golda_hide_seen', on ? '0' : '1'); rw.querySelector('.sw').classList.toggle('on', !on); try { sb.from('profiles').update({ last_seen: on ? new Date().toISOString() : null }).eq('id', ME.id).then(() => { }); } catch (er) { } break; }
         case 'blocked': showBlocked(); break;

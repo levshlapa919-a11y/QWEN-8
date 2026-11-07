@@ -44,7 +44,7 @@
   function done(d) {
     busy = false; const e = Q('#gmBal'); if (e) e.textContent = fmt(bal);
     const m = Q('#gmMsg'); if (!m) return;
-    if (d.win) { m.className = 'gm-res win'; m.textContent = '🎉 Выигрыш +' + fmt(BigInt(d.payout) - BigInt(bet)) + ' (×' + d.mult + ')'; }
+    if (d.win) { if (window.LIVE && Number(d.mult) >= 2) window.LIVE.confetti(90); m.className = 'gm-res win'; m.textContent = '🎉 Выигрыш +' + fmt(BigInt(d.payout) - BigInt(bet)) + ' (×' + d.mult + ')'; }
     else if (d.draw) { m.className = 'gm-res'; m.textContent = '🤝 Ничья, ставка возвращена'; }
     else { m.className = 'gm-res bad'; m.textContent = '💥 Проигрыш −' + fmt(bet); }
   }

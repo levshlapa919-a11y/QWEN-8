@@ -258,3 +258,20 @@ html[data-ui="clean"] .stk-grid .st.add{border:2px dashed var(--line2);color:var
 html[data-ui="clean"] .stk-img{filter:none;width:140px;height:140px}
 html[data-ui="clean"] .stk-hint{color:var(--mut)}
 html[data-ui="clean"] .stk-hint a{color:var(--ac)!important}
+/* ===== живость ===== */
+.msg.emo-only .bubble{background:transparent!important;box-shadow:none!important;padding:0;min-width:0}
+.msg.emo-only .m-text{font-size:54px!important;line-height:1.1;animation:lvBounce .6s cubic-bezier(.34,1.8,.5,1) both}
+.msg.emo-only .m-name{display:none}
+@keyframes lvBounce{from{transform:scale(.3) rotate(-14deg);opacity:0}to{transform:none;opacity:1}}
+.dot.on{animation:lvPulse 2.4s ease-out infinite}
+@keyframes lvPulse{0%{box-shadow:0 0 0 0 rgba(79,174,78,.55)}70%{box-shadow:0 0 0 7px rgba(79,174,78,0)}100%{box-shadow:0 0 0 0 rgba(79,174,78,0)}}
+html[data-ui="clean"] .chat-item.lv-pin .ci-time::before{content:"";display:inline-block;width:11px;height:11px;margin-right:5px;vertical-align:-1px;background:currentColor;opacity:.7;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'%3E%3Cpath d='M16 3H8l1 7-3 3v2h5v6l1 1 1-1v-6h5v-2l-3-3z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'%3E%3Cpath d='M16 3H8l1 7-3 3v2h5v6l1 1 1-1v-6h5v-2l-3-3z'/%3E%3C/svg%3E") center/contain no-repeat}
+#lvDown{position:fixed;right:16px;bottom:var(--lv-ib,86px);z-index:25;width:44px;height:44px;border-radius:50%;border:0;background:var(--p1);color:var(--mut);box-shadow:0 3px 12px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transform:translateY(14px) scale(.8);pointer-events:none;transition:opacity .2s,transform .3s cubic-bezier(.34,1.5,.64,1)}
+#lvDown.on{opacity:1;transform:none;pointer-events:auto}
+#lvDown b{position:absolute;top:-6px;right:-4px;min-width:20px;height:20px;border-radius:99px;background:var(--neon,#3390ec);color:#fff;font:600 12px/20px var(--font);text-align:center;padding:0 5px;display:none}
+#lvDown.has b{display:block;animation:lvBounce .4s both}
+html[data-ui="clean"] .ms-card{background:var(--p1);border:0;border-radius:16px}
+html[data-ui="clean"] .ms-list [data-a]{display:flex;align-items:center;font:500 15px var(--font);color:var(--tx)}
+html[data-ui="clean"] .ms-list [data-a].danger,html[data-ui="clean"] .ms-list [data-a].danger .cl-i{color:var(--red)}
+html[data-ui="clean"] .ms-rx button{border-radius:50%;transition:transform .2s cubic-bezier(.34,1.5,.64,1)}
+html[data-ui="clean"] .ms-rx button:active{transform:scale(1.4)}
