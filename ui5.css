@@ -280,3 +280,28 @@ html[data-ui="clean"] .ms-rx button:active{transform:scale(1.4)}
 .tr-btn:hover{background:rgba(127,145,164,.3)}.tr-btn:active{transform:scale(.95)}.tr-btn:disabled{opacity:.7;cursor:default}
 .tr-txt{font-size:14.5px;line-height:1.4;padding:6px 2px 2px;white-space:pre-wrap;animation:lvBounce .35s both}
 .tr-btn[hidden],.tr-txt[hidden]{display:none!important}
+/* ===== плеер голосовых ===== */
+.vp{display:flex;align-items:center;gap:10px;min-width:210px;padding:2px 0}
+.vp-b{width:42px;height:42px;border-radius:50%;border:0;background:var(--neon,#3390ec);color:#fff;display:flex;align-items:center;justify-content:center;flex:none;cursor:pointer;transition:transform .2s cubic-bezier(.34,1.5,.64,1)}
+.vp-b:active{transform:scale(.88)}
+.msg.own .vp-b{background:#fff;color:var(--neon,#3390ec)}
+.vp-m{flex:1;min-width:0}
+.vp-bars{display:flex;align-items:center;gap:2px;height:26px;cursor:pointer}
+.vp-bars i{flex:1;min-width:2px;border-radius:2px;background:currentColor;opacity:.3;transition:opacity .15s}
+.vp-bars i.on{opacity:1;color:var(--neon,#3390ec)}
+.msg.own .vp-bars i.on{color:#fff}
+.vp-t{font-size:12px;opacity:.7;margin-top:1px;font-variant-numeric:tabular-nums}
+.vp-s{border:0;border-radius:99px;background:rgba(127,145,164,.22);color:inherit;font:700 11.5px var(--font);padding:4px 7px;cursor:pointer;flex:none}
+.vp.pl .vp-bars i.on:last-of-type{animation:none}
+/* ===== хвостики сообщений и цитаты ===== */
+html[data-ui="clean"] .msg .bubble{position:relative;overflow:visible}
+html[data-ui="clean"] .msg:not(.own):not(:has(+ .msg:not(.own))) .bubble{border-bottom-left-radius:0}
+html[data-ui="clean"] .msg.own:not(:has(+ .msg.own)) .bubble{border-bottom-right-radius:0}
+html[data-ui="clean"] .msg:not(.own):not(:has(+ .msg:not(.own))) .bubble::before{content:"";position:absolute;left:-8px;bottom:0;width:9px;height:14px;background:var(--oth);clip-path:path('M9 14V0C9 7 6 12 0 14z')}
+html[data-ui="clean"] .msg.own:not(:has(+ .msg.own)) .bubble::before{content:"";position:absolute;right:-8px;bottom:0;width:9px;height:14px;background:color-mix(in srgb,var(--ac) 74%,#000);clip-path:path('M0 14V0C0 7 3 12 9 14z')}
+html[data-ui="clean"] .msg.stk .bubble::before,html[data-ui="clean"] .msg.emo-only .bubble::before{display:none}
+html[data-ui="clean"] .rq{border-left:3px solid var(--ac);background:color-mix(in srgb,var(--ac) 14%,transparent);border-radius:4px 8px 8px 4px;padding:3px 8px;margin-bottom:4px}
+html[data-ui="clean"] .rq b{color:var(--ac);font-weight:600;font-size:13px}
+html[data-ui="clean"] .msg.own .rq{border-left-color:#fff;background:rgba(255,255,255,.16)}
+html[data-ui="clean"] .msg.own .rq b{color:#fff}
+html[data-ui="clean"] .m-img,html[data-ui="clean"] .m-video{border-radius:12px}

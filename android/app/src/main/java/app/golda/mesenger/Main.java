@@ -13,7 +13,7 @@ import android.content.Context;
 import android.webkit.*;
 
 public class Main extends Activity {
-    static final String URL = "https://appassets.androidplatform.net/www/index.html";
+    static final String URL = "https://appassets.androidplatform.net/assets/www/index.html";
     androidx.webkit.WebViewAssetLoader loader;
     WebView w;
     ValueCallback<Uri[]> cb;
@@ -24,7 +24,7 @@ public class Main extends Activity {
         w = new WebView(this);
         setContentView(w);
         loader = new androidx.webkit.WebViewAssetLoader.Builder()
-            .addPathHandler("/www/", new androidx.webkit.WebViewAssetLoader.AssetsPathHandler(this)).build();
+            .addPathHandler("/assets/", new androidx.webkit.WebViewAssetLoader.AssetsPathHandler(this)).build();
         WebSettings s = w.getSettings();
         s.setUserAgentString(s.getUserAgentString() + " GoldaApp/1.3");
         s.setJavaScriptEnabled(true); s.setDomStorageEnabled(true); s.setMediaPlaybackRequiresUserGesture(false);
