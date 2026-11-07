@@ -3,7 +3,7 @@
   'use strict';
   const $ = s => document.querySelector(s);
   const E = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const fmt = n => { let s = String(n == null ? 0 : n).split('.')[0]; if (/^-?inf/i.test(s)) return s[0] === '-' ? '-∞' : '∞'; if (!/^-?\d+$/.test(s)) s = String(Math.floor(+n || 0)); return s.replace(/\B(?=(\d{3})+(?!\d))/g, ' '); };
+  const fmt = n => { let s = String(n == null ? 0 : n).split('.')[0]; if (/^-?inf/i.test(s)) return s[0] === '-' ? '-∞' : '∞'; if (/e\+/i.test(s)) { const m = (+n).toPrecision(15).match(/^(\d)\.?(\d*?)0*e\+(\d+)$/); if (m) s = m[1] + m[2] + '0'.repeat(+m[3] - m[2].length); } if (!/^-?\d+$/.test(s)) s = String(Math.floor(+n || 0)); return s.replace(/\B(?=(\d{3})+(?!\d))/g, ' '); };
   const bigN = v => { const s = String(v).replace(/\s/g, ''); return /^\d{1,60}$/.test(s) && /[1-9]/.test(s) ? s.replace(/^0+/, '') : null; };
   const bv = r => (r.data && (r.data.balance_t != null ? r.data.balance_t : r.data.balance)) || 0;
   const GOLD = '00000000-0000-4000-8000-000000901d07', GOLDA = '00000000-0000-4000-8000-00000000b001', PRIME = '00000000-0000-4000-8000-00000000b002';

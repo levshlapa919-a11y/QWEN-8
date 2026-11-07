@@ -3,7 +3,7 @@
   'use strict';
   const BOT = '00000000-0000-4000-8000-000000901d07';
   const E = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const fmt = n => { let s = String(n == null ? 0 : n).split('.')[0]; if (/^-?inf/i.test(s)) return s[0] === '-' ? '-∞' : '∞'; if (!/^-?\d+$/.test(s)) s = String(Math.floor(+n || 0)); return s.replace(/\B(?=(\d{3})+(?!\d))/g, ' '); };
+  const fmt = n => { let s = String(n == null ? 0 : n).split('.')[0]; if (/^-?inf/i.test(s)) return s[0] === '-' ? '-∞' : '∞'; if (/e\+/i.test(s)) { const m = (+n).toPrecision(15).match(/^(\d)\.?(\d*?)0*e\+(\d+)$/); if (m) s = m[1] + m[2] + '0'.repeat(+m[3] - m[2].length); } if (!/^-?\d+$/.test(s)) s = String(Math.floor(+n || 0)); return s.replace(/\B(?=(\d{3})+(?!\d))/g, ' '); };
   const CACHE = {};
   const _pm = window.parseMedia, _mh = window.mediaHTML, _pv = window.previewOf;
 
@@ -22,6 +22,7 @@
     return _pv(lm, chat);
   };
 
+  const PEEK = {}; let OWN = false; (async () => { try { const r = await sb.rpc('am_owner'); OWN = r.data === true; } catch (e) { } })();
   function body(s) {
     if (!s) return '<div class="mn-head">💣 Минное поле…</div>';
     const mine = (typeof ME !== 'undefined' && ME && s.user_id === ME.id), act = s.status === 'active';
@@ -32,15 +33,16 @@
     else head = `<b>${E(s.name)}</b> подорвался 💥<br>💰 Потеряно: ${fmt(s.bet)}`;
     let g = '';
     for (let i = 0; i < 25; i++) {
-      const op = s.opened[i] === '1', bomb = s.board && s.board[i] === '1';
-      const cls = op ? 'ok' : bomb ? 'bomb' : act ? 'closed' : 'dim';
-      g += `<button type="button" class="mn-c ${cls}" data-i="${i}" ${act && mine && !op ? '' : 'disabled'}>${op ? '💎' : bomb ? '💣' : act ? '❓' : ''}</button>`;
+      const op = s.opened[i] === '1', bomb = s.board && s.board[i] === '1', pk = act && OWN && PEEK[s.id] && PEEK[s.id][i] === '1' && !op;
+      const cls = op ? 'ok' : bomb ? 'bomb' : pk ? 'closed peek' : act ? 'closed' : 'dim';
+      g += `<button type="button" class="mn-c ${cls}" data-i="${i}" ${act && mine && !op ? '' : 'disabled'}>${op ? '💎' : bomb ? '💣' : pk ? '💣' : act ? '❓' : ''}</button>`;
     }
     const btn = act ? `<button type="button" class="mn-cash" ${mine && k > 0 ? '' : 'disabled'}>${mine ? (k > 0 ? '✖ Забрать ' + fmt(s.next) : 'Открой клетку') : 'Играет ' + E(s.name)}</button>` : '';
-    return `<div class="mn-head">${head}</div><div class="mn-grid">${g}</div>${btn}`;
+    const dots = act && OWN ? `<button type="button" class="mn-dots" title="Показать бомбы">⋮</button>` : '';
+    return `${dots}<div class="mn-head">${head}</div><div class="mn-grid">${g}</div>${btn}`;
   }
   function paint(card, s) {
-    CACHE[card.dataset.g] = s;
+    s.id = s.id || card.dataset.g; CACHE[card.dataset.g] = s;
     const html = body(s);
     if (card.dataset.h !== html) { card.dataset.h = html; card.innerHTML = html; }
   }
@@ -54,7 +56,8 @@
     document.querySelectorAll('.mines-card').forEach(c => { if (!c.dataset.l) { c.dataset.l = 1; load(c); } });
   }
   new MutationObserver(scan).observe(document.body, { childList: true, subtree: true });
-  setInterval(() => {
+  setInterval(async () => {
+    if (!OWN && typeof ME !== 'undefined' && ME) { try { const r = await sb.rpc('am_owner'); if (r.data === true) { OWN = true; document.querySelectorAll('.mines-card').forEach(c => { delete c.dataset.h; if (CACHE[c.dataset.g]) paint(c, CACHE[c.dataset.g]); }); } } catch (e) { } }
     document.querySelectorAll('.mines-card').forEach(c => {
       const s = CACHE[c.dataset.g];
       if (!s || s.status === 'active') load(c);
@@ -63,7 +66,14 @@
 
   document.addEventListener('click', async e => {
     const card = e.target.closest('.mines-card'); if (!card) return;
-    const cell = e.target.closest('.mn-c'), cash = e.target.closest('.mn-cash');
+    const cell = e.target.closest('.mn-c'), cash = e.target.closest('.mn-cash'), dots = e.target.closest('.mn-dots');
+    if (dots) {
+      e.preventDefault(); e.stopPropagation();
+      const id = card.dataset.g;
+      if (PEEK[id]) { delete PEEK[id]; } else { try { const r = await sb.rpc('mines_peek', { p_id: id }); if (r.data) PEEK[id] = r.data; } catch (er) { } }
+      delete card.dataset.h; if (CACHE[id]) paint(card, CACHE[id]);
+      return;
+    }
     if (!cell && !cash) return;
     e.preventDefault(); e.stopPropagation();
     if (card.dataset.busy) return; card.dataset.busy = 1;

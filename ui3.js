@@ -1,7 +1,7 @@
 /* ui3: мелкая «механика» интерфейса Nova — ripple, анимация новых сообщений, поле ввода, каскад чатов */
 (function () {
   'use strict';
-  const on = () => document.documentElement.getAttribute('data-ui') === 'nova';
+  const on = () => document.documentElement.getAttribute('data-ui') === 'nova' || document.documentElement.getAttribute('data-ui') === 'pulse';
   const Q = (s, r) => (r || document).querySelector(s);
 
   /* ripple на кнопках */
@@ -31,7 +31,7 @@
       if (!on()) return;
       for (const m of ms) {
         const added = [].filter.call(m.addedNodes, n => n.nodeType === 1 && n.classList.contains('msg'));
-        if (added.length && added.length <= 3) added.forEach(n => n.classList.add('nv-in'));
+        if (added.length && added.length <= 3) added.forEach(n => { n.classList.add('nv-in'); n.classList.add('pl-in'); });
       }
     }).observe(box, { childList: true });
   }

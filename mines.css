@@ -1,6 +1,10 @@
-.mines-card{width:min(300px,72vw);margin:2px 0 4px}
+.mines-card{position:relative;width:min(280px,calc(100vw - 150px));min-width:210px;max-width:100%;margin:2px 0 4px;box-sizing:border-box}
+.mines-card *{box-sizing:border-box}
+.mn-dots{position:absolute;top:-4px;right:-4px;width:30px;height:30px;border:0;border-radius:50%;background:transparent;color:var(--mut);font:900 20px var(--font);cursor:pointer;z-index:2}
+.mn-c.peek{box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--red) 70%,transparent)}
+.mn-c.peek{font-size:15px}
 .mn-head{font-size:14px;line-height:1.4;margin-bottom:8px}
-.mn-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.mn-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;width:100%}
 .mn-c{aspect-ratio:1;border:0;border-radius:14px;background:color-mix(in srgb,var(--p3) 90%,#fff 6%);font-size:18px;line-height:1;padding:0;cursor:pointer;color:var(--tx);transition:transform .12s,background .2s;display:flex;align-items:center;justify-content:center}
 .mn-c.closed:not(:disabled):active{transform:scale(.9)}
 .mn-c.ok{background:color-mix(in srgb,var(--neon) 28%,var(--p3))}
