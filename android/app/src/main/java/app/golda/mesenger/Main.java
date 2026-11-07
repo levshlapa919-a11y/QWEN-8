@@ -7,6 +7,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.app.DownloadManager;
+import android.os.Environment;
+import android.content.Context;
 import android.webkit.*;
 
 public class Main extends Activity {
@@ -21,10 +24,13 @@ public class Main extends Activity {
         setContentView(w);
         WebSettings s = w.getSettings();
         s.setJavaScriptEnabled(true); s.setDomStorageEnabled(true); s.setMediaPlaybackRequiresUserGesture(false);
-        s.setAllowFileAccess(false); s.setDatabaseEnabled(true);
+        s.setAllowFileAccess(true); s.setDatabaseEnabled(true);
         CookieManager.getInstance().setAcceptCookie(true);
         w.setBackgroundColor(0xFF050B07);
         w.setWebViewClient(new WebViewClient() {
+            @Override public void onReceivedError(WebView v, WebResourceRequest r, WebResourceError e) {
+                if (r.isForMainFrame()) v.loadUrl("file:///android_asset/offline.html");
+            }
             @Override public boolean shouldOverrideUrlLoading(WebView v, WebResourceRequest r) {
                 Uri u = r.getUrl();
                 if (u.getHost() != null && (u.getHost().endsWith("github.io") || u.getHost().endsWith("supabase.co"))) return false;
@@ -39,6 +45,14 @@ public class Main extends Activity {
                 try { startActivityForResult(p.createIntent(), 7); } catch (Exception e) { cb = null; return false; }
                 return true;
             }
+        });
+        w.setDownloadListener((url, ua, cd, mime, len) -> {
+            try {
+                DownloadManager.Request q = new DownloadManager.Request(Uri.parse(url));
+                q.setMimeType(mime); q.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                q.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, URLUtil.guessFileName(url, cd, mime));
+                ((DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE)).enqueue(q);
+            } catch (Exception e) { startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url))); }
         });
         w.loadUrl(URL);
     }

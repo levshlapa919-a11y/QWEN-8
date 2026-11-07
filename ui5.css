@@ -197,3 +197,55 @@ html[data-ui="clean"] .side-head{flex-wrap:wrap;row-gap:0}
 html[data-ui="clean"] .side-head .side-tabs{order:3;flex:1 0 100%;margin:4px -12px 0;padding:0 12px}
 html[data-ui="clean"] .chat-item,html[data-ui="clean"] .chat-item.active,html[data-ui="clean"] .chat-item:hover{box-shadow:none!important}
 html[data-ui="clean"] #clFab{width:56px!important;height:56px!important;min-width:56px;padding:0}
+/* ===== тёплая палитра и мягкие детали ===== */
+html[data-ui="clean"] .msg.own .bubble{background:linear-gradient(145deg,color-mix(in srgb,var(--ac) 88%,#fff),color-mix(in srgb,var(--ac) 74%,#000));color:#fff}
+html[data-ui="clean"] .msg.own .m-text,html[data-ui="clean"] .msg.own .m-text a{color:#fff}
+html[data-ui="clean"] .msg.own .m-time,html[data-ui="clean"] .msg.own .tick{color:rgba(255,255,255,.72)}
+html[data-ui="clean"] body[data-theme="dark"]{--oth:#1f2d3d}
+html[data-ui="clean"] .chat-item{margin:1px 8px;border-radius:14px;padding:8px 10px}
+html[data-ui="clean"] .chat-item:not(.active):not(:last-child)::after{display:none}
+html[data-ui="clean"] .chat-item.active{background:color-mix(in srgb,var(--ac) 20%,transparent);color:var(--tx)}
+html[data-ui="clean"] .chat-item.active .ci-name{color:var(--tx)}
+html[data-ui="clean"] .chat-item.active .ci-time,html[data-ui="clean"] .chat-item.active .ci-prev{color:var(--mut)}
+html[data-ui="clean"] .chat-item.active .ci-prev{opacity:1}
+html[data-ui="clean"] .chat-item.active .badge{background:var(--ac);color:#fff}
+html[data-ui="clean"] .side-head,html[data-ui="clean"] .chat-head{background:linear-gradient(180deg,color-mix(in srgb,var(--ac) 10%,var(--p1)),var(--p1))}
+html[data-ui="clean"] .m-name{color:color-mix(in srgb,var(--ac) 80%,var(--tx))}
+html[data-ui="clean"] .stab.on,html[data-ui="clean"] #f4Folders .on{color:var(--ac)}
+/* иконки вместо эмодзи */
+.cl-i{display:inline-flex;vertical-align:-4px;margin-right:12px;color:var(--mut);flex:none}
+html[data-ui="clean"] .stab .cl-i{margin-right:6px;color:inherit;vertical-align:-3px}
+html[data-ui="clean"] #f4Folders .cl-i{margin-right:6px}
+/* меню чата */
+html[data-ui="clean"] .chat-menu{min-width:250px;padding:6px;top:54px;right:10px}
+html[data-ui="clean"] .menu-i{display:flex;align-items:center;width:100%;border:0;background:transparent;color:var(--tx);font:500 15px var(--font);padding:11px 12px;border-radius:10px;text-align:left;cursor:pointer;transition:background .15s}
+html[data-ui="clean"] .menu-i:hover{background:var(--cl-hover)}
+html[data-ui="clean"] .menu-i.danger,html[data-ui="clean"] .menu-i.danger .cl-i{color:var(--red)}
+/* общие окна, профиль, подарки */
+html[data-ui="clean"] .modal,html[data-ui="clean"] .f2-card,html[data-ui="clean"] .gs,html[data-ui="clean"] .sh-wrap,html[data-ui="clean"] [class^="sh-"],html[data-ui="clean"] [class^="gs-"],html[data-ui="clean"] [class^="gf-"]{font-family:var(--font);letter-spacing:normal}
+html[data-ui="clean"] .modal *,html[data-ui="clean"] .gs *,html[data-ui="clean"] .f2-card *{text-transform:none;box-shadow:none;text-shadow:none;font-family:var(--font)}
+html[data-ui="clean"] .modal .btn.primary,html[data-ui="clean"] .gs .btn.primary,html[data-ui="clean"] .gs-ok{background:var(--ac);color:#fff;border:0;border-radius:12px}
+html[data-ui="clean"] .modal{padding:20px;border-radius:20px}
+html[data-ui="clean"] .m-head{margin-bottom:12px}
+html[data-ui="clean"] .m-title{font:600 19px var(--font);letter-spacing:normal;color:var(--tx)}
+html[data-ui="clean"] .lbl{text-transform:none;letter-spacing:normal;font:600 13px var(--font);color:var(--ac);margin:12px 0 5px;display:block}
+html[data-ui="clean"] .about-box,html[data-ui="clean"] .pick-row{border:0;background:var(--p2);border-radius:12px}
+html[data-ui="clean"] .prof-row{gap:14px}
+html[data-ui="clean"] .user-status{font-size:13.5px;color:var(--mut)}
+html[data-ui="clean"] .gs{background:var(--p1);border-radius:22px 22px 0 0}
+html[data-ui="clean"] .gs-tab{border:0;background:var(--p2);border-radius:14px}
+html[data-ui="clean"] .gs-halo{display:none}
+html[data-ui="clean"] .gift-grid>*,html[data-ui="clean"] .sh-grid .sg{border:0;background:var(--p2);border-radius:14px;transition:transform .2s var(--cl-spring)}
+html[data-ui="clean"] .gift-grid>*:active,html[data-ui="clean"] .sh-grid .sg:active{transform:scale(.95)}
+html[data-ui="clean"] .tg-sec-h{font:600 15px var(--font)}
+html[data-ui="clean"] .toggle{background:var(--p3);border:0;border-radius:99px}
+html[data-ui="clean"] .toggle.on{background:var(--ac)}
+html[data-ui="clean"] .st-on{color:#4fae4e}
+/* подстраницы настроек */
+#clSet .ppl{display:flex;align-items:center;gap:14px;padding:9px 18px}
+#clSet .ppl .ava{width:46px;height:46px}
+#clSet .ppl .tx div{font-size:16px}
+#clSet .ppl .tx small{color:var(--mut);font-size:13.5px}
+#clSet .ppl .tx small.on{color:#4fae4e}
+#clSet .ppl button{border:0;background:var(--p2);color:var(--ac);font:600 13px var(--font);padding:8px 14px;border-radius:99px;cursor:pointer}
+#clSet .empty{padding:36px 24px;text-align:center;color:var(--mut);font-size:15px}

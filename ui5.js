@@ -29,6 +29,30 @@
   const call = (fn) => { try { fn && fn(); } catch (e) { console.error(e); } };
   const clickQ = sel => { const e = Q(sel); e && e.click(); };
 
+
+  /* ---------- замена эмодзи на значки ---------- */
+  const EMO = { '🚪': 'out', '🗑': 'trash', '✍': 'pen', '🔓': 'lock', '🔒': 'lock', '🚫': 'ban', '📊': 'chart', '📸': 'cam', '⏱': 'timer', '⏰': 'timer', '🙈': 'eye', '💬': 'chat', '📞': 'phoneC', '📁': 'folder', '✉': 'send', '🔔': 'bell', '🔕': 'bell', '📌': 'pin', '🎁': 'gift', '👤': 'user', '🔑': 'key', '🛡': 'shield', '⚙': 'gear', '👥': 'users', '📣': 'mega', '🎭': 'sticker', '🤖': 'bot', '🔎': 'search', '🎮': 'game', '🏆': 'cup' };
+  Object.assign(P, {
+    ban: '<circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/>', chart: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', cam: '<path d="M3 8a2 2 0 0 1 2-2h2l1.5-2h7L17 6h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="3.5"/>',
+    timer: '<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 1.5M9.5 2.5h5"/>', chat: '<path d="M21 12a8 8 0 0 1-11.7 7L4 20l1.1-4.3A8 8 0 1 1 21 12z"/>', phoneC: '<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/>',
+    folder: '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>', send: '<path d="M22 3 11 14M22 3l-7 18-4-7-7-4z"/>', pin: '<path d="M12 17v5M8 3h8l-1 7 3 3H6l3-3z"/>',
+    gift: '<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M5 12v8h14v-8M12 8a3 3 0 1 1 3-3c0 1.7-1.3 3-3 3zm0 0a3 3 0 1 0-3-3c0 1.7 1.3 3 3 3z"/>'
+  });
+  const EMO_RE = /^\s*((?:\p{Extended_Pictographic}|️|‍)+)\s*/u;
+  const DRESS_SEL = '.btn,.menu-i,.stab,#f4Folders button,.f2-opt,.f2-chip,.settings-row-title,.pick-name';
+  function dress(root) {
+    if (!isClean()) return;
+    (root || document).querySelectorAll(DRESS_SEL).forEach(el => {
+      if (el.dataset.cld) return; const n = el.firstChild; if (!n || n.nodeType !== 3) return;
+      const m = n.nodeValue.match(EMO_RE); if (!m) return; el.dataset.cld = '1';
+      const key = EMO[m[1].replace(/️/g, '')] || EMO[[...m[1]][0]];
+      n.nodeValue = n.nodeValue.slice(m[0].length);
+      if (key && P[key] && el.matches('.btn,.menu-i,.stab,#f4Folders button')) { const s = document.createElement('span'); s.className = 'cl-i'; s.innerHTML = I(P[key], el.matches('.btn') ? 18 : 20); el.insertBefore(s, n); }
+    });
+  }
+  let dT = null;
+  new MutationObserver(() => { clearTimeout(dT); dT = setTimeout(() => dress(), 60); }).observe(document.body, { childList: true, subtree: true });
+
   /* ---------- применение сохранённых параметров ---------- */
   const ACC = ['#3390ec', '#2eb67d', '#8e5cf0', '#f08c2b', '#e8478b', '#e5484d', '#17b2c4'];
   const WALL = [['', 'Без фона', 'var(--bg)'], ['dots', 'Точки', 'var(--bg)'], ['g1', 'Ночь', 'linear-gradient(160deg,#1d3b5c,#2a1f4a)'], ['g2', 'Лес', 'linear-gradient(160deg,#173d34,#163a2a)'], ['g3', 'Закат', 'linear-gradient(160deg,#4a2230,#3a2a1a)'], ['s1', 'Мята', '#c9dcb8'], ['s2', 'Небо', '#cfe0ef']];
@@ -114,6 +138,11 @@
         ${row('coin', '#e0a21b', 'Кошелёк', 'gold и праймики', '<span class="vl" id="clBal">…</span>', 'wallet')}
         ${row('lock', '#6c5ce7', 'Код-пароль', 'Защита и скрытые чаты', '', 'pass')}
       </div>
+      <div class="sec"><h4>Конфиденциальность</h4>
+        ${row('eye', '#17b2c4', 'Недавняя активность', 'Кто и когда был в сети', '', 'seen-list')}
+        ${row('lock', '#2eb67d', 'Скрывать моё время в сети', 'Другие увидят «был(а) недавно»', sw(LS.g('golda_hide_seen', '0') === '1'), 'hide-seen')}
+        ${row('ban', '#e5484d', 'Заблокированные', 'Список и разблокировка', '', 'blocked')}
+      </div>
       <div class="sec"><h4>Уведомления</h4>
         ${row('bell', '#e5484d', 'Звук сообщений', 'Сигнал о новом сообщении', sw(pr.sound), 'n-sound')}
         ${row('vib', '#2eb67d', 'Вибрация', 'Вибрировать при сообщении', sw(pr.vibrate), 'n-vib')}
@@ -153,7 +182,7 @@
   function togglePref(id, key) { const t = Q(id); t && t.click(); const pr = typeof PREFS !== 'undefined' ? PREFS : {}; const e = S.querySelector('[data-id="' + (key) + '"] .sw'); e && e.classList.toggle('on', !!pr[({ 'n-sound': 'sound', 'n-vib': 'vibrate', 'n-prev': 'preview' })[key]]); }
   function wireSet() {
     S.addEventListener('click', e => {
-      if (e.target.closest('[data-a="close"]')) return closeSet();
+      if (e.target.closest('[data-a="close"]')) { if (S.dataset.sub) { S.dataset.sub = ''; clearInterval(seenT); return buildSet(); } return closeSet(); }
       if (e.target.closest('[data-a="profile"]')) { closeSet(); return call(window.openMyProfile); }
       const sg = e.target.closest('.seg button');
       if (sg) {
@@ -166,6 +195,9 @@
       const rw = e.target.closest('.rw'); if (!rw) return; const id = rw.dataset.id;
       switch (id) {
         case 'profile': closeSet(); call(window.openMyProfile); break;
+        case 'seen-list': showSeen(); break;
+        case 'hide-seen': { const on = LS.g('golda_hide_seen', '0') === '1'; LS.s('golda_hide_seen', on ? '0' : '1'); rw.querySelector('.sw').classList.toggle('on', !on); try { sb.from('profiles').update({ last_seen: on ? new Date().toISOString() : null }).eq('id', ME.id).then(() => { }); } catch (er) { } break; }
+        case 'blocked': showBlocked(); break;
         case 'pass': closeSet(); window.F2 && window.F2.pass && window.F2.pass(); break;
         case 'wallet': closeSet(); call(window.GAMES_HUB); break;
         case 'n-sound': togglePref('#toggleSound', id); break; case 'n-vib': togglePref('#toggleVibrate', id); break; case 'n-prev': togglePref('#togglePreview', id); break;
@@ -184,6 +216,40 @@
       applyLook();
     });
   }
+
+  /* ---------- подстраницы ---------- */
+  let seenT = null;
+  const isBot = id => /^00000000-0000-4000-8000-00000000b0|901d07$/.test(id || '');
+  function sub(title, html) {
+    S.dataset.sub = '1';
+    S.innerHTML = `<div class="bar"><button data-a="close" title="Назад">${ic('back', 24)}</button><b>${title}</b></div><div class="bd"><div class="wrap"><div class="sec" id="clSub">${html}</div></div></div>`;
+  }
+  const pRow = (u, st, on, btn) => `<div class="ppl" data-uid="${u.id}">${avatarHTML(u, 'm')}<div class="tx"><div>${esc(u.display_name || u.username || '—')}</div><small class="${on ? 'on' : ''}">${st}</small></div>${btn || ''}</div>`;
+  async function showSeen() {
+    sub('Недавняя активность', '<div class="empty">Загрузка…</div>');
+    const load = async () => {
+      if (S.dataset.sub !== '1' || !Q('#clSub')) return;
+      const ids = [...new Set(CHATS.filter(c => c.type === 'direct').map(c => { try { return otherOf(c).id; } catch (e) { return null; } }).filter(id => id && !isBot(id)))];
+      if (!ids.length) { Q('#clSub').innerHTML = '<div class="empty">Пока нет личных переписок</div>'; return; }
+      const r = await sb.from('profiles').select('id,username,display_name,avatar_url,last_seen').in('id', ids);
+      const us = (r.data || []).sort((a, b) => (Date.parse(b.last_seen) || 0) - (Date.parse(a.last_seen) || 0));
+      const el = Q('#clSub'); if (!el) return;
+      el.innerHTML = us.map(u => { const on = isOnline(u); return pRow(u, on ? 'в сети' : (u.last_seen ? fmtLastSeen(u.last_seen) : 'был(а) недавно'), on); }).join('') || '<div class="empty">Нет данных</div>';
+    };
+    await load(); clearInterval(seenT); seenT = setInterval(load, 20000);
+  }
+  async function showBlocked() {
+    const draw = async () => {
+      const ids = (typeof BLOCKED !== 'undefined' ? BLOCKED : []);
+      if (!ids.length) return sub('Заблокированные', '<div class="empty">Вы никого не блокировали</div>');
+      const r = await sb.from('profiles').select('id,username,display_name,avatar_url').in('id', ids);
+      sub('Заблокированные', (r.data || []).map(u => pRow(u, '@' + (u.username || ''), false, '<button data-unb="' + u.id + '">Разблокировать</button>')).join(''));
+    };
+    await draw();
+    S.onclick2 = null;
+    Q('#clSub') && Q('#clSub').addEventListener('click', async e => { const b = e.target.closest('[data-unb]'); if (!b) return; b.disabled = true; try { await toggleBlock(b.dataset.unb); } catch (er) { } draw(); });
+  }
+
   /* перехват старой кнопки настроек */
   document.addEventListener('click', e => { if (isClean() && e.target.closest('#btnSettings')) { e.preventDefault(); e.stopImmediatePropagation(); openSet(); } }, true);
   document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeDrawer(); closeSet(); } });
@@ -193,5 +259,17 @@
     if (LS.g('golda_enter', '1') === '1') return;
     if (e.ctrlKey || e.metaKey) { e.preventDefault(); e.stopImmediatePropagation(); clickQ('#sendBtn'); } else { e.stopImmediatePropagation(); }
   }, true);
+
+  /* скрытие времени захода и «был(а) недавно» */
+  (function () {
+    const of = window.fmtLastSeen; if (typeof of === 'function') window.fmtLastSeen = iso => iso ? of(iso) : 'был(а) недавно';
+    const wrap = () => {
+      if (typeof sb === 'undefined' || sb.__clw) return !!(typeof sb !== 'undefined' && sb.__clw);
+      const from = sb.from.bind(sb);
+      sb.from = t => { const q = from(t); if (t === 'profiles' && q.update) { const u = q.update.bind(q); q.update = (p, ...a) => { if (p && 'last_seen' in p && LS.g('golda_hide_seen', '0') === '1') p = Object.assign({}, p, { last_seen: null }); return u(p, ...a); }; } return q; };
+      sb.__clw = 1; return true;
+    };
+    if (!wrap()) { const iv = setInterval(() => { if (wrap()) clearInterval(iv); }, 300); }
+  })();
   applyLook(); mount();
 })();
