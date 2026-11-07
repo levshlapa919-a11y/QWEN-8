@@ -260,22 +260,14 @@
     }
   }
   function stkSVG(i) {
-    const [cap, eyes, mouth, brow, prop, h] = STK[i], id = 'g' + i;
-    const big = ['party', 'trophy', 'fire'].includes(prop);
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs>` +
-      `<radialGradient id="${id}b" cx=".38" cy=".3" r=".85"><stop offset="0" stop-color="#fff2a8"/><stop offset=".45" stop-color="#ffd34d"/><stop offset="1" stop-color="#f0a500"/></radialGradient>` +
-      `<linearGradient id="${id}bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(${h},85%,58%)"/><stop offset="1" stop-color="hsl(${(h + 40) % 360},80%,32%)"/></linearGradient>` +
-      `<linearGradient id="${id}r" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3dff85"/><stop offset="1" stop-color="#19d3c5"/></linearGradient></defs>` +
-      `<circle cx="100" cy="100" r="94" fill="url(#${id}bg)" stroke="#fff" stroke-width="6"/>` +
-      `<circle cx="100" cy="100" r="84" fill="none" stroke="#fff" stroke-opacity=".25" stroke-width="2" stroke-dasharray="3 7"/>` +
-      `<ellipse cx="100" cy="100" rx="60" ry="58" fill="url(#${id}b)" stroke="${BR}" stroke-width="4"/>` +
-      `<ellipse cx="76" cy="66" rx="18" ry="9" fill="#fff" opacity=".45" transform="rotate(-28 76 66)"/>` +
-      `<circle cx="62" cy="112" r="9" fill="#ff8aa0" opacity=".5"/><circle cx="138" cy="112" r="9" fill="#ff8aa0" opacity=".5"/>` +
-      (prop === 'red' ? propSVG('red') : '') + (prop === 'party' || prop === 'fire' || prop === 'trophy' ? '' : '') +
-      eyesSVG(eyes) + browSVG(brow) + mouthSVG(mouth) +
-      (prop !== 'red' ? propSVG(prop, h) : '') +
-      `<g transform="translate(30 34)"><circle r="12" fill="none" stroke="url(#${id}r)" stroke-width="6"/><circle r="3.4" fill="#ffd34d"/></g>` +
-      `<text x="100" y="${big ? 188 : 186}" font-size="${cap.length > 6 ? 20 : 24}" font-weight="900" text-anchor="middle" fill="#fff" stroke="#14120a" stroke-width="5" paint-order="stroke" stroke-linejoin="round" font-family="Manrope,Arial Black,Arial,sans-serif" letter-spacing=".5">${cap.toUpperCase()}</text></svg>`;
+    /* спокойные типографские стикеры: цветная плашка и крупная надпись */
+    const cap = String(STK[i][0] || ''), h = STK[i][5] || 200;
+    const words = cap.length > 7 ? cap.split(' ') : [cap];
+    const fs = cap.length > 8 ? 38 : cap.length > 6 ? 46 : cap.length > 4 ? 56 : 70;
+    const c1 = `hsl(${h},62%,56%)`, c2 = `hsl(${(h + 22) % 360},64%,44%)`;
+    const lines = words.map((w, k) => `<text x="100" y="${words.length > 1 ? 96 + k * (fs + 4) - (words.length - 1) * (fs / 2) : 100 + fs * 0.34}" font-size="${fs}" font-weight="800" text-anchor="middle" fill="#fff" font-family="-apple-system,Segoe UI,Roboto,Arial,sans-serif" letter-spacing="-1">${w.replace(/&/g, '&amp;').replace(/</g, '&lt;')}</text>`).join('');
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><linearGradient id="s${i}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></linearGradient></defs>` +
+      `<path d="M44 14h112a30 30 0 0 1 30 30v84a30 30 0 0 1-30 30h-58l-30 28v-28H44a30 30 0 0 1-30-30V44a30 30 0 0 1 30-30z" fill="url(#s${i})"/>${lines}</svg>`;
     return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
   }
   const stkSrc = ref => { if (ref.startsWith('b:')) { const i = +ref.slice(2); return STK[i] ? stkSVG(i) : ''; } return ref; };
@@ -531,7 +523,13 @@
     };
     box.addEventListener('pointerup', end); box.addEventListener('pointercancel', end);
     box.addEventListener('contextmenu', e => { const row = e.target.closest('.msg'); if (!row) return; e.preventDefault(); openMenu(row.dataset.id); });
-    box.addEventListener('dblclick', e => { const row = e.target.closest('.msg'); if (row && !skip(e.target) && CACHE[row.dataset.id]) startReply(CACHE[row.dataset.id]); });
+    box.addEventListener('dblclick', e => {
+      const row = e.target.closest('.msg'); if (!row || skip(e.target) || !CACHE[row.dataset.id]) return;
+      const mid = row.dataset.id, have = (REACT[mid] || []).some(r => r.user_id === ME.id && r.emoji === '❤️');
+      const h = document.createElement('div'); h.className = 'rx-burst'; h.textContent = '❤️'; h.style.left = e.clientX + 'px'; h.style.top = e.clientY + 'px'; document.body.appendChild(h); setTimeout(() => h.remove(), 900);
+      try { navigator.vibrate && navigator.vibrate(12); } catch (er) { }
+      if (!have) toggleReact(mid, '❤️');
+    });
     box.addEventListener('click', e => {
       const rc = e.target.closest('.rxc');
       if (rc) { const row = rc.closest('.msg'); toggleReact(row.dataset.id, rc.dataset.rx); return; }

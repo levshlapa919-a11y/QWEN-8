@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://levshlapa919-a11y.github.io/QWEN-8/sitemap.xml

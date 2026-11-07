@@ -249,3 +249,12 @@ html[data-ui="clean"] .st-on{color:#4fae4e}
 #clSet .ppl .tx small.on{color:#4fae4e}
 #clSet .ppl button{border:0;background:var(--p2);color:var(--ac);font:600 13px var(--font);padding:8px 14px;border-radius:99px;cursor:pointer}
 #clSet .empty{padding:36px 24px;text-align:center;color:var(--mut);font-size:15px}
+.rx-burst{position:fixed;z-index:400;font-size:46px;pointer-events:none;transform:translate(-50%,-50%);animation:rxB .85s cubic-bezier(.2,.9,.3,1) both}
+@keyframes rxB{0%{opacity:0;transform:translate(-50%,-50%) scale(.2)}25%{opacity:1;transform:translate(-50%,-60%) scale(1.25)}100%{opacity:0;transform:translate(-50%,-190%) scale(1)}}
+html[data-ui="clean"] .stk-tabs button{background:var(--p2);color:var(--mut);font:600 14px var(--font);border-radius:10px}
+html[data-ui="clean"] .stk-tabs button.on{background:var(--ac);color:#fff}
+html[data-ui="clean"] .stk-grid .st{background:var(--p2);border-radius:14px;padding:6px}
+html[data-ui="clean"] .stk-grid .st.add{border:2px dashed var(--line2);color:var(--ac)}
+html[data-ui="clean"] .stk-img{filter:none;width:140px;height:140px}
+html[data-ui="clean"] .stk-hint{color:var(--mut)}
+html[data-ui="clean"] .stk-hint a{color:var(--ac)!important}

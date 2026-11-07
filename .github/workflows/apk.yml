@@ -2,7 +2,10 @@ name: Build APK
 on:
   workflow_dispatch:
   push:
-    paths: ['android/**', '.github/workflows/apk.yml']
+    branches: [main]
+concurrency:
+  group: apk
+  cancel-in-progress: true
 permissions:
   contents: write
 jobs:
@@ -18,6 +21,20 @@ jobs:
           "$(ls -d $ANDROID_HOME/cmdline-tools/*/bin | head -1)/sdkmanager" "platforms;android-34" "build-tools;34.0.0" | tail -3
       - uses: gradle/actions/setup-gradle@v4
         with: { gradle-version: '8.9' }
+      - name: Упаковать сайт в приложение
+        run: |
+          W=android/app/src/main/assets/www
+          mkdir -p $W/vendor
+          cp -r index.html manifest.json sw.js *.js *.css *.png *.svg *.mp3 *.jpg gifts $W/ 2>/dev/null || true
+          curl -fsSL https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js -o $W/vendor/supabase.js
+          python3 - <<'PY'
+          import re
+          p='android/app/src/main/assets/www/index.html'
+          t=open(p).read()
+          t=t.replace('<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>','<script src="vendor/supabase.js"></script>')
+          open(p,'w').write(t)
+          PY
+          ls $W | wc -l
       - name: Build
         working-directory: android
         run: gradle --no-daemon assembleRelease
