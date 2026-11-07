@@ -32,9 +32,9 @@
 
   /* режим прокси (без WebSocket): новые сообщения подтягиваем опросом */
   (function () {
-    if (!window.GOLDA_API) return;
     let wm = new Date(Date.now() - 20000).toISOString(), polling = false, tick = 0;
     setInterval(async () => {
+      if (!window.GOLDA_API && tick % 2 === 1 && typeof rtChannel !== 'undefined' && rtChannel && rtChannel.state === 'joined') { tick++; return; }
       if (polling || document.visibilityState !== 'visible' || !alive()) return; polling = true; tick++;
       try {
         const { data } = await sb.from('messages').select('*').gt('created_at', wm).order('created_at', { ascending: true }).limit(100);

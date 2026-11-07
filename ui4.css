@@ -97,3 +97,14 @@ html[data-ui="pulse"] .big-g{border-radius:50%;background:var(--pl-a);color:var(
   @keyframes plPage{from{transform:translateX(40px);opacity:.4}to{transform:none;opacity:1}}
 }
 @media (prefers-reduced-motion:reduce){html[data-ui="pulse"] *{animation:none!important;transition:none!important}}
+#plStories{display:none}
+html[data-ui="pulse"] #plStories{display:flex;gap:12px;overflow-x:auto;padding:6px 16px 10px;scrollbar-width:none;flex:0 0 auto}
+html[data-ui="pulse"] #plStories::-webkit-scrollbar{display:none}
+html[data-ui="pulse"] .pl-st{display:flex;flex-direction:column;align-items:center;gap:5px;width:62px;flex:0 0 auto;border:0;background:none;color:var(--tx);cursor:pointer;padding:0;transition:transform .25s var(--pl-spring)}
+html[data-ui="pulse"] .pl-st:active{transform:scale(.88)}
+html[data-ui="pulse"] .pl-st i{font:700 11px var(--font);font-style:normal;color:var(--mut);max-width:62px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+html[data-ui="pulse"] .pl-ring{padding:3px;border-radius:50%;background:var(--line);display:block;line-height:0}
+html[data-ui="pulse"] .pl-st.on .pl-ring{background:#3dff8a}
+html[data-ui="pulse"] .pl-st.un .pl-ring{background:conic-gradient(var(--pl-a),#ff4fd8,var(--pl-a))}
+
+html[data-ui="pulse"] .pl-ring .ava{width:50px!important;height:50px!important;border:2px solid var(--pl-surf)}
