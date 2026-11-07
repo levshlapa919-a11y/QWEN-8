@@ -305,3 +305,11 @@ html[data-ui="clean"] .rq b{color:var(--ac);font-weight:600;font-size:13px}
 html[data-ui="clean"] .msg.own .rq{border-left-color:#fff;background:rgba(255,255,255,.16)}
 html[data-ui="clean"] .msg.own .rq b{color:#fff}
 html[data-ui="clean"] .m-img,html[data-ui="clean"] .m-video{border-radius:12px}
+.sh-qty{display:flex;align-items:center;gap:8px;margin:10px 0}
+.sh-qty span{flex:1;font-size:14px;color:var(--mut)}
+.sh-qty button{width:36px;height:36px;border:0;border-radius:10px;background:var(--p2);color:var(--tx);font:600 20px var(--font);cursor:pointer}
+.sh-qty button:active{transform:scale(.9)}
+.sh-qty input{width:64px;height:36px;border:0;border-radius:10px;background:var(--p2);color:var(--tx);text-align:center;font:600 16px var(--font)}
+.gs-sell{width:100%;border:0;border-radius:12px;background:var(--neon,#3390ec);color:#fff;font:600 15px var(--font);padding:12px;margin-top:10px;cursor:pointer}
+.gs-sell.alt{background:var(--p2);color:var(--tx)}
+.gs-more{margin-top:0}

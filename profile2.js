@@ -51,10 +51,14 @@
       ${ug.msg ? `<div class="gs-m">${E(ug.msg)}</div>` : ''}
       <div class="gs-tab">${rows.map(r => `<div class="gs-r"><div class="gs-k">${r[0]}</div><div class="gs-v">${r[1]}</div></div>`).join('')}</div>
       ${mine ? `<div class="gs-hide">Подарок ${ug.hidden ? 'скрыт из' : 'виден в'} вашем профиле. <button type="button" id="gsHide">${ug.hidden ? 'Показать' : 'Скрыть'} ›</button></div>` : ''}
+      ${mine && !ug.locked ? `<button class="gs-sell" type="button" id="gsSell">Продать за 💎 ${fmt(Math.floor(Number(g.price) * 0.7))}</button><div class="gs-more" id="gsMore"></div>` : ''}
       <button class="gs-ok" type="button">OK</button>${mine ? '<button class="gs-del" type="button" id="gsDel">🗑 Удалить из профиля</button>' : (isOwner() ? '<div class="gs-ow"><button type="button" id="gsOwTake">👑 Забрать себе</button><button type="button" id="gsOwDel">🗑 Удалить</button></div>' : '')}</div>`;
+    if (mine && g.kind !== 'nft' && !ug.locked) sb.from('user_gifts').select('id', { count: 'exact', head: true }).eq('owner_id', ug.owner_id).eq('gift_id', g.id).eq('locked', false).then(r => { const n = r.count || 0, m = o.querySelector('#gsMore'); if (m && n > 1) m.innerHTML = `<button type="button" class="gs-sell alt" id="gsSellAll">Продать все ${n} шт. за 💎 ${fmt(Math.floor(Number(g.price) * 0.7) * n)}</button>`; });
     o.onclick = async ev => {
       if (ev.target === o || ev.target.closest('.gs-ok')) return o.remove();
       if (ev.target.id === 'gsOwDel' || ev.target.id === 'gsOwTake') { const take = ev.target.id === 'gsOwTake'; const { data } = await sb.rpc(take ? 'owner_take_gift' : 'owner_delete_gift', { p_id: ug.id }); if (data) { say(take ? 'Подарок теперь у тебя' : 'Подарок удалён'); o.remove(); if (onChange) onChange(); } else say('Не получилось', 'red'); return; }
+      if (ev.target.id === 'gsSell') { const b = ev.target; if (!b.dataset.s) { b.dataset.s = 1; b.textContent = 'Точно продать? Нажми ещё раз'; return; } const { data } = await sb.rpc('sell_gift', { p_id: ug.id }); if (data && data.ok) { say('Продано: +💎 ' + fmt(data.amount)); o.remove(); if (onChange) onChange(); } else say(data && data.error === 'locked' ? 'Подарок сейчас на аукционе или в обмене' : 'Не получилось продать', 'red'); return; }
+      if (ev.target.id === 'gsSellAll') { const b = ev.target; if (!b.dataset.s) { b.dataset.s = 1; b.textContent = 'Точно? Нажми ещё раз'; return; } const { data } = await sb.rpc('sell_gifts', { p_gift: g.id, p_qty: 200 }); if (data && data.ok) { say('Продано ' + data.sold + ' шт.: +💎 ' + fmt(data.amount)); o.remove(); if (onChange) onChange(); } else say('Не получилось продать', 'red'); return; }
       if (ev.target.id === 'gsDel') { const b = ev.target; if (!b.dataset.s) { b.dataset.s = 1; b.textContent = 'Точно удалить? Нажми ещё раз'; return; } const { error } = await sb.rpc('delete_gift', { p_id: ug.id }); if (!error) { say('Подарок удалён'); o.remove(); if (onChange) onChange(); } else say('Не удалось удалить', 'red'); return; }
       if (ev.target.id === 'gsHide') { const h = !ug.hidden; const { error } = await sb.rpc('hide_gift', { p_id: ug.id, p_hide: h }); if (!error) { ug.hidden = h; say(h ? 'Подарок скрыт из профиля' : 'Подарок снова в профиле'); o.remove(); if (onChange) onChange(); } }
     };
@@ -91,7 +95,7 @@
   async function openShop(uid) {
     const u = (typeof PROFILES !== 'undefined' && PROFILES[uid]) || (typeof USERS !== 'undefined' && USERS.find(x => x.id === uid)) || {};
     const [gr, wr] = await Promise.all([sb.from('gifts').select('*').order('price', { ascending: false }), sb.from('prime_wallets').select('balance_t').maybeSingle()]);
-    const gifts = gr.data || []; let bal = bv(wr), tab = 'gift', sel = null;
+    const gifts = gr.data || []; let bal = bv(wr), tab = 'gift', sel = null, qty = 1;
     const o = document.createElement('div'); o.className = 'xo shop';
     o.innerHTML = `<div class="xo-top"><button class="icon-btn x" type="button" data-x>✕</button><div class="xo-title">Подарок для ${E(u.display_name || u.username || '')}</div><div class="sh-bal" id="shBal"></div></div>
       <div class="sh-tabs"><button data-t="gift" class="on">🎁 Подарки</button><button data-t="nft">💎 NFT</button></div>
@@ -108,18 +112,22 @@
     function buy() {
       const b = o.querySelector('#shBuy');
       if (!sel) { b.innerHTML = '<div class="sh-hint">Выбери подарок</div>'; return; }
-      b.innerHTML = `<div class="sh-sel">${E(sel.emoji)} <b>${E(sel.name)}</b> — 💎 ${fmt(sel.price)}</div><input class="inp" id="shMsg" maxlength="200" placeholder="Добавить сообщение (необязательно)"><label class="sh-anon"><input type="checkbox" id="shAnon"> Скрыть, что это от меня</label><button class="btn primary" id="shGo" type="button">Подарить за 💎 ${fmt(sel.price)}</button>${isOwner() ? '<button class="btn ghost" id="shIcon" type="button" style="margin-top:8px;width:100%">🖼 Задать иконку подарка</button><input type="file" id="shIconIn" accept="image/*" class="hidden">' : ''}`;
+      b.innerHTML = `<div class="sh-sel">${E(sel.emoji)} <b>${E(sel.name)}</b> — 💎 ${fmt(sel.price)}</div><input class="inp" id="shMsg" maxlength="200" placeholder="Добавить сообщение (необязательно)"><label class="sh-anon"><input type="checkbox" id="shAnon"> Скрыть, что это от меня</label><div class="sh-qty"><span>Количество</span><button type="button" id="shQm">−</button><input id="shQ" inputmode="numeric" value="${qty}"><button type="button" id="shQp">+</button></div><button class="btn primary" id="shGo" type="button">Подарить за 💎 ${fmt(Number(sel.price) * qty)}</button>${isOwner() ? '<button class="btn ghost" id="shIcon" type="button" style="margin-top:8px;width:100%">🖼 Задать иконку подарка</button><input type="file" id="shIconIn" accept="image/*" class="hidden">' : ''}`;
       const ic = b.querySelector('#shIcon'); if (ic) { ic.onclick = () => b.querySelector('#shIconIn').click(); b.querySelector('#shIconIn').onchange = async ev => {
         const f = ev.target.files[0]; if (!f) return; ic.disabled = true; ic.textContent = 'Загружаем…';
         try { const path = 'gifts/' + sel.id + '_' + Date.now() + '.' + (f.name.split('.').pop() || 'png').toLowerCase(); const up = await sb.storage.from('avatars').upload(path, f, { upsert: true, contentType: f.type });
           if (up.error) throw up.error; const url = sb.storage.from('avatars').getPublicUrl(path).data.publicUrl;
           const r = await sb.rpc('owner_set_gift_image', { p_gift: sel.id, p_url: url }); if (!r.data) throw 0; sel.image_url = url; say('Иконка сохранена'); grid(); buy();
         } catch (er) { ic.disabled = false; ic.textContent = '🖼 Задать иконку подарка'; say('Не удалось загрузить иконку', 'red'); } }; }
+      const maxQ = sel.supply ? Math.max(1, Math.min(100, sel.supply - sel.sold)) : 100;
+      const setQ = v => { qty = Math.min(maxQ, Math.max(1, Math.floor(+v) || 1)); b.querySelector('#shQ').value = qty; b.querySelector('#shGo').textContent = 'Подарить за 💎 ' + fmt(Number(sel.price) * qty); };
+      b.querySelector('#shQm').onclick = () => setQ(qty - 1); b.querySelector('#shQp').onclick = () => setQ(qty + 1);
+      b.querySelector('#shQ').oninput = ev => { const v = ev.target.value.replace(/\D/g, ''); ev.target.value = v; if (v) setQ(v); };
       b.querySelector('#shGo').onclick = async () => {
         const go = b.querySelector('#shGo'); go.disabled = true; go.textContent = 'Отправляем…';
-        const { data, error } = await sb.rpc('send_gift', { p_gift: sel.id, p_to: uid, p_msg: b.querySelector('#shMsg').value, p_anon: b.querySelector('#shAnon').checked });
+        const { data, error } = qty > 1 ? await sb.rpc('send_gift_bulk', { p_gift: sel.id, p_to: uid, p_qty: qty, p_msg: b.querySelector('#shMsg').value, p_anon: b.querySelector('#shAnon').checked }) : await sb.rpc('send_gift', { p_gift: sel.id, p_to: uid, p_msg: b.querySelector('#shMsg').value, p_anon: b.querySelector('#shAnon').checked });
         if (error || !data || !data.ok) {
-          const er = data && data.error; go.disabled = false; go.textContent = 'Подарить за 💎 ' + fmt(sel.price);
+          const er = data && data.error; go.disabled = false; go.textContent = 'Подарить за 💎 ' + fmt(Number(sel.price) * qty);
           say(er === 'no_money' ? 'Не хватает праймиков 💎' : er === 'sold_out' ? 'Этот NFT распродан' : 'Не получилось отправить', 'red'); return;
         }
         say('Подарок отправлен 🎁'); o.remove();
@@ -129,7 +137,7 @@
     o.onclick = e => {
       if (e.target.closest('[data-x]')) return o.remove();
       const t = e.target.closest('.sh-tabs button'); if (t) { tab = t.dataset.t; sel = null; o.querySelectorAll('.sh-tabs button').forEach(x => x.classList.toggle('on', x === t)); grid(); buy(); return; }
-      const c = e.target.closest('.sg'); if (c && !c.classList.contains('out')) { sel = gifts.find(g => g.id === +c.dataset.id); grid(); buy(); }
+      const c = e.target.closest('.sg'); if (c && !c.classList.contains('out')) { sel = gifts.find(g => g.id === +c.dataset.id); qty = 1; grid(); buy(); }
     };
     paintBal(); grid(); buy();
   }
