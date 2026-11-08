@@ -347,3 +347,21 @@ html[data-ui="clean"] .m-img,html[data-ui="clean"] .m-video{border-radius:12px}
 .du-roll b{opacity:.5;font-size:12px}
 .du-new .du-roll i{animation:lvBounce .6s cubic-bezier(.34,1.8,.5,1) both}
 html[data-ui="clean"] body[data-wall="img"] #msgScroll{background-image:var(--wall-img);background-size:cover;background-position:center}
+
+/* выбор сообщений и упоминания */
+.sel-bar{position:fixed;left:0;right:0;top:0;z-index:520;height:56px;display:flex;align-items:center;gap:4px;padding:0 8px;background:var(--p1,#17212b);border-bottom:1px solid var(--line,rgba(255,255,255,.08));color:var(--tx,#fff)}
+.sel-bar .sb-n{flex:1;font-weight:600;font-size:16px;padding-left:6px}
+.sel-bar button{background:none;border:0;color:var(--ac);font:inherit;font-weight:600;padding:10px 10px;border-radius:10px;cursor:pointer}
+.sel-bar button:disabled{opacity:.35;pointer-events:none}
+.sel-bar button.dng{color:#e5534b}
+.sel-bar .sb-x{color:inherit;padding:8px;display:flex}
+body.sel-mode #messages .msg{cursor:pointer;-webkit-user-select:none;user-select:none}
+body.sel-mode #messages .msg.picked{background:color-mix(in srgb,var(--ac) 18%,transparent)}
+body.sel-mode #messages .msg.picked .bubble{box-shadow:0 0 0 2px var(--ac)}
+.mn-pop{position:absolute;left:8px;right:8px;bottom:100%;margin-bottom:6px;background:var(--p1,#17212b);border:1px solid var(--line,rgba(255,255,255,.1));border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.35);overflow:hidden;z-index:50}
+.mn-pop button{display:flex;gap:8px;align-items:baseline;width:100%;text-align:left;background:none;border:0;color:inherit;padding:10px 14px;font:inherit;cursor:pointer}
+.mn-pop button:hover,.mn-pop button:active{background:var(--cl-hover,rgba(255,255,255,.06))}
+.mn-pop span{color:var(--mut,#8b98a5);font-size:13px}
+.mn{color:var(--ac);cursor:pointer;font-weight:500}
+.mn.me{background:color-mix(in srgb,var(--ac) 22%,transparent);border-radius:4px;padding:0 3px}
+#inputBar{position:relative}
