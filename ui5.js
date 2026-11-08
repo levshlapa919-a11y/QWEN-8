@@ -67,7 +67,7 @@
     r.setProperty('--ac', LS.g('golda_ac', ACC[0]));
     r.setProperty('--br', LS.g('golda_br', '18') + 'px');
     if (isClean()) r.setProperty('--font-size', LS.g('golda_fs', '15.5') + 'px');
-    document.body.setAttribute('data-wall', LS.g('golda_wall', 'dots'));
+    const wi = LS.g('golda_wall_img', ''); document.body.setAttribute('data-wall', wi ? 'img' : LS.g('golda_wall', 'dots')); if (wi) r.setProperty('--wall-img', 'url(' + wi + ')'); else r.removeProperty('--wall-img');
     document.documentElement.setAttribute('data-motion', LS.g('golda_motion', 'on'));
     applyMode();
   }
@@ -136,6 +136,7 @@
       <div class="sec"><h4>Аккаунт</h4>
         ${row('user', '#3390ec', 'Мой профиль', 'Имя, фото, о себе', '', 'profile')}
         ${row('coin', '#e0a21b', 'Кошелёк', 'gold и праймики', '<span class="vl" id="clBal">…</span>', 'wallet')}
+        ${row('chart', '#8e5cf0', 'Моя статистика', 'Сообщения, подарки, игры', '', 'stats')}
         ${row('users', '#3390ec', 'Поделиться профилем', 'Ссылка, по которой тебя найдут', '', 'share')}
         ${row('lock', '#6c5ce7', 'Код-пароль', 'Защита и скрытые чаты', '', 'pass')}
       </div>
@@ -158,6 +159,7 @@
           <div class="prev"><div class="msg"><div class="bubble"><div class="m-text">Привет! Так выглядят сообщения</div><div class="m-time">12:30</div></div></div><div class="msg own"><div class="bubble"><div class="m-text">Отлично, мне нравится</div><div class="m-time">12:31</div></div></div></div>
           <div class="lab">Фон чата</div><div class="sws wl" data-sws="wall">${WALL.map(w => `<i data-v="${w[0]}" title="${w[1]}" style="background:${w[2]}" class="${wall === w[0] ? 'on' : ''}"></i>`).join('')}</div>
         </div>
+        ${row('img', '#17b2c4', 'Свой фон из галереи', LS.g('golda_wall_img', '') ? 'Установлен' : 'Выбрать картинку', LS.g('golda_wall_img', '') ? '<span class="vl">Убрать</span>' : '', 'wallup')}<input type="file" id="clWallIn" accept="image/*" style="display:none">
         ${row('anim', '#8e5cf0', 'Анимации', 'Плавные переходы и эффекты', sw(LS.g('golda_motion', 'on') === 'on'), 'motion')}
       </div>
       <div class="sec"><h4>Чаты</h4>
@@ -197,6 +199,8 @@
       switch (id) {
         case 'profile': closeSet(); call(window.openMyProfile); break;
         case 'share': window.LIVE && window.LIVE.shareProfile(); break;
+        case 'stats': showStats(); break;
+        case 'wallup': if (LS.g('golda_wall_img', '') && e.target.classList.contains('vl')) { LS.s('golda_wall_img', ''); applyLook(); buildSet(); } else Q('#clWallIn').click(); break;
         case 'seen-list': showSeen(); break;
         case 'hide-seen': { const on = LS.g('golda_hide_seen', '0') === '1'; LS.s('golda_hide_seen', on ? '0' : '1'); rw.querySelector('.sw').classList.toggle('on', !on); try { sb.from('profiles').update({ last_seen: on ? new Date().toISOString() : null }).eq('id', ME.id).then(() => { }); } catch (er) { } break; }
         case 'blocked': showBlocked(); break;
@@ -251,6 +255,27 @@
     S.onclick2 = null;
     Q('#clSub') && Q('#clSub').addEventListener('click', async e => { const b = e.target.closest('[data-unb]'); if (!b) return; b.disabled = true; try { await toggleBlock(b.dataset.unb); } catch (er) { } draw(); });
   }
+
+
+  async function showStats() {
+    sub('Моя статистика', '<div class="empty">Считаю…</div>');
+    try {
+      const [m, g, gs] = await Promise.all([
+        sb.from('messages').select('id', { count: 'exact', head: true }).eq('sender_id', ME.id),
+        sb.from('user_gifts').select('id', { count: 'exact', head: true }).eq('owner_id', ME.id),
+        sb.from('game_stats').select('game,plays,wins,net').eq('user_id', ME.id)]);
+      const N = { coin: 'Монетка', dice: 'Кости', wheel: 'Колесо', rps: 'Камень-ножницы-бумага', slots: 'Слоты' };
+      const rows = (gs.data || []).map(r => `<div class="rw"><div class="tx"><div>${N[r.game] || r.game}</div><small>${r.plays} игр · побед ${r.wins}</small></div><span class="vl" style="color:${Number(r.net) >= 0 ? '#4fae4e' : '#e5484d'}">${Number(r.net) >= 0 ? '+' : ''}${fmt(r.net)}</span></div>`).join('');
+      const el = Q('#clSub'); if (!el) return;
+      el.innerHTML = `<div class="rw"><div class="tx"><div>Отправлено сообщений</div></div><span class="vl">${fmt(m.count || 0)}</span></div><div class="rw"><div class="tx"><div>Чатов</div></div><span class="vl">${CHATS.length}</span></div><div class="rw"><div class="tx"><div>Подарков в коллекции</div></div><span class="vl">${fmt(g.count || 0)}</span></div>` + (rows ? '<h4>Игры</h4>' + rows : '');
+    } catch (e) { const el = Q('#clSub'); if (el) el.innerHTML = '<div class="empty">Не удалось загрузить</div>'; }
+  }
+  document.addEventListener('change', e => {
+    if (e.target.id !== 'clWallIn') return; const f = e.target.files[0]; if (!f) return;
+    const im = new Image(), u = URL.createObjectURL(f);
+    im.onload = () => { const k = Math.min(1, 1080 / Math.max(im.width, im.height)), c = document.createElement('canvas'); c.width = Math.round(im.width * k); c.height = Math.round(im.height * k); c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); URL.revokeObjectURL(u); try { LS.s('golda_wall_img', c.toDataURL('image/jpeg', 0.72)); } catch (er) { } applyLook(); buildSet(); };
+    im.src = u;
+  });
 
   /* перехват старой кнопки настроек */
   document.addEventListener('click', e => { if (isClean() && e.target.closest('#btnSettings')) { e.preventDefault(); e.stopImmediatePropagation(); openSet(); } }, true);
