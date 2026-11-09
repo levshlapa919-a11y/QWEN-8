@@ -17,16 +17,35 @@ public class Main extends Activity {
     androidx.webkit.WebViewAssetLoader loader;
     WebView w;
     ValueCallback<Uri[]> cb;
+    static volatile boolean fg;
+
+    class Bridge {
+        @JavascriptInterface public String token() { return getSharedPreferences("golda", MODE_PRIVATE).getString("tok", ""); }
+        @JavascriptInterface public String uid() { return getSharedPreferences("golda", MODE_PRIVATE).getString("uid", ""); }
+        @JavascriptInterface public void setup(String base, String key, String tok, String uid) {
+            android.content.SharedPreferences p = getSharedPreferences("golda", MODE_PRIVATE);
+            if (!tok.equals(p.getString("tok", ""))) p.edit().putString("last", "").apply();
+            p.edit().putString("base", base).putString("key", key).putString("tok", tok).putString("uid", uid).apply();
+            startSvc();
+        }
+        @JavascriptInterface public void muted(String csv) { getSharedPreferences("golda", MODE_PRIVATE).edit().putString("muted", csv).apply(); }
+        @JavascriptInterface public void logout() { getSharedPreferences("golda", MODE_PRIVATE).edit().clear().apply(); stopService(new Intent(Main.this, Notif.class)); }
+    }
+    void startSvc() {
+        try { Intent s = new Intent(this, Notif.class); if (Build.VERSION.SDK_INT >= 26) startForegroundService(s); else startService(s); } catch (Throwable e) { }
+    }
+    @Override protected void onResume() { super.onResume(); fg = true; }
+    @Override protected void onPause() { fg = false; super.onPause(); }
 
     @Override protected void onCreate(Bundle b) {
         super.onCreate(b);
-        if (Build.VERSION.SDK_INT >= 23) requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA}, 1);
+        if (Build.VERSION.SDK_INT >= 23) requestPermissions(Build.VERSION.SDK_INT >= 33 ? new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA, "android.permission.POST_NOTIFICATIONS"} : new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA}, 1);
         w = new WebView(this);
         setContentView(w);
         loader = new androidx.webkit.WebViewAssetLoader.Builder()
             .addPathHandler("/assets/", new androidx.webkit.WebViewAssetLoader.AssetsPathHandler(this)).build();
         WebSettings s = w.getSettings();
-        s.setUserAgentString(s.getUserAgentString() + " GoldaApp/1.3");
+        s.setUserAgentString(s.getUserAgentString() + " GoldaApp/1.4");
         s.setJavaScriptEnabled(true); s.setDomStorageEnabled(true); s.setMediaPlaybackRequiresUserGesture(false);
         s.setAllowFileAccess(true); s.setAllowContentAccess(true); s.setDatabaseEnabled(true);
         CookieManager.getInstance().setAcceptCookie(true);
@@ -61,6 +80,7 @@ public class Main extends Activity {
                 ((DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE)).enqueue(q);
             } catch (Exception e) { startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url))); }
         });
+        w.addJavascriptInterface(new Bridge(), "GoldaNative");
         w.loadUrl(URL);
     }
 
