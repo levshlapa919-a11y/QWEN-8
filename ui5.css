@@ -365,3 +365,25 @@ body.sel-mode #messages .msg.picked .bubble{box-shadow:0 0 0 2px var(--ac)}
 .mn{color:var(--ac);cursor:pointer;font-weight:500}
 .mn.me{background:color-mix(in srgb,var(--ac) 22%,transparent);border-radius:4px;padding:0 3px}
 #inputBar{position:relative}
+
+/* форматирование, превью, даты */
+.fx-c{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.92em;background:rgba(127,127,127,.2);padding:1px 5px;border-radius:5px}
+.fx-sp{background:rgba(127,127,127,.55);color:transparent;border-radius:4px;cursor:pointer;transition:.2s;filter:blur(0)}
+.fx-sp.open{background:rgba(127,127,127,.15);color:inherit}
+.big-emo .bubble{background:none!important;box-shadow:none!important;padding:2px 4px}
+.big-emo .m-text{font-size:52px;line-height:1.15}
+.big-emo .m-name{display:none}
+.lp{display:block;margin-top:6px;border-left:3px solid var(--ac);background:rgba(127,127,127,.12);border-radius:4px 10px 10px 4px;overflow:hidden;text-decoration:none;color:inherit;max-width:320px}
+.lp img{display:block;width:100%;max-height:170px;object-fit:cover}
+.lp-b{padding:7px 10px 8px;display:flex;flex-direction:column;gap:2px}
+.lp-b small{color:var(--ac);font-weight:600;font-size:12px}
+.lp-b b{font-size:14px;line-height:1.25}
+.lp-b span{font-size:13px;opacity:.75;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.dsep{display:flex;justify-content:center;margin:10px 0 6px;position:sticky;top:6px;z-index:2;pointer-events:none}
+.dsep span{background:rgba(0,0,0,.38);color:#fff;font-size:13px;font-weight:500;padding:3px 12px;border-radius:14px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.dn-btn{position:fixed;right:16px;bottom:84px;z-index:40;width:42px;height:42px;border-radius:50%;border:0;background:var(--p1,#17212b);color:var(--ac);box-shadow:0 3px 12px rgba(0,0,0,.35);display:grid;place-items:center;cursor:pointer;opacity:0;transform:translateY(10px) scale(.8);pointer-events:none;transition:.2s}
+.dn-btn.on{opacity:1;transform:none;pointer-events:auto}
+#messages .msg{animation:msgIn .22s cubic-bezier(.2,.8,.3,1)}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px) scale(.97)}to{opacity:1;transform:none}}
+.chat-item{transition:background .15s,transform .12s}.chat-item:active{transform:scale(.985)}
+@media (prefers-reduced-motion:reduce){#messages .msg{animation:none}}

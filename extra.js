@@ -97,7 +97,7 @@
   try { SEEN = JSON.parse(LS.get('golda_seen_st', '[]')); } catch (e) { }
   const saveSeen = () => LS.set('golda_seen_st', JSON.stringify(SEEN.slice(-400)));
   async function loadStories() {
-    const { data, error } = await sb.from('stories').select('id,user_id,url,kind,caption,created_at,expires_at').gt('expires_at', new Date().toISOString()).order('created_at', { ascending: true }).limit(200);
+    const { data, error } = await sb.from('stories').select('id,user_id,url,kind,caption,bg,created_at,expires_at').gt('expires_at', new Date().toISOString()).order('created_at', { ascending: true }).limit(200);
     if (error) return; const by = {};
     (data || []).forEach(s => (by[s.user_id] = by[s.user_id] || []).push(s));
     const miss = Object.keys(by).filter(u => !(PROFILES && PROFILES[u]));
@@ -121,6 +121,7 @@
     const uid = it.dataset.u === 'me' ? ME.id : it.dataset.u; viewStories(uid);
   }
   function pickStory() {
+    if (!pickStory.ch) { pickStory.ch = 1; return storyChoice(); } pickStory.ch = 0;
     let fi = Q('#stFile'); if (!fi) { fi = document.createElement('input'); fi.type = 'file'; fi.id = 'stFile'; fi.accept = 'image/*,video/*'; fi.style.display = 'none'; document.body.appendChild(fi); }
     fi.onchange = async () => {
       const f0 = fi.files[0]; fi.value = ''; if (!f0) return; if (f0.size > 40 * 1048576) return tst('Файл больше 40 МБ', 'red');
@@ -131,6 +132,29 @@
         tst('История опубликована ✔ (24 часа)'); await loadStories();
       } catch (er) { tst('Не вышло: ' + (er.message || ''), 'red'); }
     }; fi.click();
+  }
+  function storyChoice() {
+    const ov = document.createElement('div'); ov.className = 'ms-ov';
+    ov.innerHTML = '<div class="ms-card"><div class="ms-act"><button data-k="m">Фото или видео</button><button data-k="t">Текстовая история</button><button data-k="x">Отмена</button></div></div>';
+    document.body.appendChild(ov);
+    ov.onclick = e => { const k = e.target.closest('[data-k]')?.dataset.k; if (e.target === ov || k) ov.remove(); if (k === 'm') { pickStory.ch = 1; pickStory(); } else if (k === 't') textStory(); else pickStory.ch = 0; };
+  }
+  function textStory() {
+    const cols = ['#2b5278', '#3b8f5a', '#a14a6b', '#7a4fb3', '#c26a2b', '#2f2f35'];
+    let bg = cols[0];
+    const ov = document.createElement('div'); ov.id = 'stText'; ov.style.background = bg;
+    ov.innerHTML = '<button class="stx" data-k="x">✕</button><textarea maxlength="300" placeholder="Напишите что-нибудь…" autofocus></textarea><div class="stc">' + cols.map(c => '<i data-c="' + c + '" style="background:' + c + '"></i>').join('') + '</div><button class="stp" data-k="p">Опубликовать</button>';
+    document.body.appendChild(ov);
+    ov.onclick = async e => {
+      const c = e.target.closest('[data-c]'); if (c) { bg = c.dataset.c; ov.style.background = bg; return; }
+      const k = e.target.closest('[data-k]')?.dataset.k; if (k === 'x') return ov.remove();
+      if (k === 'p') {
+        const t = Q('textarea', ov).value.trim(); if (!t) return;
+        const { error } = await sb.rpc('story_create', { p_kind: 'text', p_url: null, p_caption: t, p_bg: bg });
+        if (error) return tst('Не вышло: ' + error.message, 'red');
+        ov.remove(); tst('История опубликована (24 часа)'); loadStories();
+      }
+    };
   }
   function viewStories(uid) {
     const g = STORIES.find(s => s.uid === uid); if (!g) return;
@@ -143,11 +167,13 @@
       cancelAnimationFrame(raf); clearTimeout(timer);
       if (i >= g.list.length) return close(); if (i < 0) i = 0;
       const s = g.list[i]; if (!SEEN.includes(s.id)) { SEEN.push(s.id); saveSeen(); }
+      if (!own) { try { sb.rpc('story_view', { p_id: s.id }); } catch (e) { } } else { sb.rpc('story_views_count', { p_ids: [s.id] }).then(r => { const v = r.data && r.data[0]; const sm = Q('.top small', ov); if (v && sm) sm.textContent = when(s.created_at) + ' · просмотров: ' + v.views; }); }
       QA('.prog i b', ov).forEach((b, k) => b.style.width = k < i ? '100%' : '0');
       Q('.top small', ov).textContent = when(s.created_at);
       const m = Q('.media', ov); m.innerHTML = ''; vid = null;
       const start = d => { dur = d; t0 = performance.now(); const b = QA('.prog i b', ov)[i]; const tick = () => { const k = Math.min(1, (performance.now() - t0) / dur); b.style.width = k * 100 + '%'; if (k >= 1) { i++; show(); } else raf = requestAnimationFrame(tick); }; raf = requestAnimationFrame(tick); };
-      if (s.kind === 'video') { vid = document.createElement('video'); vid.className = 'sm'; vid.src = s.url; vid.autoplay = true; vid.playsInline = true; vid.onloadedmetadata = () => start(Math.min(30000, (vid.duration || 8) * 1000)); vid.onerror = () => { i++; show(); }; m.appendChild(vid); vid.play().catch(() => { vid.muted = true; vid.play().catch(() => { }); }); }
+      if (s.kind === 'text') { const d = document.createElement('div'); d.className = 'sm st-text'; d.style.background = s.bg || '#2b5278'; d.innerHTML = '<span>' + E(s.caption || '') + '</span>'; m.appendChild(d); start(Math.min(15000, 4000 + (s.caption || '').length * 60)); }
+      else if (s.kind === 'video') { vid = document.createElement('video'); vid.className = 'sm'; vid.src = s.url; vid.autoplay = true; vid.playsInline = true; vid.onloadedmetadata = () => start(Math.min(30000, (vid.duration || 8) * 1000)); vid.onerror = () => { i++; show(); }; m.appendChild(vid); vid.play().catch(() => { vid.muted = true; vid.play().catch(() => { }); }); }
       else { const im = document.createElement('img'); im.className = 'sm'; im.onload = () => start(5000); im.onerror = () => { i++; show(); }; im.src = s.url; m.appendChild(im); }
     }
     ov.onclick = async e => {
