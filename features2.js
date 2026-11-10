@@ -66,7 +66,7 @@
     if (e.target.closest('[data-close]')) { const r = await rpc('close_poll', { p_poll: pid }); if (r.data) paintPoll(el, r.data); return; }
     const o = e.target.closest('.poll-opt'); if (!o || o.disabled) return;
     const r = await rpc('vote_poll', { p_poll: pid, p_opt: +o.dataset.i });
-    if (r.data) paintPoll(el, r.data); else tst('Не удалось проголосовать', 'red');
+    if (r.data) { paintPoll(el, r.data); if (r.data.reward) tst('+5 000 gold за голос', ''); } else tst('Не удалось проголосовать', 'red');
   });
   setInterval(async () => {
     if (document.hidden || !ready()) return;
