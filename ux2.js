@@ -4,6 +4,7 @@
   const Q = (s, r) => (r || document).querySelector(s), QA = (s, r) => [...(r || document).querySelectorAll(s)];
   const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const tst = (m, k) => { try { toast(m, k || ''); } catch (e) { } };
+  const G = f => { try { return f(); } catch (e) { return undefined; } };
   const sel = new Set();
   let bar = null;
 
@@ -92,7 +93,7 @@
   /* ---------- @упоминания ---------- */
   let pop = null, mStart = -1;
   function members() {
-    const c = (window.CHATS || []).find(c => c.id === CURRENT);
+    const c = (G(() => CHATS) || []).find(c => c.id === CURRENT);
     if (!c || c.type !== 'group') return [];
     return (c.members || []).filter(m => m.id !== ME.id && m.username);
   }
@@ -145,7 +146,7 @@
   new MutationObserver(() => { const b = Q('#messages'); if (b) hl(b); }).observe(document.body, { childList: true, subtree: true });
   document.addEventListener('click', e => {
     const s = e.target.closest('.mn'); if (!s || bar) return;
-    const u = (window.USERS || []).find(x => (x.username || '').toLowerCase() === s.dataset.u);
+    const u = (G(() => USERS) || []).find(x => (x.username || '').toLowerCase() === s.dataset.u);
     if (u && window.openUserModal) openUserModal(u);
   });
 })();

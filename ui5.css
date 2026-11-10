@@ -387,3 +387,46 @@ body.sel-mode #messages .msg.picked .bubble{box-shadow:0 0 0 2px var(--ac)}
 @keyframes msgIn{from{opacity:0;transform:translateY(8px) scale(.97)}to{opacity:1;transform:none}}
 .chat-item{transition:background .15s,transform .12s}.chat-item:active{transform:scale(.985)}
 @media (prefers-reduced-motion:reduce){#messages .msg{animation:none}}
+
+/* главная: задания, вкладки, люди, закреп */
+#homeCard{display:flex;gap:8px;margin:2px 12px 8px}
+#homeCard button{border:0;font:inherit;color:inherit;cursor:pointer;text-align:left}
+#homeCard .hc-main{flex:1;min-width:0;background:var(--p2,#1c2733);border-radius:14px;padding:10px 12px;transition:transform .12s}
+#homeCard .hc-main:active,#homeCard .hc-ppl:active{transform:scale(.97)}
+#homeCard .hc-t{font-weight:600;font-size:15px}
+#homeCard .hc-sub{font-size:12.5px;opacity:.7;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#homeCard .hc-bar{height:4px;border-radius:2px;background:rgba(127,127,127,.25);margin-top:8px;overflow:hidden}
+#homeCard .hc-bar i{display:block;height:100%;background:var(--ac);border-radius:2px;transition:width .5s}
+#homeCard.ready .hc-main{box-shadow:inset 0 0 0 1.5px var(--ac)}
+#homeCard.ready .hc-sub{color:var(--ac);opacity:1;font-weight:500}
+#homeCard .hc-ppl{background:var(--p2,#1c2733);border-radius:14px;padding:8px 14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--ac);font-size:12px;font-weight:500}
+#folders{display:flex;gap:4px;padding:0 12px 6px;overflow-x:auto;scrollbar-width:none}
+#folders::-webkit-scrollbar{display:none}
+#folders button{flex:none;background:none;border:0;color:var(--mut,#8b98a5);font:500 14px var(--font);padding:7px 12px;border-radius:18px;cursor:pointer;display:flex;gap:6px;align-items:center;transition:.15s}
+#folders button.on{color:var(--ac);background:color-mix(in srgb,var(--ac) 16%,transparent)}
+#folders b{font-size:11px;min-width:17px;height:17px;border-radius:9px;background:var(--ac);color:#fff;display:grid;place-items:center;padding:0 4px}
+#folders b:empty{display:none}
+.hq{max-height:86vh;overflow:auto}
+.hq-h{font-size:19px;font-weight:700;padding:6px 8px 0}.hq-s{font-size:13px;opacity:.65;padding:2px 8px 10px}
+.hq-r{display:flex;align-items:center;gap:10px;padding:10px 8px;border-radius:12px}
+.hq-r+.hq-r{border-top:1px solid var(--line,rgba(255,255,255,.07))}
+.hq-m{flex:1;min-width:0}.hq-m b{font-weight:500;font-size:15px}.hq-m small{font-size:12px;opacity:.6}
+.hq-b{height:5px;border-radius:3px;background:rgba(127,127,127,.25);margin:6px 0 3px;overflow:hidden}.hq-b i{display:block;height:100%;background:var(--ac);border-radius:3px}
+.hq-r.dn .hq-m{opacity:.5}
+.hq-r button{background:var(--ac);color:#fff;border:0;border-radius:16px;padding:8px 14px;font:600 14px var(--font);cursor:pointer}
+.hq-d{color:var(--ac);font-size:13px;font-weight:500}.hq-g{font-size:13px;opacity:.6}
+.hq-x{width:100%;margin-top:8px;background:var(--p2,#1c2733)!important;color:inherit!important;padding:13px!important;border-radius:12px!important}
+.hp-s{width:100%;box-sizing:border-box;margin:10px 0 6px;padding:11px 14px;border-radius:12px;border:0;background:var(--p2,#1c2733);color:inherit;font:15px var(--font);outline:0}
+.hp-l{max-height:52vh;overflow:auto}
+.hp-r{display:flex;gap:12px;align-items:center;width:100%;background:none;border:0;color:inherit;padding:8px;border-radius:12px;cursor:pointer;text-align:left}
+.hp-r:active{background:var(--cl-hover,rgba(255,255,255,.06))}
+.hp-r b{font-weight:600;display:block}.hp-r small{opacity:.65;font-size:13px}.hp-r em{color:var(--ac);font-style:normal}
+#pinBar{display:flex;align-items:center;gap:10px;padding:6px 12px;background:var(--p1,#17212b);border-bottom:1px solid var(--line,rgba(255,255,255,.07));cursor:pointer}
+#pinBar[hidden]{display:none}
+#pinBar i{width:3px;align-self:stretch;background:var(--ac);border-radius:2px}
+#pinBar div{flex:1;min-width:0;display:flex;flex-direction:column}
+#pinBar small{color:var(--ac);font-size:12px;font-weight:600}
+#pinBar span{font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:.85}
+#pinBar button{background:none;border:0;color:var(--mut,#8b98a5);font-size:15px;padding:6px;cursor:pointer}
+.msg.flash .bubble{animation:flash 1.3s}
+@keyframes flash{0%,60%{box-shadow:0 0 0 3px var(--ac)}100%{box-shadow:0 0 0 0 transparent}}

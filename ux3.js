@@ -4,6 +4,7 @@
   const Q = (s, r) => (r || document).querySelector(s), QA = (s, r) => [...(r || document).querySelectorAll(s)];
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const MEM = {};
+  const G = f => { try { return f(); } catch (e) { return undefined; } };
   const SKIP = /\.(png|jpe?g|gif|webp|mp3|ogg|wav|m4a|mp4|webm|svg|pdf|zip)(\?|$)/i;
 
   /* --- форматирование: **жирный** _курсив_ ~~зачёркнутый~~ `код` ||спойлер|| --- */
@@ -75,15 +76,16 @@
     busy = true;
     QA('.msg', box).forEach(r => { const t = Q('.m-text', r); if (t) fmt(t); big(r); preview(r); });
     seps(box);
-    busy = false; bar();
+    busy = false; bar(); obs.takeRecords();
   }
-  new MutationObserver(() => { if (busy) return; clearTimeout(timer); timer = setTimeout(pass, 60); }).observe(document.body, { childList: true, subtree: true });
+  const obs = new MutationObserver(() => { if (busy) return; clearTimeout(timer); timer = setTimeout(pass, 60); });
+  obs.observe(document.body, { childList: true, subtree: true });
 
   /* --- кнопка «вниз» --- */
   let btn = null;
   function bar() {
     const box = Q('#messages');
-    if (!box || !window.CURRENT) { if (btn) btn.classList.remove('on'); return; }
+    if (!box || !G(() => CURRENT)) { if (btn) btn.classList.remove('on'); return; }
     if (!btn) {
       btn = document.createElement('button'); btn.className = 'dn-btn'; btn.setAttribute('aria-label', 'Вниз');
       btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
