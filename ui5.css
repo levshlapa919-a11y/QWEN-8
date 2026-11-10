@@ -383,10 +383,8 @@ body.sel-mode #messages .msg.picked .bubble{box-shadow:0 0 0 2px var(--ac)}
 .dsep span{background:rgba(0,0,0,.38);color:#fff;font-size:13px;font-weight:500;padding:3px 12px;border-radius:14px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 .dn-btn{position:fixed;right:16px;bottom:84px;z-index:40;width:42px;height:42px;border-radius:50%;border:0;background:var(--p1,#17212b);color:var(--ac);box-shadow:0 3px 12px rgba(0,0,0,.35);display:grid;place-items:center;cursor:pointer;opacity:0;transform:translateY(10px) scale(.8);pointer-events:none;transition:.2s}
 .dn-btn.on{opacity:1;transform:none;pointer-events:auto}
-#messages .msg{animation:msgIn .22s cubic-bezier(.2,.8,.3,1)}
 @keyframes msgIn{from{opacity:0;transform:translateY(8px) scale(.97)}to{opacity:1;transform:none}}
 .chat-item{transition:background .15s,transform .12s}.chat-item:active{transform:scale(.985)}
-@media (prefers-reduced-motion:reduce){#messages .msg{animation:none}}
 
 /* главная: задания, вкладки, люди, закреп */
 #homeCard{display:flex;gap:8px;margin:2px 12px 8px}

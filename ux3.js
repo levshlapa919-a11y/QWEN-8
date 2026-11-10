@@ -61,13 +61,17 @@
     return d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: d.getFullYear() === n.getFullYear() ? undefined : 'numeric' });
   };
   function seps(box) {
-    QA('.dsep', box).forEach(x => x.remove());
-    let last = '';
+    const want = [];
     QA('.msg', box).forEach(r => {
       const m = window.__MC && __MC[r.dataset.id]; if (!m || !m.created_at) return;
       const d = new Date(m.created_at), k = d.toDateString();
-      if (k !== last) { last = k; const s = document.createElement('div'); s.className = 'dsep'; s.innerHTML = '<span>' + dayName(d) + '</span>'; r.before(s); }
+      if (k !== (want.length ? want[want.length - 1].k : '')) want.push({ k, d, r });
     });
+    const cur = QA('.dsep', box);
+    const same = cur.length === want.length && cur.every((x, i) => x.dataset.k === want[i].k && x.nextElementSibling === want[i].r);
+    if (same) return;
+    cur.forEach(x => x.remove());
+    want.forEach(w => { const s = document.createElement('div'); s.className = 'dsep'; s.dataset.k = w.k; s.innerHTML = '<span>' + dayName(w.d) + '</span>'; w.r.before(s); });
   }
 
   let busy = false, timer = 0;

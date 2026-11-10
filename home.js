@@ -29,8 +29,8 @@
     let card = Q('#homeCard');
     if (!card) {
       card = document.createElement('div'); card.id = 'homeCard';
-      card.innerHTML = '<button class="hc-main" data-a="q"><div class="hc-t">Задания дня</div><div class="hc-sub">Загрузка…</div><div class="hc-bar"><i></i></div></button><button class="hc-ppl" data-a="p" aria-label="Люди"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.5-3.6 3.2-5.5 6.5-5.5s6 1.9 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 010 6.8M18 14.8c2 .6 3.3 2.3 3.5 5.2"/></svg><span>Люди</span></button>';
-      card.onclick = e => { const a = e.target.closest('[data-a]')?.dataset.a; if (a === 'q') openQuests(); else if (a === 'p') openPeople(); };
+      card.innerHTML = '<button class="hc-main" data-a="q"><div class="hc-t">Задания дня</div><div class="hc-sub">Загрузка…</div><div class="hc-bar"><i></i></div></button>';
+      card.onclick = e => { if (e.target.closest('[data-a=q]')) openQuests(); };
     }
     if (card.nextElementSibling !== list) list.before(card);
   }

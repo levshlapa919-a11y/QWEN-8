@@ -1,0 +1,38 @@
+
+/* ===== ui6: цвет, фон чата, ссылки, плавность ===== */
+html[data-ui="clean"] body[data-theme="dark"][data-wall="dots"] #msgScroll{background-color:#0e1a29!important;background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200' fill='none' stroke='%23fff' stroke-opacity='.05' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='28' cy='30' r='9'/><path d='M82 22v16M74 30h16'/><path d='M140 24l4 9 10 1-7.5 6.500 2.500 10-9-5.500-9 5.500 2.500-10L126 34l10-1z'/><path d='M178 70c-6-8-14 4-8 12s12-2 8-12z'/><path d='M18 92l14-8 14 8-14 8z'/><path d='M70 84c6-8 12 8 18 0s12 8 18 0'/><circle cx='150' cy='108' r='6'/><path d='M30 150l8-14 8 14z'/><path d='M84 142h16v16H84z'/><path d='M130 150c0-10 16-10 16 0 0 10-16 8-16 18'/><path d='M176 150v16M168 158h16'/><circle cx='60' cy='186' r='5'/><path d='M112 188l10-6 10 6'/></svg>"),linear-gradient(170deg,#12304d 0%,#0f2036 48%,#1b1a3a 100%)!important;background-size:200px 200px,100% 100%!important}
+html[data-ui="clean"] body[data-theme="light"][data-wall="dots"] #msgScroll{background-color:#cfe2ee!important;background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200' fill='none' stroke='%23000' stroke-opacity='.06' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='28' cy='30' r='9'/><path d='M82 22v16M74 30h16'/><path d='M140 24l4 9 10 1-7.5 6.500 2.500 10-9-5.500-9 5.500 2.500-10L126 34l10-1z'/><path d='M178 70c-6-8-14 4-8 12s12-2 8-12z'/><path d='M18 92l14-8 14 8-14 8z'/><path d='M70 84c6-8 12 8 18 0s12 8 18 0'/><circle cx='150' cy='108' r='6'/><path d='M30 150l8-14 8 14z'/><path d='M84 142h16v16H84z'/><path d='M130 150c0-10 16-10 16 0 0 10-16 8-16 18'/><path d='M176 150v16M168 158h16'/><circle cx='60' cy='186' r='5'/><path d='M112 188l10-6 10 6'/></svg>"),linear-gradient(170deg,#bcd9ef 0%,#d2e6d6 55%,#e6efcf 100%)!important;background-size:200px 200px,100% 100%!important}
+html[data-ui="clean"] body[data-theme="dark"] .msg.own .bubble{background:color-mix(in srgb,var(--ac) 78%,#000);color:#fff}
+html[data-ui="clean"] body[data-theme="light"] .msg.own .bubble{background:var(--ac);color:#fff}
+html[data-ui="clean"] body[data-theme="light"] .msg.own .m-time,html[data-ui="clean"] body[data-theme="dark"] .msg.own .m-time{color:rgba(255,255,255,.72)}
+html[data-ui="clean"] .m-text a{color:#7cc0ff;text-decoration:none;word-break:break-all}
+html[data-ui="clean"] body[data-theme="light"] .m-text a{color:#1c6fd1}
+html[data-ui="clean"] .m-text a:hover{text-decoration:underline}
+html[data-ui="clean"] .msg.own .m-text a{color:#fff;text-decoration:underline;text-underline-offset:2px}
+html[data-ui="clean"] .sender-dot{display:none}
+#chatView[data-k="direct"] .m-name{display:none}
+html[data-ui="clean"] .m-name{font-weight:600}
+#f4Folders:has(> .f4-t.add:only-child){padding:0 14px 2px;min-height:0}
+#f4Folders .f4-t.add{font-size:13px;opacity:.55;padding:3px 10px;background:none}
+#homeCard .hc-main{background:color-mix(in srgb,var(--ac) 13%,var(--p2,#1c2733))}
+html[data-ui="clean"] .chat-item:active{background:var(--cl-hover,rgba(127,127,127,.12))}
+@media (hover:none){html[data-ui="clean"] .chat-item:hover{transform:none;background:transparent}}
+@media (max-width:900px){*,*::before,*::after{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}.ms-ov{background:rgba(0,0,0,.55)!important}.dsep span{background:rgba(0,0,0,.45)!important}}
+@keyframes uFade{from{opacity:0}to{opacity:1}}
+@keyframes uSheet{from{transform:translateY(28px);opacity:0}to{transform:none;opacity:1}}
+@keyframes uPop{from{transform:scale(.95);opacity:0}to{transform:none;opacity:1}}
+@keyframes uSlide{from{transform:translateX(26px);opacity:0}to{transform:none;opacity:1}}
+@keyframes uMsg{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:none}}
+.ms-ov{animation:uFade .18s ease-out}
+.ms-card{animation:uSheet .26s var(--cl-ease,cubic-bezier(.2,.8,.2,1))}
+.overlay.open .modal{animation:uPop .2s var(--cl-ease,cubic-bezier(.2,.8,.2,1))}
+.xo{animation:uSlide .26s var(--cl-ease,cubic-bezier(.2,.8,.2,1))}
+#messages .msg.msg-in{animation:uMsg .24s var(--cl-ease,cubic-bezier(.2,.8,.2,1))}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+html[data-ui="clean"] body[data-wall="g1"] #msgScroll{background:linear-gradient(160deg,#1d3b5c,#14263d 55%,#2a1f4a)!important;background-size:100% 100%!important}
+html[data-ui="clean"] body[data-wall="g2"] #msgScroll{background:linear-gradient(160deg,#173d34,#0f2a28 55%,#163a2a)!important;background-size:100% 100%!important}
+html[data-ui="clean"] body[data-wall="g3"] #msgScroll{background:linear-gradient(160deg,#4a2230,#2a1620 55%,#3a2a1a)!important;background-size:100% 100%!important}
+html[data-ui="clean"] body[data-wall="s1"] #msgScroll{background:#c9dcb8!important}
+html[data-ui="clean"] body[data-wall="s2"] #msgScroll{background:#cfe0ef!important}
+html[data-ui="clean"] body[data-wall="img"] #msgScroll{background-image:var(--wall-img)!important;background-size:cover!important;background-position:center!important}
