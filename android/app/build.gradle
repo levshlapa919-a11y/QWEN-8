@@ -2,7 +2,7 @@ plugins { id 'com.android.application' }
 android {
     namespace 'app.golda.mesenger'
     compileSdk 34
-    defaultConfig { applicationId 'app.golda.mesenger'; minSdk 23; targetSdk 34; versionCode 8; versionName "1.7" }
+    defaultConfig { applicationId 'app.golda.mesenger'; minSdk 23; targetSdk 34; versionCode 9; versionName "1.8" }
     signingConfigs {
         main { storeFile file('../golda.keystore'); storePassword 'golda2026'; keyAlias 'golda'; keyPassword 'golda2026' }
     }

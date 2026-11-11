@@ -54,7 +54,7 @@
   new MutationObserver(() => { clearTimeout(dT); dT = setTimeout(() => dress(), 60); }).observe(document.body, { childList: true, subtree: true });
 
   /* ---------- применение сохранённых параметров ---------- */
-  const ACC = ['#3390ec', '#2eb67d', '#8e5cf0', '#f08c2b', '#e8478b', '#e5484d', '#17b2c4'];
+  const ACC = ['#1aa6a0', '#3390ec', '#2eb67d', '#8e5cf0', '#f08c2b', '#e8478b', '#e5484d'];
   const WALL = [['', 'Без фона', 'var(--bg)'], ['dots', 'Точки', 'var(--bg)'], ['g1', 'Ночь', 'linear-gradient(160deg,#1d3b5c,#2a1f4a)'], ['g2', 'Лес', 'linear-gradient(160deg,#173d34,#163a2a)'], ['g3', 'Закат', 'linear-gradient(160deg,#4a2230,#3a2a1a)'], ['s1', 'Мята', '#c9dcb8'], ['s2', 'Небо', '#cfe0ef']];
   const mq = window.matchMedia ? matchMedia('(prefers-color-scheme: dark)') : null;
   function applyMode() {
@@ -161,6 +161,8 @@
         </div>
         ${row('img', '#17b2c4', 'Свой фон из галереи', LS.g('golda_wall_img', '') ? 'Установлен' : 'Выбрать картинку', LS.g('golda_wall_img', '') ? '<span class="vl">Убрать</span>' : '', 'wallup')}<input type="file" id="clWallIn" accept="image/*" style="display:none">
         ${row('anim', '#8e5cf0', 'Анимации', 'Плавные переходы и эффекты', sw(LS.g('golda_motion', 'on') === 'on'), 'motion')}
+        ${row('folder', '#3390ec', 'Компактный список чатов', 'Больше чатов на экране', sw(LS.g('golda_compact', '0') === '1'), 'compact')}
+        ${row('user', '#e8478b', 'Аватары-цветки', 'Вместо кругов — мягкая форма', sw(LS.g('golda_flower', '0') === '1'), 'flower')}
       </div>
       <div class="sec"><h4>Чаты</h4>
         ${row('enter', '#3390ec', 'Enter отправляет', 'Выкл — Enter переносит строку, Ctrl+Enter отправляет', sw(LS.g('golda_enter', '1') === '1'), 'enter')}
@@ -182,6 +184,7 @@
     buildSet(); S.classList.add('open');
   }
   function closeSet() { S && S.classList.remove('open'); }
+  window.GoldaSettings = { open: () => openSet() };
   function togglePref(id, key) { const t = Q(id); t && t.click(); const pr = typeof PREFS !== 'undefined' ? PREFS : {}; const e = S.querySelector('[data-id="' + (key) + '"] .sw'); e && e.classList.toggle('on', !!pr[({ 'n-sound': 'sound', 'n-vib': 'vibrate', 'n-prev': 'preview' })[key]]); }
   function wireSet() {
     S.addEventListener('click', e => {
@@ -208,6 +211,8 @@
         case 'wallet': closeSet(); call(window.GAMES_HUB); break;
         case 'n-sound': togglePref('#toggleSound', id); break; case 'n-vib': togglePref('#toggleVibrate', id); break; case 'n-prev': togglePref('#togglePreview', id); break;
         case 'n-perm': call(window.requestNotifPermission); setTimeout(buildSet, 1500); break;
+        case 'compact': { const on = LS.g('golda_compact', '0') === '1'; LS.s('golda_compact', on ? '0' : '1'); rw.querySelector('.sw').classList.toggle('on', !on); window.GoldaM3 && GoldaM3.apply(); break; }
+        case 'flower': { const on = LS.g('golda_flower', '0') === '1'; LS.s('golda_flower', on ? '0' : '1'); rw.querySelector('.sw').classList.toggle('on', !on); window.GoldaM3 && GoldaM3.apply(); break; }
         case 'motion': { const on = LS.g('golda_motion', 'on') === 'on'; LS.s('golda_motion', on ? 'off' : 'on'); rw.querySelector('.sw').classList.toggle('on', !on); applyLook(); break; }
         case 'enter': { const on = LS.g('golda_enter', '1') === '1'; LS.s('golda_enter', on ? '0' : '1'); rw.querySelector('.sw').classList.toggle('on', !on); break; }
         case 'install': clickQ('#settingsInstall'); break;
