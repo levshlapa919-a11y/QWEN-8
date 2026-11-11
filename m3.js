@@ -67,7 +67,7 @@
       else if (k === 'set') { setOn('set'); G(() => GoldaSettings.open()); }
       else if (k === 'search') { setOn('chats'); G(() => GoldaSettings.close()); const si = Q('#searchInput'); si && (si.scrollIntoView({ block: 'center' }), si.focus()); }
     };
-    setInterval(() => { if (!G(() => document.querySelector('.overlay.open')) && !Q('#clSet.open')) setOn('chats'); }, 800);
+    setInterval(() => { if (!G(() => document.querySelector('.overlay.open')) && !Q('#clSet.open') && !Q('#s2.open')) setOn('chats'); }, 800);
   }
   function vis() { const n = Q('#m3Nav'); if (!n) return; const open = Q('.app.chat-open'); n.classList.toggle('off', !!open); document.body.classList.toggle('m3-nav', !open); }
 
