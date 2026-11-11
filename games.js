@@ -12,6 +12,9 @@
     { id: 'wheel', ico: '🎡', name: 'Колесо', d: 'Множители до ×4' },
     { id: 'rps', ico: '✊', name: 'Камень-ножницы-бумага', d: 'Победа ×1.9, ничья — возврат' },
     { id: 'slots', ico: '🎰', name: 'Слоты', d: 'Три одинаковых — ×18' },
+    { id: 'g2048', ico: '🔢', name: '2048', d: 'Головоломка · таблица рекордов' },
+    { id: 'snake', ico: '🐍', name: 'Змейка', d: 'Собирай яблоки · рекорды' },
+    { id: 'tap', ico: '🎯', name: 'Скорость', d: '20 секунд на реакцию · рекорды' },
   ];
   async function refBal() {
     try { const r = await sb.from('gold_wallets').select('balance_t').eq('user_id', ME.id).maybeSingle(); bal = (r.data && r.data.balance_t) || '0'; } catch (e) { }
@@ -121,6 +124,7 @@
       };
     },
   };
+  ['g2048', 'snake', 'tap'].forEach(k => { V[k] = el => window.ARCADE.mount(k, el); });
   function hub() {
     if (!ready() || !window.F2) return;
     if (M) M.close();
