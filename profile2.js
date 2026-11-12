@@ -19,10 +19,8 @@
     const e = im.dataset.e; if (im.dataset.t === '0' && /fe0f/.test(im.src)) { im.dataset.t = '1'; im.src = im.src.replace(/_fe0f/g, ''); return; }
     const sp = document.createElement('span'); sp.className = 'ae-fb'; sp.textContent = e; im.replaceWith(sp);
   }, true);
-  const gi = g => g.image_url ? `<img class="ae gi" alt="${E(g.name)}" src="${E(g.image_url)}" loading="lazy">` : (g.kind === 'nft' && window.giftSVG && window.giftSVG(g.name)) || ae(g.emoji);
-  /* красивый фон подарка: свечение + узор из самой иконки (как у NFT) */
-  const pat = em => { const t = `<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><g font-size='17' text-anchor='middle' opacity='.2'><text x='16' y='22'>${em}</text><text x='48' y='54'>${em}</text></g><g fill='white' opacity='.35'><circle cx='50' cy='14' r='1.4'/><circle cx='12' cy='50' r='1.4'/></g></svg>`; return "url('data:image/svg+xml," + encodeURIComponent(t).replace(/'/g, '%27') + "')"; };
-  const bgOf = g => `radial-gradient(circle at 50% 36%,rgba(255,255,255,.42),rgba(255,255,255,0) 58%),${pat(g.emoji)},linear-gradient(160deg,${g.bg1},${g.bg2})`;
+  const gi = g => g.image_url ? `<img class="ae gi" alt="${E(g.name)}" src="${E(g.image_url)}" loading="lazy">` : (window.GoldaArt ? window.GoldaArt.svg(g) : '');
+  const bgOf = g => `radial-gradient(circle at 50% 42%,rgba(255,255,255,.12),rgba(255,255,255,0) 64%),linear-gradient(165deg,${g.bg1},${g.bg2})`;
   const say = (t, k) => { try { toast(t, k); } catch (e) { } };
 
   /* ---------- подарки: карточки ---------- */
@@ -35,7 +33,7 @@
     const { data, error } = await sb.from('user_gifts').select('id,serial,msg,anon,hidden,created_at,from_id,owner_id,gifts(name,emoji,kind,supply,rarity,bg1,bg2,price,image_url)').eq('owner_id', uid).order('created_at', { ascending: false });
     if (error || !data) { box.innerHTML = '<div class="gf-empty">Не удалось загрузить</div>'; return; }
     const list = uid === meId() ? data.slice() : data.filter(x => !x.hidden); box._d = list; if (cnt) cnt.textContent = list.length ? list.length : '';
-    box.innerHTML = list.length ? list.map(giftCard).join('') : '<div class="gf-empty">Подарков пока нет 🎁</div>';
+    box.innerHTML = list.length ? list.map(giftCard).join('') : '<div class="gf-empty">Подарков пока нет</div>';
   }
   const who = id => (typeof PROFILES !== 'undefined' && PROFILES[id]) || (typeof USERS !== 'undefined' && USERS.find(u => u.id === id)) || null;
   const dt = d => new Date(d).toLocaleString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }).replace(',', ' в');
@@ -75,9 +73,9 @@
   const _pm = window.parseMedia, _mh = window.mediaHTML, _pv = window.previewOf, GC = {};
   window.parseMedia = function (c) { const m = String(c).match(/^\[\[gift\|([0-9a-f-]{36})\]\]([\s\S]*)$/); return m ? { kind: 'gift', id: m[1], cap: '' } : _pm(c); };
   function giftMsgBody(ug) {
-    if (!ug) return '<div class="gm-load">🎁 Подарок…</div>';
+    if (!ug) return '<div class="gm-load">Подарок…</div>';
     const g = ug.gifts, to = who(ug.owner_id), from = who(ug.from_id);
-    return `<div class="gm r-${E(g.rarity)}" style="background:${bgOf(g)}"><div class="gm-e">${gi(g)}</div><div class="gm-i"><div class="gm-h">🎁 ${E(from ? (from.display_name || from.username) : '')} → ${E(to ? (to.display_name || to.username) : '')}</div><div class="gm-n">${E(g.name)}</div><div class="gm-s">${ug.serial ? `NFT #${ug.serial}${g.supply ? ' из ' + g.supply : ''} · ` : ''}💎 ${fmt(g.price)}</div>${ug.msg ? `<div class="gm-t">${E(ug.msg)}</div>` : ''}</div></div>`;
+    return `<div class="gm r-${E(g.rarity)}" style="background:${bgOf(g)}"><div class="gm-e">${gi(g)}</div><div class="gm-i"><div class="gm-h">Подарок · ${E(from ? (from.display_name || from.username) : '')} → ${E(to ? (to.display_name || to.username) : '')}</div><div class="gm-n">${E(g.name)}</div><div class="gm-s">${ug.serial ? `NFT #${ug.serial}${g.supply ? ' из ' + g.supply : ''} · ` : ''}💎 ${fmt(g.price)}</div>${ug.msg ? `<div class="gm-t">${E(ug.msg)}</div>` : ''}</div></div>`;
   }
   window.mediaHTML = function (md) { if (md && md.kind === 'gift') return `<div class="gift-msg" data-id="${E(md.id)}">${giftMsgBody(GC[md.id])}</div>`; return _mh(md); };
   window.previewOf = function (lm, chat) { const md = window.parseMedia(lm.content); if (md && md.kind === 'gift') return (lm.sender_id === meId() ? 'Вы: ' : '') + '🎁 Подарок'; return _pv(lm, chat); };
@@ -149,7 +147,7 @@
     const ov = $('#userOverlay'); if (!ov || ov.dataset.tg) return; ov.dataset.tg = 1; ov.classList.add('tg-prof');
     const modal = ov.querySelector('.modal'), about = $('#uAbout'), lbl = about && about.previousElementSibling;
     const act = document.createElement('div'); act.id = 'uActions'; act.className = 'tg-act';
-    act.innerHTML = `<button type="button" data-a="write"><i>✉</i><span>Написать</span></button><button type="button" data-a="call"><i>📞</i><span>Звонок</span></button><button type="button" data-a="video"><i>🎥</i><span>Видео</span></button><button type="button" data-a="gift"><i>🎁</i><span>Подарить</span></button>`;
+    act.innerHTML = `<button type="button" data-a="write"><i><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v14H4z"/><path d="M4 7l8 6 8-6"/></svg></i><span>Написать</span></button><button type="button" data-a="call"><i><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 4h3.5l1.5 4-2 1.500a11 11 0 0 0 5 5l1.500-2 4 1.500v3.500a2 2 0 0 1-2 2A15 15 0 0 1 3.500 6a2 2 0 0 1 2-2z"/></svg></i><span>Звонок</span></button><button type="button" data-a="video"><i><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="12" height="12" rx="2"/><path d="M15 10l6-3v10l-6-3"/></svg></i><span>Видео</span></button><button type="button" data-a="gift"><i><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.500" y="8" width="17" height="12" rx="1.500"/><path d="M12 8v12M3.500 12.500h17M12 8c-2-3.500-5.500-3-5.500-.8C6.500 8.500 9 8 12 8zm0 0c2-3.500 5.500-3 5.500-.8C17.500 8.500 15 8 12 8z"/></svg></i><span>Подарить</span></button><button type="button" data-a="tix"><i><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M12 7v11"/></svg></i><span>TIX</span></button>`;
     modal.querySelector('.prof-row').after(act);
     const sec = document.createElement('div'); sec.className = 'tg-sec'; sec.id = 'uGiftSec';
     sec.innerHTML = '<div class="tg-sec-h">🎁 Подарки <span id="uGiftCnt" class="tg-cnt"></span></div><div class="gift-grid" id="uGifts"></div>';
@@ -160,6 +158,7 @@
       const id = lastUser.id;
       if (b.dataset.a === 'write') { ov.classList.remove('open'); await openDirectWith(id); }
       else if (b.dataset.a === 'gift') openShop(id);
+      else if (b.dataset.a === 'tix') { ov.classList.remove('open'); if (window.GoldaMint) window.GoldaMint.send(id); }
       else { ov.classList.remove('open'); await openDirectWith(id); setTimeout(() => { const x = $(b.dataset.a === 'call' ? '#callAudioBtn' : '#callVideoBtn'); if (x) x.click(); }, 500); }
     };
   }

@@ -357,7 +357,7 @@
         body.innerHTML = `<button class="s2r big" data-id="edit" style="margin-bottom:10px"><span class="s2ri" style="background:none;width:64px;height:64px">${avatarHTML(m, 'm')}</span><span class="s2rt"><b>${E(m.display_name || m.username)}</b><small>@${E(m.username || '')}</small></span></button>
           <div class="s2lbl">${t('account')}</div>` +
           row({ id: 'privacy', ic: 'shield', t: t('privacy'), s: t('last_seen') + ', ' + t('who_writes').toLowerCase() }) + row({ id: 'devices', ic: 'devices', t: t('devices') }) + row({ id: 'passcode', ic: 'lock', t: t('passcode'), s: t('passcode_s') }) +
-          `<div class="s2lbl">${t('app')}</div>` + row({ id: 'notif', ic: 'bell', t: t('notifications') }) + row({ id: 'look', ic: 'palette', t: t('appearance'), s: t('appearance_s'), wrap: 1 }) + row({ id: 'lang', ic: 'globe', t: t('language'), v: lang() === 'en' ? 'English' : 'Русский' }) +
+          `<div class="s2lbl">TIX и рынок</div>` + row({ id: 'tix', ic: 'wallet', t: 'Кошелёк TIX', s: 'Баланс, обмен, переводы' }) + row({ id: 'market', ic: 'chart', t: 'Рынок NFT', s: 'Покупка и продажа за TIX' }) + row({ id: 'tools', ic: 'cog', t: 'Инструменты', s: 'Напоминания, поиск, заметки, экспорт, тихие часы' }) + `<div class="s2lbl">${t('app')}</div>` + row({ id: 'notif', ic: 'bell', t: t('notifications') }) + row({ id: 'look', ic: 'palette', t: t('appearance'), s: t('appearance_s'), wrap: 1 }) + row({ id: 'lang', ic: 'globe', t: t('language'), v: lang() === 'en' ? 'English' : 'Русский' }) +
           row({ id: 'story', ic: 'brush', t: t('stories') }) + row({ id: 'saved', ic: 'bookmark', t: t('saved') }) + row({ id: 'calls', ic: 'call', t: t('calls') }) + row({ id: 'wallet', ic: 'wallet', t: t('wallet'), s: t('wallet_s') }) + row({ id: 'stats', ic: 'chart', t: t('stats') }) + row({ id: 'share', ic: 'share', t: t('share') }) +
           `<div class="s2lbl">${t('about_app')}</div>` + row({ id: 'apk', ic: 'phone', t: t('get_apk') }) + row({ id: 'cache', ic: 'trash', t: t('clear_cache') }) + (adm ? row({ id: 'admin', ic: 'shield', t: t('admin') }) : '') + row({ id: 'logout', cls: 'dng', ic: 'logout', t: t('logout'), ch: false });
         body.onclick = e => { const r = e.target.closest('[data-id]'); if (r) act(r.dataset.id); };
@@ -372,6 +372,7 @@
       case 'look': return G(() => GoldaSettings.open());
       case 'calls': { closeAll(); const c = QA('.stab').find(b => /звон|call/i.test(b.textContent)); c && c.click(); return; }
       case 'wallet': return G(() => GAMES_HUB());
+      case 'tix': return G(() => window.GoldaMint.wallet()); case 'market': return G(() => window.GoldaMint.market()); case 'tools': return G(() => window.GoldaMint.tools());
       case 'stats': return viaOld('stats'); case 'share': return G(() => LIVE.shareProfile()); case 'passcode': closeAll(); return G(() => window.F2.pass());
       case 'apk': return window.open('https://github.com/levshlapa919-a11y/QWEN-8/releases/download/apk-latest/golda.apk', '_blank');
       case 'cache': if (confirm('Очистить кэш и перезагрузить приложение?')) (async () => { try { const rs = await navigator.serviceWorker.getRegistrations(); for (const r of rs) await r.unregister(); const ks = await caches.keys(); for (const k of ks) await caches.delete(k); } catch (er) { } location.reload(); })(); return;
@@ -484,5 +485,5 @@
   const mo = new MutationObserver(() => { encCard(); mo.takeRecords(); });
   const bindEnc = () => { const b = Q('#messages'); if (b && !b.__s2) { b.__s2 = 1; mo.observe(b, { childList: true }); encCard(); } };
   setInterval(bindEnc, 900);
-  window.GoldaPages = { settings: settingsPage, profile: profilePage, privacy: privacyPage, devices: devicesPage, language: languagePage, stories: storiesPage, close: closeAll };
+  window.GoldaPages = { open, row, sheet, choose, ic, E, t, settings: settingsPage, profile: profilePage, privacy: privacyPage, devices: devicesPage, language: languagePage, stories: storiesPage, close: closeAll };
 })();

@@ -7,7 +7,7 @@
 #userOverlay.tg-prof .prof-row>div:last-child{display:flex;flex-direction:column;align-items:center}
 #userOverlay.tg-prof #uAva .ava,#userOverlay.tg-prof #uAva .ava.l{width:116px!important;height:116px!important;font-size:46px!important}
 #userOverlay.tg-prof #uName{font-size:24px!important;font-weight:800}
-.tg-act{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:4px 14px 14px}
+.tg-act{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding:4px 14px 14px}
 .tg-act button{border:0;border-radius:18px;background:var(--p2);color:var(--tx);padding:12px 4px 10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;font:700 12px var(--font)}
 .tg-act i{font-style:normal;font-size:21px;line-height:1}
 .tg-act button:active{transform:scale(.95)}

@@ -7,8 +7,8 @@
   const ready = () => typeof ME !== 'undefined' && ME && ME.id;
   const rpc = async (n, a) => { try { const r = await sb.rpc(n, a || {}); return r.error ? { error: r.error } : { data: r.data }; } catch (e) { return { error: e }; } };
   const fmt = v => { try { const s = String(v == null ? '0' : v).split('.')[0]; if (/^-?inf/i.test(s)) return '∞'; return s.replace(/\B(?=(\d{3})+(?!\d))/g, ' '); } catch (e) { return String(v); } };
-  const RAR = { common: '⚪', rare: '🔵', epic: '🟣', legendary: '🟠', mythic: '🔴' };
-  const gimg = g => g.image ? `<img src="${E(g.image)}" alt="">` : `<span>${E(g.emoji || '🎁')}</span>`;
+  const RAR = { common: '', uncommon: '', rare: '· редкий', epic: '· эпический', legendary: '· легендарный', mythic: '· мифический' };
+  const gimg = g => g.image ? `<img src="${E(g.image)}" alt="">` : (window.GoldaArt ? `<span class="g3-art">${window.GoldaArt.svg(g)}</span>` : '<span></span>');
   const gcell = (g, extra) => `<div class="g3-cell ${g.locked ? 'lock' : ''}" data-id="${E(g.id)}">${gimg(g)}<b>${E(g.name)}</b><small>${g.serial ? '#' + g.serial : ''} ${RAR[g.rarity] || ''}${g.locked ? ' 🔒' : ''}</small>${extra || ''}</div>`;
   const M = (t, b, mount) => F2.modal(t, b, mount);
 
