@@ -19,7 +19,7 @@
     language: 'Язык', now: 'Сейчас', find_lang: 'Найти язык', create_loc: 'Создать локализацию', create_loc_s: 'Свои надписи для основных экранов', your_locs: 'Ваши локализации', none_yet: 'Пока ни одной', main_langs: 'Основные языки', base: 'Базовый', partial: 'Основные экраны', soon: 'Скоро',
     edit_profile: 'Редактирование профиля', pick_photo: 'Выбрать фото', name_about: 'Имя и о себе', name: 'Имя', username: 'Имя пользователя', uname_hint: 'Латинские буквы, цифры и подчёркивание', other: 'Остальное', email: 'Почта', birthday: 'День рождения', gender: 'Пол', not_set: 'Не указан', male: 'Мужской', female: 'Женский', save: 'Сохранить',
     notifications: 'Уведомления', sound: 'Звук', vibration: 'Вибрация', preview: 'Текст в уведомлении', allow_push: 'Разрешить уведомления', appearance: 'Оформление и чат', appearance_s: 'Тема, цвет, обои, шрифт, форма аватара',
-    wallet: 'Кошелёк и игры', wallet_s: 'gold, праймики, магазин, игры', stats: 'Моя статистика', share: 'Поделиться профилем', passcode: 'Код-пароль', passcode_s: 'Защита и скрытые чаты', calls: 'Звонки', logout: 'Выйти', admin: 'Админ-панель', about_app: 'О приложении', clear_cache: 'Очистить кэш', get_apk: 'Скачать приложение для Android',
+    wallet: 'Кошелёк и игры', wallet_s: 'gold, TIX, магазин, игры', stats: 'Моя статистика', share: 'Поделиться профилем', passcode: 'Код-пароль', passcode_s: 'Защита и скрытые чаты', calls: 'Звонки', logout: 'Выйти', admin: 'Админ-панель', about_app: 'О приложении', clear_cache: 'Очистить кэш', get_apk: 'Скачать приложение для Android',
     account: 'Аккаунт', app: 'Приложение', security: 'Безопасность', copied: 'Ссылка скопирована', saved_ok: 'Сохранено', today: 'Сегодня', enc: 'Сообщения хранятся зашифрованными, и читают их только участники этого чата.', notes: 'заметки для себя', cancel: 'Отмена', reset: 'Сбросить', apply: 'Применить'
   };
   const EN = {
@@ -31,7 +31,7 @@
     language: 'Language', now: 'Now', find_lang: 'Find a language', create_loc: 'Create localization', create_loc_s: 'Your own labels for the main screens', your_locs: 'Your localizations', none_yet: 'None yet', main_langs: 'Main languages', base: 'Base', partial: 'Main screens', soon: 'Soon',
     edit_profile: 'Edit profile', pick_photo: 'Choose photo', name_about: 'Name and about', name: 'Name', username: 'Username', uname_hint: 'Latin letters, digits and underscore', other: 'Other', email: 'Email', birthday: 'Birthday', gender: 'Gender', not_set: 'Not set', male: 'Male', female: 'Female', save: 'Save',
     notifications: 'Notifications', sound: 'Sound', vibration: 'Vibration', preview: 'Message text in notification', allow_push: 'Allow notifications', appearance: 'Appearance and chat', appearance_s: 'Theme, color, wallpaper, font, avatar shape',
-    wallet: 'Wallet and games', wallet_s: 'gold, primes, shop, games', stats: 'My statistics', share: 'Share profile', passcode: 'Passcode', passcode_s: 'Protection and hidden chats', calls: 'Calls', logout: 'Log out', admin: 'Admin panel', about_app: 'About', clear_cache: 'Clear cache', get_apk: 'Get the Android app',
+    wallet: 'Wallet and games', wallet_s: 'gold, TIX, shop, games', stats: 'My statistics', share: 'Share profile', passcode: 'Passcode', passcode_s: 'Protection and hidden chats', calls: 'Calls', logout: 'Log out', admin: 'Admin panel', about_app: 'About', clear_cache: 'Clear cache', get_apk: 'Get the Android app',
     account: 'Account', app: 'App', security: 'Security', copied: 'Link copied', saved_ok: 'Saved', today: 'Today', enc: 'Messages are stored encrypted and only the members of this chat can read them.', notes: 'notes to self', cancel: 'Cancel', reset: 'Reset', apply: 'Apply'
   };
   const lang = () => LS.g('golda_lang', 'ru');
@@ -139,9 +139,10 @@
           Q('#s2ph').innerHTML = `<div class="s2av">${avatarHTML(m, 'l')}</div><h2>${E(m.display_name || m.username)}</h2><p>@${E(m.username || '')}${m.about ? ' · ' + E(m.about) : ''}</p>`;
         }; draw();
         body.innerHTML = row({ id: 'edit', ic: 'user', t: t('edit_profile'), s: t('name_about') }) +
-          row({ id: 'wallet', ic: 'wallet', t: t('wallet'), s: t('wallet_s') }) + row({ id: 'stats', ic: 'chart', t: t('stats') }) +
-          row({ id: 'story', ic: 'brush', t: t('stories'), s: t('expires') }) + row({ id: 'saved', ic: 'bookmark', t: t('saved'), s: t('notes') }) + row({ id: 'share', ic: 'share', t: t('share') });
+          row({ id: 'tix', ic: 'wallet', t: 'Кошелёк TIX', s: 'Баланс, обмен gold, переводы' }) + row({ id: 'market', ic: 'chart', t: 'Рынок NFT', s: 'Купить и продать за TIX' }) + row({ id: 'wallet', ic: 'wallet', t: t('wallet'), s: t('wallet_s') }) + row({ id: 'stats', ic: 'chart', t: t('stats') }) +
+          row({ id: 'story', ic: 'brush', t: t('stories'), s: t('expires') }) + row({ id: 'saved', ic: 'bookmark', t: t('saved'), s: t('notes') }) + row({ id: 'share', ic: 'share', t: t('share') }) + '<div class="s2lbl">Подарки и NFT</div><div id="s2gifts"></div>';
         body.onclick = e => { const r = e.target.closest('[data-id]'); if (r) act(r.dataset.id); };
+        G(() => window.GoldaMint.gifts(Q('#s2gifts', body), ME.id));
       }
     });
   }

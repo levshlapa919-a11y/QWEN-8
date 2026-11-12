@@ -5,15 +5,17 @@
   const G = f => { try { return f(); } catch (e) { return undefined; } };
   const LS = { g: (k, d) => { try { const v = localStorage.getItem(k); return v == null ? d : v; } catch (e) { return d; } }, s: (k, v) => { try { localStorage.setItem(k, v); } catch (e) { } } };
   const E = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const fm = v => { const s = String(v == null ? 0 : v).split('.')[0]; return /^-?\d+$/.test(s) ? s.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : '0'; };
+  const fm = v => { const s = String(v == null ? 0 : v).split('.')[0]; if (/^-?inf/i.test(s)) return '∞'; return /^-?\d+$/.test(s) ? s.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : '0'; };
   const num = v => Number(v) || 0;
   const tst = (m, k) => G(() => toast(m, k));
   const ME_ = () => G(() => ME);
   const PG = () => window.GoldaPages;
   const rpc = async (n, a) => { try { const r = await sb.rpc(n, a || {}); return r.error ? { error: r.error } : { data: r.data }; } catch (e) { return { error: e }; } };
   const RAR = { common: 'Обычный', uncommon: 'Необычный', rare: 'Редкий', epic: 'Эпический', legendary: 'Легендарный' };
-  const ERR = { no_tix: 'Недостаточно TIX', no_primes: 'Недостаточно праймиков', bad_amount: 'Введите корректную сумму', bad_user: 'Получатель недоступен', gone: 'Лот уже недоступен', own: 'Это ваш собственный лот', locked: 'NFT занят: обмен или аукцион', bad_price: 'Укажите корректную цену', not_nft: 'Это не NFT', not_owner: 'NFT вам не принадлежит', bad_params: 'Проверьте текст и время', too_many: 'Не больше 50 активных напоминаний', not_found: 'Не найдено' };
+  const ERR = { no_tix: 'Недостаточно TIX', no_gold: 'Недостаточно gold', forbidden: 'Доступно только создателю', bad_amount: 'Введите корректную сумму', bad_user: 'Получатель недоступен', gone: 'Лот уже недоступен', own: 'Это ваш собственный лот', locked: 'NFT занят: обмен или аукцион', bad_price: 'Укажите корректную цену', not_nft: 'Это не NFT', not_owner: 'NFT вам не принадлежит', bad_params: 'Проверьте текст и время', too_many: 'Не больше 50 активных напоминаний', not_found: 'Не найдено' };
   const eMsg = r => (r && r.data && ERR[r.data.error]) || 'Не получилось, попробуйте ещё раз';
+  const OWNERS = ['03d24548-56f1-4329-a7f0-466c18b8a8c9', '6c02c4d5-c674-432d-9a5c-86e31c465790'];
+  const OWN = () => OWNERS.includes(G(() => ME.id));
   const BOTID = /^00000000-0000-4000-8000-/;
 
   /* ================= Графика NFT: гильошир + геометрическая эмблема ================= */
@@ -33,13 +35,59 @@
     else { for (let i = 0; i < m; i++) o += `<ellipse cx="50" cy="40.500" rx="5.200" ry="10.500" transform="rotate(${f1(i * 360 / m)} 50 50)"/>`; o += '<circle cx="50" cy="50" r="3"/><circle cx="50" cy="50" r="21"/>'; }
     return o;
   }
+
+  /* рисунки предметов: каждый подарок и NFT изображает то, что написано в названии */
+  const IC = {
+    'вымпел': '<path d="M35 72V29"/><path d="M35 31L69 42L35 54Z"/><path d="M35 38L55 42L35 47"/>',
+    'жетон': '<circle cx="50" cy="50" r="18"/><circle cx="50" cy="50" r="13"/><path d="M50 41L59 50L50 59L41 50Z"/>',
+    'кубок': '<path d="M38 33h24v13a12 12 0 0 1-24 0Z"/><path d="M38 37h-5a5 7 0 0 0 5 9M62 37h5a5 7 0 0 1-5 9"/><path d="M50 58v8M41 69h18"/>',
+    'медальон': '<path d="M41 29l9 15 9-15"/><circle cx="50" cy="57" r="14"/><circle cx="50" cy="57" r="8"/>',
+    'монограмма': '<circle cx="50" cy="50" r="20"/><path d="M41 61V39l9 15 9-15v22"/>',
+    'ориентир': '<path d="M50 71C38 57 35 50 35 44a15 15 0 0 1 30 0c0 6-3 13-15 27Z"/><circle cx="50" cy="44" r="5.500"/>',
+    'перстень': '<circle cx="50" cy="59" r="13"/><path d="M43 42l7-9 7 9-7 6Z"/>',
+    'печать': '<circle cx="50" cy="50" r="19"/><circle cx="50" cy="50" r="14"/><path d="M50 39l3.500 8 8.500.700-6.500 5.600 2 8.400-7.500-4.500-7.500 4.500 2-8.400-6.500-5.600 8.500-.700Z"/>',
+    'свеча': '<path d="M44 46h12v22H44Z"/><path d="M50 30c-5 7-4 12 0 12s5-5 0-12Z"/><path d="M50 42v4M39 68h22"/>',
+    'талисман': '<path d="M50 31l17 10v18L50 69 33 59V41Z"/><path d="M38 50c6-8 18-8 24 0-6 8-18 8-24 0Z"/><circle cx="50" cy="50" r="4"/>',
+    'фонарь': '<path d="M44 34a6 6 0 0 1 12 0"/><path d="M42 36h16l3 8v16l-3 8H42l-3-8V44Z"/><path d="M50 44c-4 5-3 9 0 9s4-4 0-9Z"/>',
+    'хронограф': '<rect x="46" y="30" width="8" height="5"/><circle cx="50" cy="53" r="17"/><path d="M50 53V42M50 53l7 4M50 38v2M50 66v-2M35 53h2M65 53h-2"/>',
+    'витраж': '<path d="M37 70V44a13 13 0 0 1 26 0v26Z"/><path d="M50 31v39M37 54h26M37 62h26"/>',
+    'горизонт': '<path d="M30 60h40M37 60a13 13 0 0 1 26 0M33 66h34M38 72h24M50 33v7M37 41l4 4M63 41l-4 4"/>',
+    'грань': '<path d="M50 31l17 10v19L50 70 33 60V41Z"/><path d="M33 41l17 10 17-10M50 51v19"/>',
+    'диадема': '<path d="M31 63h38M31 63l4-22 9 12 6-17 6 17 9-12 4 22"/><circle cx="50" cy="35" r="1.800"/><circle cx="35" cy="41" r="1.800"/><circle cx="65" cy="41" r="1.800"/>',
+    'квинтэссенция': '<circle cx="50" cy="50" r="19"/><path d="M50 31l10.600 32.600L32.900 43.400h34.200L39.400 63.600Z"/>',
+    'компас': '<circle cx="50" cy="50" r="19"/><path d="M50 34l6 16-6 16-6-16Z"/><path d="M44 50h12"/><path d="M50 29v3M50 68v3M29 50h3M68 50h3"/>',
+    'левиафан': '<path d="M31 55c0-12 16-18 29-11l9-7-2 13c0 10-12 16-23 14-8-1-13-4-13-9Z"/><circle cx="57" cy="48" r="1.400"/><path d="M33 66q7-5 14 0t14 0 9 0"/>',
+    'маяк': '<path d="M44 70l2-31h8l2 31Z"/><path d="M46 39v-6h8v6M50 28v5M37 35l9 3M63 35l-9 3M45 52h10M44 61h12"/>',
+    'монолит': '<path d="M43 70V30h14v40Z"/><path d="M43 38h14M36 70h28"/>',
+    'нексус': '<circle cx="50" cy="34" r="4"/><circle cx="33" cy="62" r="4"/><circle cx="67" cy="62" r="4"/><circle cx="50" cy="53" r="3"/><path d="M50 38v12M36 60l11-6M64 60L53 54M37 62h26"/>',
+    'обелиск': '<path d="M44 71l2-32 4-9 4 9 2 32Z"/><path d="M40 71h20M46 48h8"/>',
+    'орбита': '<ellipse cx="50" cy="50" rx="21" ry="8" transform="rotate(-28 50 50)"/><ellipse cx="50" cy="50" rx="21" ry="8" transform="rotate(28 50 50)"/><circle cx="50" cy="50" r="5"/>',
+    'ореол': '<ellipse cx="50" cy="35" rx="14" ry="5"/><circle cx="50" cy="52" r="7"/><path d="M37 70a13 13 0 0 1 26 0"/>',
+    'пламя': '<path d="M50 30c8 12 17 18 13 30-2 6-7 9-13 9s-11-4-12-10c-1-7 6-11 8-19 2 4 4 4 4-10Z"/><path d="M50 69c-4 0-7-3-6-7 1-3 4-5 6-9 2 4 6 6 6 10 0 4-2 6-6 6Z"/>',
+    'призма': '<path d="M50 31l19 36H31Z"/><path d="M24 53l17 2M59 52l17-9M61 57l15-1M62 62l14 8"/>',
+    'реликварий': '<path d="M35 47l15-13 15 13v22H35Z"/><path d="M35 47h30M44 55h12v8H44ZM50 27v6M47 30h6"/>',
+    'сигил': '<circle cx="50" cy="50" r="19"/><path d="M50 31v38M34 41l32 18M66 41L34 59"/>',
+    'сосуд': '<path d="M42 33h16M44 33v7c-8 4-10 17-4 25 2 3 6 4 10 4s8-1 10-4c6-8 4-21-4-25v-7"/><path d="M40 52h20"/>',
+    'страж': '<path d="M50 30l17 6v16c0 11-8 17-17 19-9-2-17-8-17-19V36Z"/><path d="M50 38v26M42 47h16"/>',
+    'тень': '<circle cx="50" cy="50" r="19"/><path d="M50 31a19 19 0 0 0 0 38 12 19 0 0 1 0-38Z"/>',
+    'тессера': '<path d="M50 31l19 19-19 19-19-19Z"/><path d="M50 41l9 9-9 9-9-9Z"/><path d="M50 31v10M69 50H59M50 69V59M31 50h10"/>',
+    'хронометр': '<circle cx="50" cy="50" r="19"/><path d="M50 37v13l8 6M50 31v3M69 50h-3M50 69v-3M31 50h3"/><path d="M46 28h8"/>',
+    'шифр': '<circle cx="50" cy="50" r="19"/><circle cx="50" cy="50" r="11"/><path d="M50 31v8M50 61v8M31 50h8M61 50h8M37 37l6 6M63 37l-6 6M37 63l6-6M63 63l-6-6"/><circle cx="50" cy="50" r="2"/>',
+    'шлем': '<path d="M34 58c0-15 8-24 16-24s16 9 16 24v8H34Z"/><path d="M34 58h32M44 58v8M56 58v8M42 47h16"/>',
+    'шпиль': '<path d="M50 28l6 40H44Z"/><path d="M38 68h24M44 52h12M46 41h8"/>',
+    'эгида': '<circle cx="50" cy="50" r="19"/><circle cx="50" cy="50" r="6"/><path d="M50 31v13M50 56v13M31 50h13M56 50h13"/>',
+    'эхо': '<circle cx="42" cy="50" r="3"/><path d="M50 41a13 13 0 0 1 0 18M57 34a22 22 0 0 1 0 32M64 28a31 31 0 0 1 0 44"/>',
+    'якорь': '<circle cx="50" cy="33" r="4"/><path d="M50 37v32M42 45h16M34 54c2 11 8 16 16 16s14-5 16-16M30 58l4-4 4 4M62 58l4-4 4 4"/>',
+    'golda': '<circle cx="50" cy="50" r="19"/><path d="M61 42a12 12 0 1 0 0 16v-6H52"/>'
+  };
+  const icon = nm => IC[String(nm || '').split(/\s+/)[0].toLowerCase()] || '';
   function svg(g) {
     g = g || {}; const nm = String(g.name || ''), rar = g.rarity || 'common', key = nm + '|' + rar; if (ART[key]) return ART[key];
     const w = nm.split(/\s+/), a = h32(w[0] || 'x'), b = h32(w[1] || w[0] || 'y'), col = RC[rar] || RC.common, n = 5 + b % 8, ph = (b >>> 5) % 6;
     let o = `<circle cx="50" cy="50" r="46.500" stroke-width=".55" opacity=".7"/><circle cx="50" cy="50" r="44.800" stroke-width=".25" opacity=".5"/>`;
     if (rar === 'legendary') o += '<circle cx="50" cy="50" r="48.600" stroke-width=".35" opacity=".8"/>'; else if (rar === 'epic') o += '<circle cx="50" cy="50" r="48.400" stroke-width=".3" stroke-dasharray="1 1.800" opacity=".8"/>';
-    o += `<g stroke-width=".3" opacity=".62">${rosette(35, 4, n, ph, 150)}${rosette(35, 4, n, ph + Math.PI / 2, 150)}${rosette(27, 3, n + 2, ph, 130)}${rosette(27, 3, n + 2, ph + Math.PI / 2, 130)}</g>`;
-    o += `<g stroke-width=".7" style="color:${col}">${emblem(a)}</g>`;
+    o += `<g stroke-width=".3" opacity=".42">${rosette(35, 4, n, ph, 150)}${rosette(35, 4, n, ph + Math.PI / 2, 150)}${rosette(27, 3, n + 2, ph, 130)}${rosette(27, 3, n + 2, ph + Math.PI / 2, 130)}</g>`;
+    const ico = icon(nm); o += `<g stroke-width="${ico ? '.95' : '.7'}" style="color:${col}">${ico || emblem(a)}</g>`;
     return (ART[key] = `<svg class="ga" viewBox="0 0 100 100" fill="none" stroke="${col}" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true">${o}</svg>`);
   }
   window.GoldaArt = { svg, h32 };
@@ -52,7 +100,7 @@
   const SUB = { '\u2705': '\u2714', '\u274C': '\u2715', '\u2757': '', '\u2753': '' };
   const DENY = '.gs-who,.u-name,.uname,.prof-name,.mx-u span,.mx-pk b,.ci-name,.m-name,.chat-title,#chName,#uName,#uAbout,.about-t,.m-text,.rx,.rxc,.ci-prev,.ci-name,.m-name,textarea,input,[contenteditable],.stk,.emoji-grid,.emo-grid,.emoji-pick,.ep-grid,.ae-fb,.story-text,.rx-burst,.emo-pk,.react-pick,.rpick,.rp-bar,script,style,.bubble>.m-text';
   const ALLOW = 'button,.toast,.xo-title,.xo-top,.gs-t,.gs-k,.gs-hide,.gs-more,.gs-v,.gs-sell,.gs-del,.gs-ow,.sh-tabs,.sh-hint,.sh-sel,.sh-bal,.sg,.gf,.gm,.s2sh,.s2lbl,.mx,.tg-sec-h,.tg-lbl,.menu-i,.gf-empty,.tr-card,.g3,.f2m,.bm-sheet,.tix-card,.yp-big,.side-tabs,.g3-toast,.xo-empty,.settings-label,.s2empty,.empty-note';
-  const ICON = { '\uD83D\uDC8E': 'pmk', '\uD83E\uDE99': 'gmk' };
+  const ICON = {};
   function cleanText(n) {
     const v = n.nodeValue; if (!v || v.length > 600 || !/[^\u0000-\u2000]/.test(v)) return;
     const p = n.parentElement; if (!p || p.closest(DENY) || !p.closest(ALLOW)) return;
@@ -95,7 +143,7 @@
   window.previewOf = function (lm, chat) { const md = window.parseMedia(lm.content); if (md && md.kind === 'tix') return (lm.sender_id === G(() => ME.id) ? 'Вы: ' : '') + 'Перевод ' + fm(md.amt) + ' TIX'; return _pv.apply(this, arguments); };
 
   /* ================= Кошелёк ================= */
-  const REAS = { launch: 'Подарок к запуску', swap_in: 'Обмен праймиков на TIX', swap_out: 'Обмен TIX на праймики', send: 'Перевод', receive: 'Перевод получен', market_buy: 'Покупка на рынке', market_sell: 'Продажа на рынке' };
+  const REAS = { launch: 'Подарок к запуску', welcome: 'Приветственный бонус', swap_in: 'Обмен gold на TIX', exchange: 'Обмен gold на TIX', send: 'Перевод', receive: 'Перевод получен', transfer_in: 'Перевод получен', transfer_out: 'Перевод отправлен', market_buy: 'Покупка на рынке', market_sell: 'Продажа на рынке', gift_buy: 'Покупка подарка', gift_sell: 'Продажа подарка', auction_bid: 'Ставка на аукционе', auction_sale: 'Продажа на аукционе', streak: 'Награда за серию', grant: 'Начисление', owner_grant: 'Начисление от создателя', owner_take: 'Списание создателем', owner_take_prime: 'Списание создателем' };
   const dtf = t => { const d = new Date(t); return d.toLocaleString('ru-RU', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }).replace(',', ''); };
   const ago = t => { const s = (Date.now() - new Date(t)) / 1000; return s < 60 ? 'сейчас' : s < 3600 ? Math.floor(s / 60) + ' мин назад' : s < 86400 ? Math.floor(s / 3600) + ' ч назад' : dtf(t); };
   const bgOf = g => `radial-gradient(circle at 50% 42%,rgba(255,255,255,.12),rgba(255,255,255,0) 64%),linear-gradient(165deg,${g.bg1 || '#3a4a5c'},${g.bg2 || '#141c26'})`;
@@ -108,26 +156,24 @@
         const paint = async () => {
           const r = await rpc('tix_state'); const d = r.data;
           if (!d) { body.innerHTML = '<div class="s2empty">Не удалось загрузить кошелёк</div>'; return; }
-          body.innerHTML = `<div class="mx mx-card"><div class="mx-bg">${svg({ name: 'Основа Кошелёк', rarity: 'legendary' })}</div><div class="mx-l">Баланс</div><div class="mx-b">${fm(d.tix)}<span>TIX</span></div><div class="mx-s">${fm(d.primes)} праймиков · обмен 1:1</div></div>
-            <div class="mx mx-act"><button data-a="swap">Обмен</button><button data-a="send">Перевод</button><button data-a="mkt">Рынок</button></div>
+          body.innerHTML = `<div class="mx mx-card"><div class="mx-bg">${svg({ name: 'Основа Кошелёк', rarity: 'legendary' })}</div><div class="mx-l">Баланс</div><div class="mx-b">${fm(d.tix)}<span>TIX</span></div><div class="mx-s">${fm(d.gold)} gold · курс 1500 gold = 1 TIX</div></div>
+            <div class="mx mx-act"><button data-a="swap">Купить TIX</button><button data-a="send">Перевод</button><button data-a="mkt">Рынок</button></div>${OWN() ? '<div class="mx mx-act one"><button data-a="own">Управление TIX (создатель)</button></div>' : ''}
             <div class="s2lbl">История</div>` + ((d.log || []).length ? d.log.map(x => `<div class="mx mx-lg"><div><b>${E(REAS[x.r] || 'Операция')}</b><small>${E(x.o || '')}${x.o ? ' · ' : ''}${E(dtf(x.t))}</small></div><span class="${num(x.d) < 0 ? 'neg' : 'pos'}">${num(x.d) > 0 ? '+' : ''}${fm(x.d)}</span></div>`).join('') : '<div class="s2empty">Операций пока нет</div>');
-          body.onclick = e => { const b = e.target.closest('[data-a]'); if (!b) return; if (b.dataset.a === 'swap') swapSheet(d, paint); else if (b.dataset.a === 'send') sendSheet(null, paint); else market(); };
+          body.onclick = e => { const b = e.target.closest('[data-a]'); if (!b) return; if (b.dataset.a === 'swap') swapSheet(d, paint); else if (b.dataset.a === 'send') sendSheet(null, paint); else if (b.dataset.a === 'own') ownerTix(null, paint); else market(); };
         };
         await paint();
       }
     });
   }
   function swapSheet(st, done) {
-    let dir = 'buy';
-    sheet(`<h3>Обмен</h3><div class="mx mx-seg"><button data-d="buy" class="on">Праймики в TIX</button><button data-d="sell">TIX в праймики</button></div><input class="s2in" id="mxA" inputmode="numeric" placeholder="Сумма" autocomplete="off"><div class="mx mx-hint" id="mxH"></div><button class="go" id="mxGo">Обменять</button>`, (ov, close) => {
+    sheet(`<h3>Купить TIX за gold</h3><div class="mx mx-hint">Курс: 1500 gold = 1 TIX. Укажите, сколько TIX вы хотите получить.</div><input class="s2in" id="mxA" inputmode="numeric" placeholder="Сколько TIX" autocomplete="off"><div class="mx mx-hint" id="mxH"></div><button class="go" id="mxGo">Обменять</button>`, (ov, close) => {
       const a = Q('#mxA', ov), h = Q('#mxH', ov); digits(a);
-      const upd = () => { const v = num(a.value); if (dir === 'buy') h.textContent = `Доступно ${fm(st.primes)} праймиков. Вы получите ${fm(v)} TIX.`; else h.textContent = `Доступно ${fm(st.tix)} TIX. Комиссия 5%. Вы получите ${fm(Math.floor(v * 0.95))} праймиков.`; };
-      ov.addEventListener('click', e => { const b = e.target.closest('[data-d]'); if (!b) return; dir = b.dataset.d; QA('[data-d]', ov).forEach(x => x.classList.toggle('on', x === b)); upd(); });
-      a.oninput = () => { a.value = a.value.replace(/\D/g, '').slice(0, 12); upd(); }; upd();
+      const upd = () => { const v = num(a.value); h.textContent = `К списанию: ${fm(v * 1500)} gold. Доступно: ${fm(st.gold)} gold.`; };
+      a.oninput = () => { a.value = a.value.replace(/\D/g, '').slice(0, 9); upd(); }; upd();
       Q('#mxGo', ov).onclick = async () => {
-        const v = num(a.value); if (v < 1) return tst('Введите сумму', 'red'); const b = Q('#mxGo', ov); b.disabled = true;
-        const r = await rpc('tix_swap', { p_dir: dir, p_amount: v }); b.disabled = false;
-        if (r.data && r.data.ok) { tst('Обмен выполнен'); close(); done && done(); } else tst(eMsg(r), 'red');
+        const v = num(a.value); if (v < 1) return tst('Введите количество', 'red'); const b = Q('#mxGo', ov); b.disabled = true;
+        const r = await rpc('tix_swap', { p_dir: 'buy', p_amount: v }); b.disabled = false;
+        if (r.data && r.data.ok) { tst('Получено ' + fm(v) + ' TIX'); close(); done && done(); } else tst(r.data && r.data.error === 'no_gold' ? 'Не хватает gold: нужно ' + fm(v * 1500) : eMsg(r), 'red');
       };
     });
   }
@@ -207,6 +253,47 @@
         go.disabled = true; const r = u.listing ? await rpc('market_cancel', { p_id: u.listing }) : await rpc('market_list', { p_ug: u.ug, p_price: num(p.value) }); go.disabled = false;
         if (r.data && r.data.ok) { tst(u.listing ? 'Лот снят с продажи' : 'NFT выставлен на продажу'); close(); done && done(); } else tst(eMsg(r), 'red');
       };
+    });
+  }
+
+
+  /* ================= Подарки и NFT в профиле ================= */
+  async function gifts(el, uid) {
+    if (!el) return; el.innerHTML = '<div class="s2empty">Загрузка…</div>';
+    const own = uid === G(() => ME.id);
+    const r = await sb.from('user_gifts').select('id,serial,msg,anon,hidden,locked,created_at,from_id,owner_id,gifts(name,emoji,kind,supply,rarity,bg1,bg2,price,image_url,collection)').eq('owner_id', uid).order('created_at', { ascending: false });
+    if (r.error || !r.data) { el.innerHTML = '<div class="s2empty">Не удалось загрузить</div>'; return; }
+    const all = (own || OWN()) ? r.data : r.data.filter(x => !x.hidden); let shown = 60;
+    const nft = all.filter(x => x.gifts && x.gifts.kind === 'nft').length;
+    const draw = () => {
+      if (!all.length) { el.innerHTML = '<div class="s2empty">Подарков и NFT пока нет</div>'; return; }
+      el.innerHTML = `<div class="mx mx-hint" style="margin:0 4px 8px">NFT: ${nft} · подарков: ${all.length - nft}</div><div class="mx mx-grid g3">${all.slice(0, shown).map(x => { const g = x.gifts || {}; return `<button type="button" class="mx-n" data-ug="${E(x.id)}">${art(g, x.serial)}<div class="mx-nm">${E(g.name)}</div>${x.locked ? '<div class="mx-pr mut">На рынке</div>' : ''}</button>`; }).join('')}</div>${all.length > shown ? '<button type="button" class="go mx-ghost" id="mxMore" style="margin-top:10px">Показать ещё</button>' : ''}`;
+      const m = Q('#mxMore', el); if (m) m.onclick = () => { shown += 60; draw(); };
+    };
+    el.onclick = e => { const b = e.target.closest('[data-ug]'); if (!b) return; const ug = all.find(x => x.id === b.dataset.ug); if (ug && window.showGiftSheet) window.showGiftSheet(ug, () => gifts(el, uid)); };
+    draw();
+  }
+  async function listNft(ug, done) {
+    const r = await rpc('market_mine'); const it = (r.data || []).find(x => x.ug === ug.id);
+    if (!it) { tst('NFT нельзя выставить: оно занято или не является NFT', 'red'); return; }
+    mySheet(it, () => { done && done(); });
+  }
+
+  /* ================= Создатель: выдать и забрать TIX ================= */
+  function ownerTix(uid, done) {
+    if (!OWN()) return tst('Доступно только создателю', 'red');
+    const users = (G(() => USERS) || []).filter(u => u && u.id && !BOTID.test(u.id));
+    const me = G(() => ME); if (me && !users.some(u => u.id === me.id)) users.unshift(me);
+    let pick = uid ? (users.find(u => u.id === uid) || G(() => PROFILES[uid]) || { id: uid }) : null;
+    sheet(`<h3>Управление TIX</h3><div id="mxP"></div><input class="s2in" id="mxQ" placeholder="Поиск пользователя" autocomplete="off"><div class="mx mx-us" id="mxU"></div><input class="s2in" id="mxA" inputmode="numeric" placeholder="Количество TIX" autocomplete="off"><div class="mx mx-tm"><button class="go" id="mxGive">Выдать</button><button class="go mx-ghost" id="mxTake">Забрать</button></div>`, (ov, close) => {
+      const P = Q('#mxP', ov), U = Q('#mxU', ov), qi = Q('#mxQ', ov), a = Q('#mxA', ov); a.addEventListener('input', () => { a.value = a.value.replace(/\D/g, '').slice(0, 15); });
+      const nm = u => (u.id === (me && me.id) ? 'Я · ' : '') + (u.display_name || u.username || 'Пользователь');
+      const drawP = () => { P.innerHTML = pick ? `<div class="mx mx-pk">${G(() => avatarHTML(pick, 's')) || ''}<b>${E(nm(pick))}</b><button type="button" id="mxX">Изменить</button></div>` : ''; U.style.display = pick ? 'none' : ''; qi.style.display = pick ? 'none' : ''; const x = Q('#mxX', ov); if (x) x.onclick = () => { pick = null; drawP(); drawU(); }; };
+      const drawU = () => { const q = qi.value.trim().toLowerCase(); U.innerHTML = users.filter(u => !q || nm(u).toLowerCase().includes(q) || String(u.username || '').toLowerCase().includes(q)).slice(0, 40).map(u => `<button type="button" class="mx-u" data-u="${E(u.id)}">${G(() => avatarHTML(u, 's')) || ''}<span>${E(nm(u))}<small>@${E(u.username || '')}</small></span></button>`).join('') || '<div class="s2empty">Никого не найдено</div>'; };
+      U.onclick = e => { const b = e.target.closest('[data-u]'); if (!b) return; pick = users.find(u => u.id === b.dataset.u); drawP(); }; qi.oninput = drawU; drawP(); drawU();
+      const go = async (fn, okMsg) => { if (!pick) return tst('Выберите пользователя', 'red'); const v = num(a.value); if (v < 1) return tst('Введите количество', 'red'); const r = await rpc(fn, { p_user: pick.id, p_amount: v }); if (r.data && r.data.ok) { tst(okMsg(r.data, v)); close(); done && done(); } else tst(eMsg(r), 'red'); };
+      Q('#mxGive', ov).onclick = () => go('owner_grant_tix', (d, v) => 'Выдано ' + fm(v) + ' TIX');
+      Q('#mxTake', ov).onclick = () => go('owner_take_tix', d => 'Забрано ' + fm(d.taken) + ' TIX');
     });
   }
 
@@ -329,7 +416,7 @@
   }
   let tries = 0; (function wait() { if (ME_() && ME_().id && Q('#app,.app,.side')) { setTimeout(launch, 1800); } else if (tries++ < 400) setTimeout(wait, 800); })();
 
-  window.GoldaMint = { wallet, market, tools, send: uid => sendSheet(uid), launch, sweep: () => sweep(document.body) };
+  window.GoldaMint = { wallet, market, tools, gifts, listNft, ownerTix, send: uid => sendSheet(uid), launch, sweep: () => sweep(document.body) };
   function start() { sweep(document.body); mo.observe(document.body, { childList: true, subtree: true }); }
   if (document.body) start(); else document.addEventListener('DOMContentLoaded', start);
 })();

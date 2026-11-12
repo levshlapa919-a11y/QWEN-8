@@ -95,7 +95,7 @@
         document.querySelectorAll('.giAddBot').forEach(x => x.remove());
         if (chat.type !== 'group') return;
         const PRIME = '00000000-0000-4000-8000-00000000b002';
-        [[BOT, '🪙 Добавить Gold Bot в группу'], [PRIME, '💎 Добавить Праймики в группу']].forEach(([id, label]) => {
+        [[BOT, '🪙 Добавить Gold Bot в группу'], [PRIME, '💎 Добавить TIX в группу']].forEach(([id, label]) => {
           if (chat.members.some(m => m.id === id)) return;
           const b = document.createElement('button');
           b.className = 'btn primary giAddBot'; b.type = 'button'; b.style.margin = '10px 0 0'; b.style.width = '100%';

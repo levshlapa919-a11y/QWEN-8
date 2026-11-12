@@ -130,3 +130,4 @@ html[data-ui="clean"] .gs-halo{display:flex!important}
 html[data-ui="clean"] .gs-ok,html[data-ui="clean"] .gs-sell{background:var(--ac)!important;color:var(--on-ac)!important}
 html[data-ui="clean"] .gs-sell.alt{background:var(--p2)!important;color:var(--tx)!important}
 html[data-ui="clean"] .gs-halo{background:none!important}
+.mx-grid.g3{grid-template-columns:repeat(3,1fr);gap:8px}.mx-grid.g3 .mx-n{padding:6px 6px 9px;border-radius:14px}.mx-grid.g3 .mx-nm{font-size:12px;margin:6px 2px 0}.mx-act.one{grid-template-columns:1fr}

@@ -1,5 +1,5 @@
 /* golda-mesenger service worker: push + офлайн-оболочка */
-const CACHE = 'golda-shell-v72';
+const CACHE = 'golda-shell-v73';
 const SHELL = ['./', './index.html', './manifest.json', './mobile.css', './push.js', './icon-192.png'];
 
 self.addEventListener('install', e => {

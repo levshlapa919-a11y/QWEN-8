@@ -30,9 +30,9 @@
   }
   async function loadGifts(uid, box, cnt) {
     box.innerHTML = '<div class="gf-empty">Загрузка…</div>';
-    const { data, error } = await sb.from('user_gifts').select('id,serial,msg,anon,hidden,created_at,from_id,owner_id,gifts(name,emoji,kind,supply,rarity,bg1,bg2,price,image_url)').eq('owner_id', uid).order('created_at', { ascending: false });
+    const { data, error } = await sb.from('user_gifts').select('id,serial,msg,anon,hidden,locked,created_at,from_id,owner_id,gifts(name,emoji,kind,supply,rarity,bg1,bg2,price,image_url,collection)').eq('owner_id', uid).order('created_at', { ascending: false });
     if (error || !data) { box.innerHTML = '<div class="gf-empty">Не удалось загрузить</div>'; return; }
-    const list = uid === meId() ? data.slice() : data.filter(x => !x.hidden); box._d = list; if (cnt) cnt.textContent = list.length ? list.length : '';
+    const list = (uid === meId() || isOwner()) ? data.slice() : data.filter(x => !x.hidden); box._d = list; if (cnt) cnt.textContent = list.length ? list.length : '';
     box.innerHTML = list.length ? list.map(giftCard).join('') : '<div class="gf-empty">Подарков пока нет</div>';
   }
   const who = id => (typeof PROFILES !== 'undefined' && PROFILES[id]) || (typeof USERS !== 'undefined' && USERS.find(u => u.id === id)) || null;
@@ -42,21 +42,23 @@
     const o = document.createElement('div'); o.className = 'gs-ov';
     const rows = [['От', ug.anon ? '<span class="gs-mut">Скрыто</span>' : `<span class="gs-who">${from ? avatarHTML(from, 's') : ''}<b>${E(from ? (from.display_name || from.username) : '—')}</b></span>`]];
     if (!mine) rows.push(['Кому', `<span class="gs-who">${to ? avatarHTML(to, 's') : ''}<b>${E(to ? (to.display_name || to.username) : '—')}</b></span>`]);
-    rows.push(['Дата', E(dt(ug.created_at))], ['Стоимость', '💎 ' + fmt(g.price)]);
+    rows.push(['Дата', E(dt(ug.created_at))], ['Стоимость', fmt(g.price) + ' TIX']);
     if (ug.serial) rows.push(['NFT', `#${ug.serial}${g.supply ? ' из ' + g.supply : ''} · ${RAR[g.rarity] || ''}`]);
     o.innerHTML = `<div class="gs" style="--g1:${E(g.bg1)};--g2:${E(g.bg2)};--pt:${bgOf(g)}"><div class="gs-grab"></div><div class="gs-halo">${gi(g)}</div>
       <div class="gs-t">${mine ? 'Подарок Вам' : 'Подарок для ' + E(to ? (to.display_name || to.username) : '')}</div><div class="gs-n">${E(g.name)}</div>
       ${ug.msg ? `<div class="gs-m">${E(ug.msg)}</div>` : ''}
       <div class="gs-tab">${rows.map(r => `<div class="gs-r"><div class="gs-k">${r[0]}</div><div class="gs-v">${r[1]}</div></div>`).join('')}</div>
       ${mine ? `<div class="gs-hide">Подарок ${ug.hidden ? 'скрыт из' : 'виден в'} вашем профиле. <button type="button" id="gsHide">${ug.hidden ? 'Показать' : 'Скрыть'} ›</button></div>` : ''}
-      ${mine && !ug.locked ? `<button class="gs-sell" type="button" id="gsSell">Продать за 💎 ${fmt(Math.floor(Number(g.price) * 0.7))}</button><div class="gs-more" id="gsMore"></div>` : ''}
+      ${mine && !ug.locked ? `<button class="gs-sell" type="button" id="gsSell">Продать за ${fmt(Math.floor(Number(g.price) * 0.7))} TIX</button><div class="gs-more" id="gsMore"></div>` : ''}
+      ${mine && g.kind === 'nft' && ug.serial ? `<button class="gs-sell alt" type="button" id="gsMkt">${ug.locked ? 'Управлять лотом на рынке' : 'Выставить на рынок'}</button>` : ''}
       <button class="gs-ok" type="button">OK</button>${mine ? '<button class="gs-del" type="button" id="gsDel">🗑 Удалить из профиля</button>' : (isOwner() ? '<div class="gs-ow"><button type="button" id="gsOwTake">👑 Забрать себе</button><button type="button" id="gsOwDel">🗑 Удалить</button></div>' : '')}</div>`;
-    if (mine && g.kind !== 'nft' && !ug.locked) sb.from('user_gifts').select('id', { count: 'exact', head: true }).eq('owner_id', ug.owner_id).eq('gift_id', g.id).eq('locked', false).then(r => { const n = r.count || 0, m = o.querySelector('#gsMore'); if (m && n > 1) m.innerHTML = `<button type="button" class="gs-sell alt" id="gsSellAll">Продать все ${n} шт. за 💎 ${fmt(Math.floor(Number(g.price) * 0.7) * n)}</button>`; });
+    if (mine && g.kind !== 'nft' && !ug.locked) sb.from('user_gifts').select('id', { count: 'exact', head: true }).eq('owner_id', ug.owner_id).eq('gift_id', g.id).eq('locked', false).then(r => { const n = r.count || 0, m = o.querySelector('#gsMore'); if (m && n > 1) m.innerHTML = `<button type="button" class="gs-sell alt" id="gsSellAll">Продать все ${n} шт. за ${fmt(Math.floor(Number(g.price) * 0.7) * n)} TIX</button>`; });
     o.onclick = async ev => {
       if (ev.target === o || ev.target.closest('.gs-ok')) return o.remove();
       if (ev.target.id === 'gsOwDel' || ev.target.id === 'gsOwTake') { const take = ev.target.id === 'gsOwTake'; const { data } = await sb.rpc(take ? 'owner_take_gift' : 'owner_delete_gift', { p_id: ug.id }); if (data) { say(take ? 'Подарок теперь у тебя' : 'Подарок удалён'); o.remove(); if (onChange) onChange(); } else say('Не получилось', 'red'); return; }
-      if (ev.target.id === 'gsSell') { const b = ev.target; if (!b.dataset.s) { b.dataset.s = 1; b.textContent = 'Точно продать? Нажми ещё раз'; return; } const { data } = await sb.rpc('sell_gift', { p_id: ug.id }); if (data && data.ok) { say('Продано: +💎 ' + fmt(data.amount)); o.remove(); if (onChange) onChange(); } else say(data && data.error === 'locked' ? 'Подарок сейчас на аукционе или в обмене' : 'Не получилось продать', 'red'); return; }
-      if (ev.target.id === 'gsSellAll') { const b = ev.target; if (!b.dataset.s) { b.dataset.s = 1; b.textContent = 'Точно? Нажми ещё раз'; return; } const { data } = await sb.rpc('sell_gifts', { p_gift: g.id, p_qty: 200 }); if (data && data.ok) { say('Продано ' + data.sold + ' шт.: +💎 ' + fmt(data.amount)); o.remove(); if (onChange) onChange(); } else say('Не получилось продать', 'red'); return; }
+      if (ev.target.id === 'gsMkt') { o.remove(); if (window.GoldaMint) window.GoldaMint.listNft(ug, onChange); return; }
+      if (ev.target.id === 'gsSell') { const b = ev.target; if (!b.dataset.s) { b.dataset.s = 1; b.textContent = 'Точно продать? Нажми ещё раз'; return; } const { data } = await sb.rpc('sell_gift', { p_id: ug.id }); if (data && data.ok) { say('Продано: +' + fmt(data.amount) + ' TIX'); o.remove(); if (onChange) onChange(); } else say(data && data.error === 'locked' ? 'Подарок сейчас на аукционе или в обмене' : 'Не получилось продать', 'red'); return; }
+      if (ev.target.id === 'gsSellAll') { const b = ev.target; if (!b.dataset.s) { b.dataset.s = 1; b.textContent = 'Точно? Нажми ещё раз'; return; } const { data } = await sb.rpc('sell_gifts', { p_gift: g.id, p_qty: 200 }); if (data && data.ok) { say('Продано ' + data.sold + ' шт.: +' + fmt(data.amount) + ' TIX'); o.remove(); if (onChange) onChange(); } else say('Не получилось продать', 'red'); return; }
       if (ev.target.id === 'gsDel') { const b = ev.target; if (!b.dataset.s) { b.dataset.s = 1; b.textContent = 'Точно удалить? Нажми ещё раз'; return; } const { error } = await sb.rpc('delete_gift', { p_id: ug.id }); if (!error) { say('Подарок удалён'); o.remove(); if (onChange) onChange(); } else say('Не удалось удалить', 'red'); return; }
       if (ev.target.id === 'gsHide') { const h = !ug.hidden; const { error } = await sb.rpc('hide_gift', { p_id: ug.id, p_hide: h }); if (!error) { ug.hidden = h; say(h ? 'Подарок скрыт из профиля' : 'Подарок снова в профиле'); o.remove(); if (onChange) onChange(); } }
     };
@@ -75,14 +77,14 @@
   function giftMsgBody(ug) {
     if (!ug) return '<div class="gm-load">Подарок…</div>';
     const g = ug.gifts, to = who(ug.owner_id), from = who(ug.from_id);
-    return `<div class="gm r-${E(g.rarity)}" style="background:${bgOf(g)}"><div class="gm-e">${gi(g)}</div><div class="gm-i"><div class="gm-h">Подарок · ${E(from ? (from.display_name || from.username) : '')} → ${E(to ? (to.display_name || to.username) : '')}</div><div class="gm-n">${E(g.name)}</div><div class="gm-s">${ug.serial ? `NFT #${ug.serial}${g.supply ? ' из ' + g.supply : ''} · ` : ''}💎 ${fmt(g.price)}</div>${ug.msg ? `<div class="gm-t">${E(ug.msg)}</div>` : ''}</div></div>`;
+    return `<div class="gm r-${E(g.rarity)}" style="background:${bgOf(g)}"><div class="gm-e">${gi(g)}</div><div class="gm-i"><div class="gm-h">Подарок · ${E(from ? (from.display_name || from.username) : '')} → ${E(to ? (to.display_name || to.username) : '')}</div><div class="gm-n">${E(g.name)}</div><div class="gm-s">${ug.serial ? `NFT #${ug.serial}${g.supply ? ' из ' + g.supply : ''} · ` : ''}${fmt(g.price)} TIX</div>${ug.msg ? `<div class="gm-t">${E(ug.msg)}</div>` : ''}</div></div>`;
   }
   window.mediaHTML = function (md) { if (md && md.kind === 'gift') return `<div class="gift-msg" data-id="${E(md.id)}">${giftMsgBody(GC[md.id])}</div>`; return _mh(md); };
   window.previewOf = function (lm, chat) { const md = window.parseMedia(lm.content); if (md && md.kind === 'gift') return (lm.sender_id === meId() ? 'Вы: ' : '') + '🎁 Подарок'; return _pv(lm, chat); };
   async function hydrateGifts() {
     for (const el of document.querySelectorAll('.gift-msg')) {
       if (el.dataset.l) continue; el.dataset.l = 1;
-      const { data } = await sb.from('user_gifts').select('id,serial,msg,anon,hidden,created_at,from_id,owner_id,gifts(name,emoji,kind,supply,rarity,bg1,bg2,price,image_url)').eq('id', el.dataset.id).maybeSingle();
+      const { data } = await sb.from('user_gifts').select('id,serial,msg,anon,hidden,locked,created_at,from_id,owner_id,gifts(name,emoji,kind,supply,rarity,bg1,bg2,price,image_url,collection)').eq('id', el.dataset.id).maybeSingle();
       if (data) { GC[data.id] = data; el.innerHTML = giftMsgBody(data); el._ug = data; }
     }
   }
@@ -100,17 +102,17 @@
       <div class="sh-grid" id="shGrid"></div>
       <div class="sh-buy" id="shBuy"></div>`;
     document.body.appendChild(o);
-    const paintBal = () => { o.querySelector('#shBal').innerHTML = '💎 ' + fmt(bal) + ' <button type="button" id="shEx" style="border:0;background:var(--neon);color:var(--p1);border-radius:99px;padding:2px 9px;font:800 12px var(--font);margin-left:4px;cursor:pointer">＋ обмен</button>'; const x = o.querySelector('#shEx'); if (x) x.onclick = ev => { ev.stopPropagation(); openExchange(() => sb.from('prime_wallets').select('balance_t').maybeSingle().then(r => { bal = (r.data && r.data.balance) || 0; paintBal(); })); }; };
+    const paintBal = () => { o.querySelector('#shBal').innerHTML = fmt(bal) + ' TIX' + ' <button type="button" id="shEx" style="border:0;background:var(--neon);color:var(--p1);border-radius:99px;padding:2px 9px;font:800 12px var(--font);margin-left:4px;cursor:pointer">＋ обмен</button>'; const x = o.querySelector('#shEx'); if (x) x.onclick = ev => { ev.stopPropagation(); openExchange(() => sb.from('prime_wallets').select('balance_t').maybeSingle().then(r => { bal = (r.data && r.data.balance) || 0; paintBal(); })); }; };
     function grid() {
       o.querySelector('#shGrid').innerHTML = gifts.filter(g => g.kind === tab).sort((a, b) => tab === 'nft' ? b.price - a.price : a.price - b.price).map(g => {
         const left = g.supply ? g.supply - g.sold : null, out = left !== null && left <= 0;
-        return `<button type="button" class="sg r-${E(g.rarity)} ${out ? 'out' : ''} ${sel && sel.id === g.id ? 'sel' : ''}" data-id="${g.id}" style="background:${bgOf(g)}"><span class="gf-e">${gi(g)}</span><span class="gf-n">${E(g.name)}</span><span class="sg-p">💎 ${fmt(g.price)}</span>${left !== null ? `<span class="gf-s">${out ? 'распродано' : 'осталось ' + left}</span>` : ''}</button>`;
+        return `<button type="button" class="sg r-${E(g.rarity)} ${out ? 'out' : ''} ${sel && sel.id === g.id ? 'sel' : ''}" data-id="${g.id}" style="background:${bgOf(g)}"><span class="gf-e">${gi(g)}</span><span class="gf-n">${E(g.name)}</span><span class="sg-p">${fmt(g.price)} TIX</span>${left !== null ? `<span class="gf-s">${out ? 'распродано' : 'осталось ' + left}</span>` : ''}</button>`;
       }).join('');
     }
     function buy() {
       const b = o.querySelector('#shBuy');
       if (!sel) { b.innerHTML = '<div class="sh-hint">Выбери подарок</div>'; return; }
-      b.innerHTML = `<div class="sh-sel">${E(sel.emoji)} <b>${E(sel.name)}</b> — 💎 ${fmt(sel.price)}</div><input class="inp" id="shMsg" maxlength="200" placeholder="Добавить сообщение (необязательно)"><label class="sh-anon"><input type="checkbox" id="shAnon"> Скрыть, что это от меня</label><div class="sh-qty"><span>Количество</span><button type="button" id="shQm">−</button><input id="shQ" inputmode="numeric" value="${qty}"><button type="button" id="shQp">+</button></div><button class="btn primary" id="shGo" type="button">Подарить за 💎 ${fmt(Number(sel.price) * qty)}</button>${isOwner() ? '<button class="btn ghost" id="shIcon" type="button" style="margin-top:8px;width:100%">🖼 Задать иконку подарка</button><input type="file" id="shIconIn" accept="image/*" class="hidden">' : ''}`;
+      b.innerHTML = `<div class="sh-sel">${E(sel.emoji)} <b>${E(sel.name)}</b> — ${fmt(sel.price)} TIX</div><input class="inp" id="shMsg" maxlength="200" placeholder="Добавить сообщение (необязательно)"><label class="sh-anon"><input type="checkbox" id="shAnon"> Скрыть, что это от меня</label><div class="sh-qty"><span>Количество</span><button type="button" id="shQm">−</button><input id="shQ" inputmode="numeric" value="${qty}"><button type="button" id="shQp">+</button></div><button class="btn primary" id="shGo" type="button">Подарить за ${fmt(Number(sel.price) * qty)} TIX</button>${isOwner() ? '<button class="btn ghost" id="shIcon" type="button" style="margin-top:8px;width:100%">🖼 Задать иконку подарка</button><input type="file" id="shIconIn" accept="image/*" class="hidden">' : ''}`;
       const ic = b.querySelector('#shIcon'); if (ic) { ic.onclick = () => b.querySelector('#shIconIn').click(); b.querySelector('#shIconIn').onchange = async ev => {
         const f = ev.target.files[0]; if (!f) return; ic.disabled = true; ic.textContent = 'Загружаем…';
         try { const path = 'gifts/' + sel.id + '_' + Date.now() + '.' + (f.name.split('.').pop() || 'png').toLowerCase(); const up = await sb.storage.from('avatars').upload(path, f, { upsert: true, contentType: f.type });
@@ -118,15 +120,15 @@
           const r = await sb.rpc('owner_set_gift_image', { p_gift: sel.id, p_url: url }); if (!r.data) throw 0; sel.image_url = url; say('Иконка сохранена'); grid(); buy();
         } catch (er) { ic.disabled = false; ic.textContent = '🖼 Задать иконку подарка'; say('Не удалось загрузить иконку', 'red'); } }; }
       const maxQ = sel.supply ? Math.max(1, Math.min(100, sel.supply - sel.sold)) : 100;
-      const setQ = v => { qty = Math.min(maxQ, Math.max(1, Math.floor(+v) || 1)); b.querySelector('#shQ').value = qty; b.querySelector('#shGo').textContent = 'Подарить за 💎 ' + fmt(Number(sel.price) * qty); };
+      const setQ = v => { qty = Math.min(maxQ, Math.max(1, Math.floor(+v) || 1)); b.querySelector('#shQ').value = qty; b.querySelector('#shGo').textContent = 'Подарить за ' + fmt(Number(sel.price) * qty) + ' TIX'; };
       b.querySelector('#shQm').onclick = () => setQ(qty - 1); b.querySelector('#shQp').onclick = () => setQ(qty + 1);
       b.querySelector('#shQ').oninput = ev => { const v = ev.target.value.replace(/\D/g, ''); ev.target.value = v; if (v) setQ(v); };
       b.querySelector('#shGo').onclick = async () => {
         const go = b.querySelector('#shGo'); go.disabled = true; go.textContent = 'Отправляем…';
         const { data, error } = qty > 1 ? await sb.rpc('send_gift_bulk', { p_gift: sel.id, p_to: uid, p_qty: qty, p_msg: b.querySelector('#shMsg').value, p_anon: b.querySelector('#shAnon').checked }) : await sb.rpc('send_gift', { p_gift: sel.id, p_to: uid, p_msg: b.querySelector('#shMsg').value, p_anon: b.querySelector('#shAnon').checked });
         if (error || !data || !data.ok) {
-          const er = data && data.error; go.disabled = false; go.textContent = 'Подарить за 💎 ' + fmt(Number(sel.price) * qty);
-          say(er === 'no_money' ? 'Не хватает праймиков 💎' : er === 'sold_out' ? 'Этот NFT распродан' : 'Не получилось отправить', 'red'); return;
+          const er = data && data.error; go.disabled = false; go.textContent = 'Подарить за ' + fmt(Number(sel.price) * qty) + ' TIX';
+          say(er === 'no_money' ? 'Не хватает TIX' : er === 'sold_out' ? 'Этот NFT распродан' : 'Не получилось отправить', 'red'); return;
         }
         say('Подарок отправлен 🎁'); o.remove();
         const box = $('#uGifts'); if (box && $('#userOverlay').classList.contains('open')) loadGifts(uid, box, $('#uGiftCnt')); const mb = $('#mGifts'); if (mb && uid === meId()) loadGifts(uid, mb, $('#mGiftCnt'));
@@ -188,17 +190,18 @@
     if (!box) { box = document.createElement('div'); box.id = 'uOwner'; box.className = 'tg-sec'; $('#uGiftSec').after(box); }
     if (!isOwner() || hide) { box.style.display = 'none'; return; }
     box.style.display = '';
-    box.innerHTML = '<div class="tg-sec-h">👑 Создатель</div><div class="ow-b"><button type="button" id="owTake">💰 Забрать gold</button><button type="button" id="owName">✏️ Сменить юзернейм</button><button type="button" id="owPrime">💎 Забрать праймики</button></div><div class="ow-i" id="owInfo"></div>';
+    box.innerHTML = '<div class="tg-sec-h">👑 Создатель</div><div class="ow-b"><button type="button" id="owTake">💰 Забрать gold</button><button type="button" id="owName">✏️ Сменить юзернейм</button><button type="button" id="owGive">Выдать TIX</button><button type="button" id="owPrime">Забрать TIX</button></div><div class="ow-i" id="owInfo"></div>';
     sb.from('gold_wallets').select('balance_t').eq('user_id', u.id).maybeSingle().then(r => { const i = $('#owInfo'); if (i) i.textContent = 'У пользователя: ' + fmt(bv(r)) + ' gold'; });
     $('#owTake').onclick = () => ask('Сколько gold забрать у @' + u.username + '?', 'Например 500', '', async v => {
       const n = bigN(v); if (!n) return say('Введи число больше нуля', 'red');
       const { data } = await sb.rpc('owner_take_gold', { p_user: u.id, p_amount: n });
       if (data && data.ok) { say('Забрано ' + fmt(data.taken) + ' gold'); $('#owInfo').textContent = 'У пользователя: ' + fmt(data.balance) + ' gold'; } else say('Не получилось', 'red');
     });
-    $('#owPrime').onclick = () => ask('Сколько праймиков забрать у @' + u.username + '?', 'Например 10', '', async v => {
+    $('#owGive').onclick = () => { if (window.GoldaMint) window.GoldaMint.ownerTix(u.id); };
+    $('#owPrime').onclick = () => ask('Сколько TIX забрать у @' + u.username + '?', 'Например 10', '', async v => {
       const n = bigN(v); if (!n) return say('Введи число больше нуля', 'red');
       const { data } = await sb.rpc('owner_take_prime', { p_user: u.id, p_amount: n });
-      if (data && data.ok) say('Забрано ' + fmt(data.taken) + ' праймиков'); else say('Не получилось', 'red');
+      if (data && data.ok) say('Забрано ' + fmt(data.taken) + ' TIX'); else say('Не получилось', 'red');
     });
     $('#owName').onclick = () => ask('Новый юзернейм для @' + u.username, 'латиница, цифры, _ (3–20)', u.username, async v => {
       const { data } = await sb.rpc('owner_set_username', { p_user: u.id, p_name: v });
@@ -210,17 +213,17 @@
   function openExchange(done) {
     sb.from('gold_wallets').select('balance_t').eq('user_id', meId()).maybeSingle().then(r => {
       const g = String(bv(r)), max = /inf/i.test(g) ? '∞' : (BigInt(g.split('.')[0]) / 500n).toString();
-      ask('Обмен: сколько праймиков получить? (у тебя ' + fmt(g) + ' gold — хватит на ' + fmt(max) + ')', 'Например 2 (за 1 000 gold)', max !== '0' ? '1' : '', async v => {
+      ask('Обмен: сколько TIX получить? (у тебя ' + fmt(g) + ' gold — хватит на ' + fmt(max) + ')', 'Например 2 (за 1 000 gold)', max !== '0' ? '1' : '', async v => {
         const n = bigN(v); if (!n) return say('Введи число больше нуля', 'red');
         const { data } = await sb.rpc('exchange_gold', { p_primes: n });
-        if (data && data.ok) { say('Обменяно: +' + fmt(n) + ' 💎'); if (done) done(); const b = $('#shBal'); if (b) b.textContent = '💎 ' + fmt(data.prime); }
+        if (data && data.ok) { say('Обменяно: +' + fmt(n) + ' TIX'); if (done) done(); const b = $('#shBal'); if (b) b.textContent = fmt(data.prime) + ' TIX'; }
         else say(data && data.error === 'no_gold' ? 'Не хватает gold: нужно ' + fmt((BigInt(n) * 500n).toString()) : 'Не получилось', 'red');
       });
     });
   }
   window.openGoldExchange = openExchange;
 
-  /* ---------- мой профиль: баланс праймиков и подарки ---------- */
+  /* ---------- мой профиль: баланс TIX и подарки ---------- */
   const _om = window.openMyProfile;
   if (typeof _om === 'function') {
     window.openMyProfile = function () {
@@ -229,7 +232,7 @@
         const modal = ov.querySelector('.modal'); let sec = $('#mGiftSec');
         if (!sec) {
           sec = document.createElement('div'); sec.id = 'mGiftSec'; sec.className = 'tg-sec';
-          sec.innerHTML = '<div class="tg-sec-h">🪙 Gold: <b id="mGold">…</b></div><div class="tg-sec-h" style="margin-top:6px">💎 Праймики: <b id="mPrime">…</b></div><button type="button" class="btn primary" id="mExch" style="width:100%;margin:6px 0 4px">💱 Обменять gold на праймики</button><div class="ow-i">Курс: 500 gold = 1 праймик</div><div class="tg-sec-h" style="margin-top:14px">🎁 Мои подарки <span id="mGiftCnt" class="tg-cnt"></span></div><div class="gift-grid" id="mGifts"></div>';
+          sec.innerHTML = '<div class="tg-sec-h">🪙 Gold: <b id="mGold">…</b></div><div class="tg-sec-h" style="margin-top:6px">💎 TIX: <b id="mPrime">…</b></div><button type="button" class="btn primary" id="mExch" style="width:100%;margin:6px 0 4px">💱 Обменять gold на TIX</button><div class="ow-i">Курс: 500 gold = 1 TIX</div><div class="tg-sec-h" style="margin-top:14px">🎁 Мои подарки <span id="mGiftCnt" class="tg-cnt"></span></div><div class="gift-grid" id="mGifts"></div>';
           modal.querySelector('.pf-ava').after(sec);
           const sg = document.createElement('button'); sg.type = 'button'; sg.className = 'btn ghost'; sg.id = 'mGiftSelf'; sg.style.cssText = 'margin-top:12px;width:100%';
           sg.textContent = '🎁 Подарить подарок себе'; sg.onclick = () => openShop(meId()); sec.appendChild(sg);
@@ -258,7 +261,7 @@
       ['🔴 Красное', () => sendText('рулетка ' + bet + ' к')], ['⚫ Чёрное', () => sendText('рулетка ' + bet + ' ч')], ['🟢 Зеро', () => sendText('рулетка ' + bet + ' з')], ['💣 Мины', () => sendText('мины ' + bet)],
       ['🚀 Краш ×2', () => sendText('краш ' + bet + ' 2')], ['🚀 Краш ×5', () => sendText('краш ' + bet + ' 5')], ['🎰 Слоты', () => sendText('слоты ' + bet)], ['⚔️ Дуэль…', () => prefill('дуэль @')], ['✅ Принять', () => sendText('принять')], ['🙅 Отказ', () => sendText('отказ')],
       ['🪙 Орёл', () => sendText('монетка ' + bet + ' орёл')], ['🪙 Решка', () => sendText('монетка ' + bet + ' решка')], ['🎲 Кости', () => sendText('кости ' + bet)],
-      ['💱 Обменять на праймики', () => openExchange()], ['💱 Обмен ×1', () => sendText('обмен 1')], ['💱 Курс', () => sendText('курс')], ['💸 Перевод…', () => prefill('перевод @')]
+      ['💱 Обменять на TIX', () => openExchange()], ['💱 Обмен ×1', () => sendText('обмен 1')], ['💱 Курс', () => sendText('курс')], ['💸 Перевод…', () => prefill('перевод @')]
     ].concat(owner ? [['✨ Выдать себе…', () => prefill('@megold ')]] : []);
     if (kind === 'prime') return [
       ['💎 Баланс', () => sendText('баланс')], ['🧾 История', () => sendText('история')], ['🎁 Подарки', () => sendText('подарки')], ['❓ Помощь', () => sendText('помощь')], ['🪙 Получить gold', () => sendText('купить')], ['💱 Обмен ×1', () => sendText('обмен 1')], ['💱 Обмен ×5', () => sendText('обмен 5')], ['💱 Курс', () => sendText('курс')], ['💸 Перевод…', () => prefill('перевод @')]

@@ -135,7 +135,7 @@
       <div class="prof" data-a="profile"><div id="clSAva"></div><b>${esc((Q('#meName') || {}).textContent)}</b><small>${esc((Q('#meUname') || {}).textContent)}${ME && ME.email ? ' · ' + esc(ME.email) : ''}</small></div>
       <div class="sec"><h4>Аккаунт</h4>
         ${row('user', '#3390ec', 'Мой профиль', 'Имя, фото, о себе', '', 'profile')}
-        ${row('coin', '#e0a21b', 'Кошелёк', 'gold и праймики', '<span class="vl" id="clBal">…</span>', 'wallet')}
+        ${row('coin', '#e0a21b', 'Кошелёк', 'gold и TIX', '<span class="vl" id="clBal">…</span>', 'wallet')}
         ${row('chart', '#8e5cf0', 'Моя статистика', 'Сообщения, подарки, игры', '', 'stats')}
         ${row('users', '#3390ec', 'Поделиться профилем', 'Ссылка, по которой тебя найдут', '', 'share')}
         ${row('lock', '#6c5ce7', 'Код-пароль', 'Защита и скрытые чаты', '', 'pass')}
