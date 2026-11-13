@@ -146,3 +146,19 @@ html.ios-sa .app,html.ios-sa .main{height:100%!important;min-height:0}
 .g3-art{padding:0!important;overflow:hidden;background:none!important}
 .mx-bg{opacity:.5;border-radius:50%;overflow:hidden}
 .mx-lart{opacity:.55;border-radius:50%;overflow:hidden}
+
+/* нижняя панель не должна показываться на экранах входа */
+body:not(.auth-off) #m3Nav,body:not(.auth-off) #slimNav{display:none!important}
+
+/* iPhone: нижняя панель как родная вкладочная — на всю ширину, подпись под значком */
+@media (max-width:900px){
+  html.ios #m3Nav{padding:0 0 env(safe-area-inset-bottom,0px);gap:0;background:color-mix(in srgb,var(--bg) 80%,transparent);-webkit-backdrop-filter:saturate(1.6) blur(22px);backdrop-filter:saturate(1.6) blur(22px);border-top:1px solid var(--line,rgba(255,255,255,.08));pointer-events:auto}
+  html.ios #m3Nav .np{background:none;box-shadow:none;border-radius:0;padding:4px 4px 2px;gap:0}
+  html.ios #m3Nav .np button{flex:1;min-width:0;height:52px;flex-direction:column;gap:2px;padding:0 2px;border-radius:12px;background:none!important;color:var(--mut);font:600 10px var(--font)}
+  html.ios #m3Nav .np button span{display:block!important;font-size:10px;font-weight:600}
+  html.ios #m3Nav .np button svg{width:24px;height:24px}
+  html.ios #m3Nav .np button.on{color:var(--ac);flex:1}
+  html.ios #m3Nav .ns{width:54px;height:52px;border-radius:12px;background:none;box-shadow:none;color:var(--mut);margin:4px 6px 2px 0}
+  html.ios #m3Nav .ns svg{width:24px;height:24px}
+  html.ios body.m3-nav #chatList,html.ios body.m3-nav .side{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 70px)}
+}
