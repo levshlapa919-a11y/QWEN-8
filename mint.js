@@ -470,6 +470,9 @@
   }
   let tries = 0; (function wait() { if (ME_() && ME_().id && Q('#app,.app,.side')) { setTimeout(launch, 1800); } else if (tries++ < 400) setTimeout(wait, 800); })();
 
+  try { const so = sb.auth.signOut.bind(sb.auth); sb.auth.signOut = function () { try { localStorage.removeItem('golda_sess_bak'); } catch (e) { } return so.apply(null, arguments); }; } catch (e) { }
+  /* резервная копия сессии: если браузер потерял основной ключ, вход восстановится */
+  setInterval(() => { try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (/^sb-.*-auth-token$/.test(k)) { const v = localStorage.getItem(k); if (v && v.length > 50) localStorage.setItem('golda_sess_bak', JSON.stringify({ k, v })); return; } } } catch (e) { } }, 15000);
   window.GoldaMint = { tempBan, wallet, market, tools, gifts, balances, listNft, ownerTix, send: uid => sendSheet(uid), launch, sweep: () => sweep(document.body) };
   function start() { sweep(document.body); mo.observe(document.body, { childList: true, subtree: true }); }
   if (document.body) start(); else document.addEventListener('DOMContentLoaded', start);
