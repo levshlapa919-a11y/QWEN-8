@@ -123,7 +123,7 @@
     let raw = null; try { raw = OLDGIFT && OLDGIFT(nm); } catch (e) { }
     if (!raw) return (ART2[key] = svgOld(g));
     const gl = (raw.match(/--gl:(#[0-9a-fA-F]{3,8})/) || [])[1] || '#6aa0ff', ol = (raw.match(/--ol:(#[0-9a-fA-F]{3,8})/) || [])[1] || '#1b2a55';
-    const inner = raw.replace(/^<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '');
+    const inner = raw.replace(/^<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '').replace(/<feMergeNode in="ol"\/>/, '').replace(/<path transform="translate\([^>]*>\s*<animate[^>]*\/>\s*<\/path>/g, '').replace(/<ellipse cx="50" cy="94"[^>]*\/>/, '');
     const id = 'q' + h32(nm).toString(36), leg = g.rarity === 'legendary' || g.rarity === 'mythic';
     const pos = [[16, 18], [84, 16], [10, 50], [90, 52], [18, 84], [82, 86], [50, 8], [50, 94], [30, 34], [72, 32], [26, 68], [76, 70]];
     const pat = pos.map((q, i) => `<use href="#${id}i" transform="translate(${q[0]} ${q[1]}) scale(${i % 2 ? .16 : .2}) translate(-50 -50)"/>`).join('');
