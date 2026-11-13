@@ -81,16 +81,41 @@
     'golda': '<circle cx="50" cy="50" r="19"/><path d="M61 42a12 12 0 1 0 0 16v-6H52"/>'
   };
   const icon = nm => IC[String(nm || '').split(/\s+/)[0].toLowerCase()] || '';
-  function svg(g) {
-    g = g || {}; const nm = String(g.name || ''), rar = g.rarity || 'common', key = nm + '|' + rar; if (ART[key]) return ART[key];
-    const w = nm.split(/\s+/), a = h32(w[0] || 'x'), b = h32(w[1] || w[0] || 'y'), col = RC[rar] || RC.common, n = 5 + b % 8, ph = (b >>> 5) % 6;
-    let o = `<circle cx="50" cy="50" r="46.500" stroke-width=".55" opacity=".7"/><circle cx="50" cy="50" r="44.800" stroke-width=".25" opacity=".5"/>`;
-    if (rar === 'legendary') o += '<circle cx="50" cy="50" r="48.600" stroke-width=".35" opacity=".8"/>'; else if (rar === 'epic') o += '<circle cx="50" cy="50" r="48.400" stroke-width=".3" stroke-dasharray="1 1.800" opacity=".8"/>';
-    o += `<g stroke-width=".3" opacity=".42">${rosette(35, 4, n, ph, 150)}${rosette(35, 4, n, ph + Math.PI / 2, 150)}${rosette(27, 3, n + 2, ph, 130)}${rosette(27, 3, n + 2, ph + Math.PI / 2, 130)}</g>`;
-    const ico = icon(nm); o += `<g stroke-width="${ico ? '.95' : '.7'}" style="color:${col}">${ico || emblem(a)}</g>`;
-    return (ART[key] = `<svg class="ga" viewBox="0 0 100 100" fill="none" stroke="${col}" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true">${o}</svg>`);
+  /* Объёмный предмет на цветном фоне с узором из символов (модель, фон, символ — как у коллекционных подарков) */
+  const BD = { 'аргентум': [212, 18], 'вечность': [262, 48], 'луна': [222, 30], 'обсидиан': [190, 32], 'оникс': [285, 24], 'солярис': [14, 62], 'спектр': [322, 52], 'янтарь': [38, 68], 'reserve': [150, 42], 'событий': [350, 48] };
+  const MET = { common: ['#f7f9fc', '#b4bcc9', '#5f6877'], uncommon: ['#f0fbf6', '#a4d6bf', '#4f7f6d'], rare: ['#eef5ff', '#94baf0', '#415f96'], epic: ['#f8f1ff', '#c5a9f0', '#5f4096'], legendary: ['#fff8dc', '#ecc86e', '#8e6018'] };
+  const SYMS = Object.keys(IC);
+  const POS = [[14, 14], [50, 9], [86, 14], [9, 50], [91, 50], [14, 86], [50, 91], [86, 86], [31, 11], [69, 11], [31, 89], [69, 89], [11, 31], [11, 69], [89, 31], [89, 69]];
+  const pal = g => { const w = String(g.name || '').split(/\s+/), k = (w[1] || '').toLowerCase(), p = BD[k] || [h32(w[1] || w[0] || 'x') % 360, 38]; return p; };
+  const bgc = g => { const p = pal(g); return `hsl(${p[0]} ${p[1]}% 15%)`; };
+  function colorize(mk, rar) {
+    let ci = 0, open = '';
+    const closed = mk.replace(/<(path|circle|ellipse|rect)\b([^>]*?)\/>/g, (m, tag, at) => {
+      let isC = tag !== 'path';
+      if (!isC) { const d = (at.match(/\bd="([^"]*)"/) || [])[1] || ''; const z = (d.match(/[zZ]/g) || []).length, mm = (d.match(/[Mm]/g) || []).length; isC = z > 0 && z === mm; }
+      if (isC) return `<${tag}${at} fill="url(#${rar}${ci++ % 2 ? 'd' : 'l'})" stroke="#05080c" stroke-opacity=".55" stroke-width=".7"/>`;
+      open += `<${tag}${at}/>`; return '';
+    });
+    return { closed, open };
   }
-  window.GoldaArt = { svg, h32 };
+  function svg(g) {
+    g = g || {}; const nm = String(g.name || ''), rar = MET[g.rarity] ? g.rarity : 'common', key = nm + '|' + rar; if (ART[key]) return ART[key];
+    const w = nm.split(/\s+/), p = pal(g), mk = icon(nm), id = 'a' + h32(key).toString(36), m = MET[rar];
+    const sym = SYMS[h32((w[1] || '') + nm) % SYMS.length], sk = IC[sym === (w[0] || '').toLowerCase() ? SYMS[(SYMS.indexOf(sym) + 7) % SYMS.length] : sym];
+    const model = mk ? colorize(mk, id) : { closed: emblem(h32(nm)), open: '' };
+    const pat = POS.map(q => `<use href="#${id}s" transform="translate(${q[0]} ${q[1]}) scale(.3) translate(-50 -50)"/>`).join('');
+    const o = `<defs><radialGradient id="${id}b" cx=".5" cy=".36" r=".8"><stop offset="0" stop-color="hsl(${p[0]} ${p[1]}% 46%)"/><stop offset=".6" stop-color="hsl(${p[0]} ${p[1]}% 27%)"/><stop offset="1" stop-color="hsl(${p[0]} ${p[1]}% 13%)"/></radialGradient>
+<linearGradient id="${id}l" gradientUnits="userSpaceOnUse" x1="32" y1="30" x2="68" y2="72"><stop offset="0" stop-color="${m[0]}"/><stop offset=".5" stop-color="${m[1]}"/><stop offset="1" stop-color="${m[2]}"/></linearGradient>
+<linearGradient id="${id}d" gradientUnits="userSpaceOnUse" x1="68" y1="30" x2="32" y2="72"><stop offset="0" stop-color="${m[1]}"/><stop offset="1" stop-color="${m[2]}"/></linearGradient>
+<radialGradient id="${id}g" cx=".35" cy=".25" r=".6"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+<g id="${id}s" fill="none" stroke="#fff" stroke-width="2.600" stroke-linecap="round" stroke-linejoin="round">${sk || ''}</g></defs>
+<rect width="100" height="100" fill="url(#${id}b)"/><g opacity=".15">${pat}</g>
+<ellipse cx="50" cy="79" rx="21" ry="3.400" fill="#000" opacity=".32"/>
+<g transform="translate(50 49) scale(1.5) translate(-50 -50)" stroke-linecap="round" stroke-linejoin="round">${model.closed}${model.open ? `<g fill="none"><g stroke="#05080c" stroke-opacity=".5" stroke-width="3.400">${model.open}</g><g stroke="url(#${id}l)" stroke-width="2.200">${model.open}</g></g>` : ''}</g>
+<rect width="100" height="100" fill="url(#${id}g)"/>`;
+    return (ART[key] = `<svg class="ga" viewBox="0 0 100 100" aria-hidden="true">${o}</svg>`);
+  }
+  window.GoldaArt = { svg, h32, bg: bgc };
   /* старый набор мультяшных значков больше не нужен */
   window.giftSVG = n => svg({ name: n, rarity: 'rare' });
 
@@ -146,7 +171,7 @@
   const REAS = { launch: 'Подарок к запуску', welcome: 'Приветственный бонус', swap_in: 'Обмен gold на TIX', exchange: 'Обмен gold на TIX', send: 'Перевод', receive: 'Перевод получен', transfer_in: 'Перевод получен', transfer_out: 'Перевод отправлен', market_buy: 'Покупка на рынке', market_sell: 'Продажа на рынке', gift_buy: 'Покупка подарка', gift_sell: 'Продажа подарка', auction_bid: 'Ставка на аукционе', auction_sale: 'Продажа на аукционе', streak: 'Награда за серию', grant: 'Начисление', owner_grant: 'Начисление от создателя', owner_take: 'Списание создателем', owner_take_prime: 'Списание создателем' };
   const dtf = t => { const d = new Date(t); return d.toLocaleString('ru-RU', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }).replace(',', ''); };
   const ago = t => { const s = (Date.now() - new Date(t)) / 1000; return s < 60 ? 'сейчас' : s < 3600 ? Math.floor(s / 60) + ' мин назад' : s < 86400 ? Math.floor(s / 3600) + ' ч назад' : dtf(t); };
-  const bgOf = g => `radial-gradient(circle at 50% 42%,rgba(255,255,255,.12),rgba(255,255,255,0) 64%),linear-gradient(165deg,${g.bg1 || '#3a4a5c'},${g.bg2 || '#141c26'})`;
+  const bgOf = g => bgc(g || {});
   const sheet = (h, f) => PG().sheet(h, f);
   const digits = el => { el.addEventListener('input', () => { el.value = el.value.replace(/\D/g, '').slice(0, 12); }); };
 
@@ -156,7 +181,7 @@
         const paint = async () => {
           const r = await rpc('tix_state'); const d = r.data;
           if (!d) { body.innerHTML = '<div class="s2empty">Не удалось загрузить кошелёк</div>'; return; }
-          body.innerHTML = `<div class="mx mx-card"><div class="mx-bg">${svg({ name: 'Основа Кошелёк', rarity: 'legendary' })}</div><div class="mx-l">Баланс</div><div class="mx-b">${fm(d.tix)}<span>TIX</span></div><div class="mx-s">${fm(d.gold)} gold · курс 1500 gold = 1 TIX</div></div>
+          body.innerHTML = `<div class="mx mx-card"><div class="mx-bg">${svg({ name: 'Эгида Спектр', rarity: 'legendary' })}</div><div class="mx-l">Баланс</div><div class="mx-b">${fm(d.tix)}<span>TIX</span></div><div class="mx-s">${fm(d.gold)} gold · курс 1500 gold = 1 TIX</div></div>
             <div class="mx mx-act"><button data-a="swap">Купить TIX</button><button data-a="send">Перевод</button><button data-a="mkt">Рынок</button></div>${OWN() ? '<div class="mx mx-act one"><button data-a="own">Управление TIX (создатель)</button></div>' : ''}
             <div class="s2lbl">История</div>` + ((d.log || []).length ? d.log.map(x => `<div class="mx mx-lg"><div><b>${E(REAS[x.r] || 'Операция')}</b><small>${E(x.o || '')}${x.o ? ' · ' : ''}${E(dtf(x.t))}</small></div><span class="${num(x.d) < 0 ? 'neg' : 'pos'}">${num(x.d) > 0 ? '+' : ''}${fm(x.d)}</span></div>`).join('') : '<div class="s2empty">Операций пока нет</div>');
           body.onclick = e => { const b = e.target.closest('[data-a]'); if (!b) return; if (b.dataset.a === 'swap') swapSheet(d, paint); else if (b.dataset.a === 'send') sendSheet(null, paint); else if (b.dataset.a === 'own') ownerTix(null, paint); else market(); };
@@ -285,15 +310,44 @@
     const users = (G(() => USERS) || []).filter(u => u && u.id && !BOTID.test(u.id));
     const me = G(() => ME); if (me && !users.some(u => u.id === me.id)) users.unshift(me);
     let pick = uid ? (users.find(u => u.id === uid) || G(() => PROFILES[uid]) || { id: uid }) : null;
-    sheet(`<h3>Управление TIX</h3><div id="mxP"></div><input class="s2in" id="mxQ" placeholder="Поиск пользователя" autocomplete="off"><div class="mx mx-us" id="mxU"></div><input class="s2in" id="mxA" inputmode="numeric" placeholder="Количество TIX" autocomplete="off"><div class="mx mx-tm"><button class="go" id="mxGive">Выдать</button><button class="go mx-ghost" id="mxTake">Забрать</button></div>`, (ov, close) => {
+    sheet(`<h3>Управление TIX</h3><div id="mxP"></div><input class="s2in" id="mxQ" placeholder="Поиск пользователя" autocomplete="off"><div class="mx mx-us" id="mxU"></div><input class="s2in" id="mxA" inputmode="numeric" placeholder="Количество TIX" autocomplete="off"><div class="mx mx-tm"><button class="go" id="mxGive">Выдать</button><button class="go mx-ghost" id="mxTake">Забрать</button></div><button class="go mx-ghost" id="mxSet" style="margin-top:8px">Установить баланс (0 — обнулить)</button>`, (ov, close) => {
       const P = Q('#mxP', ov), U = Q('#mxU', ov), qi = Q('#mxQ', ov), a = Q('#mxA', ov); a.addEventListener('input', () => { a.value = a.value.replace(/\D/g, '').slice(0, 15); });
       const nm = u => (u.id === (me && me.id) ? 'Я · ' : '') + (u.display_name || u.username || 'Пользователь');
       const drawP = () => { P.innerHTML = pick ? `<div class="mx mx-pk">${G(() => avatarHTML(pick, 's')) || ''}<b>${E(nm(pick))}</b><button type="button" id="mxX">Изменить</button></div>` : ''; U.style.display = pick ? 'none' : ''; qi.style.display = pick ? 'none' : ''; const x = Q('#mxX', ov); if (x) x.onclick = () => { pick = null; drawP(); drawU(); }; };
       const drawU = () => { const q = qi.value.trim().toLowerCase(); U.innerHTML = users.filter(u => !q || nm(u).toLowerCase().includes(q) || String(u.username || '').toLowerCase().includes(q)).slice(0, 40).map(u => `<button type="button" class="mx-u" data-u="${E(u.id)}">${G(() => avatarHTML(u, 's')) || ''}<span>${E(nm(u))}<small>@${E(u.username || '')}</small></span></button>`).join('') || '<div class="s2empty">Никого не найдено</div>'; };
       U.onclick = e => { const b = e.target.closest('[data-u]'); if (!b) return; pick = users.find(u => u.id === b.dataset.u); drawP(); }; qi.oninput = drawU; drawP(); drawU();
       const go = async (fn, okMsg) => { if (!pick) return tst('Выберите пользователя', 'red'); const v = num(a.value); if (v < 1) return tst('Введите количество', 'red'); const r = await rpc(fn, { p_user: pick.id, p_amount: v }); if (r.data && r.data.ok) { tst(okMsg(r.data, v)); close(); done && done(); } else tst(eMsg(r), 'red'); };
+      Q('#mxSet', ov).onclick = async () => { if (!pick) return tst('Выберите пользователя', 'red'); if (a.value === '') return tst('Введите число (0 — обнулить)', 'red'); const r = await rpc('owner_set_tix', { p_user: pick.id, p_amount: num(a.value) }); if (r.data && r.data.ok) { tst('Баланс установлен: ' + fm(r.data.balance) + ' TIX'); close(); done && done(); } else tst(eMsg(r), 'red'); };
       Q('#mxGive', ov).onclick = () => go('owner_grant_tix', (d, v) => 'Выдано ' + fm(v) + ' TIX');
       Q('#mxTake', ov).onclick = () => go('owner_take_tix', d => 'Забрано ' + fm(d.taken) + ' TIX');
+    });
+  }
+
+
+  /* ================= Верх профиля: балансы, магазин подарков, управление TIX ================= */
+  async function balances(el) {
+    if (!el) return; const r = await rpc('tix_state'); const d = r.data || {};
+    el.innerHTML = `<div class="mx mx-card" style="padding:18px 20px"><div class="mx-l">Баланс</div><div class="mx-b" style="font-size:34px">${fm(d.tix)}<span>TIX</span></div><div class="mx-s">${fm(d.gold)} gold · курс 1500 gold = 1 TIX</div></div>
+      <div class="mx mx-act"><button data-b="shop">Магазин подарков</button><button data-b="swap">Купить TIX</button><button data-b="wal">Кошелёк</button></div>${OWN() ? '<div class="mx mx-act" style="grid-template-columns:1fr 1fr"><button data-b="own">Выдать TIX себе</button><button data-b="own">Убрать TIX у себя</button></div>' : ''}`;
+    el.onclick = e => { const b = e.target.closest('[data-b]'); if (!b) return; const k = b.dataset.b; if (k === 'shop') G(() => window.openGiftShop(ME.id)); else if (k === 'swap') swapSheet(d, () => balances(el)); else if (k === 'wal') wallet(); else if (k === 'own') ownerTix(G(() => ME.id), () => balances(el)); };
+  }
+
+
+  /* ================= Бан на время ================= */
+  function tempBan(uid, name, done) {
+    let unit = 60, val = '';
+    sheet(`<h3>Бан на время</h3><div class="mx mx-hint">Пользователь @${E(name || '')} потеряет доступ на указанный срок и будет разблокирован автоматически.</div><div class="mx mx-seg"><button data-u="1">Минуты</button><button data-u="60" class="on">Часы</button><button data-u="1440">Дни</button></div><input class="s2in" id="mxA" inputmode="numeric" placeholder="На сколько" autocomplete="off"><div class="mx mx-hint" id="mxH"></div><div class="mx mx-ch"><button data-p="60">1 час</button><button data-p="1440">1 день</button><button data-p="10080">7 дней</button><button data-p="43200">30 дней</button></div><button class="go" id="mxGo">Забанить</button><button class="go mx-ghost" id="mxPerm" style="margin-top:8px">Забанить навсегда</button>`, (ov, close) => {
+      const a = Q('#mxA', ov), h = Q('#mxH', ov);
+      const mins = () => num(a.value) * unit;
+      const upd = () => { const m = mins(); h.textContent = m > 0 ? 'До ' + new Date(Date.now() + m * 60000).toLocaleString('ru-RU', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' }) : ''; };
+      a.oninput = () => { a.value = a.value.replace(/\D/g, '').slice(0, 6); upd(); };
+      ov.addEventListener('click', e => {
+        const u = e.target.closest('[data-u]'); if (u) { unit = +u.dataset.u; QA('[data-u]', ov).forEach(x => x.classList.toggle('on', x === u)); upd(); return; }
+        const p = e.target.closest('[data-p]'); if (p) { const m = +p.dataset.p; if (m % 1440 === 0) { unit = 1440; a.value = m / 1440; } else { unit = 60; a.value = m / 60; } QA('[data-u]', ov).forEach(x => x.classList.toggle('on', +x.dataset.u === unit)); upd(); }
+      });
+      const go = async m => { const r = await rpc('admin_ban', { p_user: uid, p_minutes: m }); if (r.data && r.data.ok) { tst('Готово'); close(); done && done(); } else tst(r.data && r.data.error === 'protected' ? 'Этого пользователя банить нельзя' : eMsg(r), 'red'); };
+      Q('#mxGo', ov).onclick = () => { const m = mins(); if (m < 1) return tst('Укажите срок', 'red'); go(m); };
+      Q('#mxPerm', ov).onclick = () => go(0);
     });
   }
 
@@ -405,7 +459,7 @@
     } catch (e) { launchBusy = false; return; }
     const o = document.createElement('div'); o.id = 'mxLaunch'; o.className = 'mx-lo';
     const items = [['Кошелёк TIX', 'Обмен праймиков на TIX, переводы друзьям, история операций.'], ['Рынок NFT', 'Покупайте и продавайте NFT за TIX по свободным ценам.'], ['Новая коллекция', 'Все подарки и NFT переработаны: строгая графика вместо значков.'], ['Инструменты', 'Напоминания, поиск по сообщениям, заметки о контактах, экспорт переписки, тихие часы.'], ['Приватность', 'Скрытие фото, статуса и «о себе», чёрный список, список устройств.']];
-    o.innerHTML = `<div class="mx-lc"><div class="mx-lart">${svg({ name: 'Основа Запуск', rarity: 'legendary' })}</div><div class="mx-lk">GOLDA 2.1</div><h2>Мессенджер вышел из беты</h2><p>Спасибо, что были с нами с самого начала. Теперь GOLDA работает в полную силу.</p><div class="mx-li">${items.map(x => `<div><b>${x[0]}</b><span>${x[1]}</span></div>`).join('')}</div><button class="go" id="mxLgo">Получить 100 TIX</button><small>Приветственный бонус начисляется один раз.</small></div>`;
+    o.innerHTML = `<div class="mx-lc"><div class="mx-lart">${svg({ name: 'Маяк Янтарь', rarity: 'legendary' })}</div><div class="mx-lk">GOLDA 2.1</div><h2>Мессенджер вышел из беты</h2><p>Спасибо, что были с нами с самого начала. Теперь GOLDA работает в полную силу.</p><div class="mx-li">${items.map(x => `<div><b>${x[0]}</b><span>${x[1]}</span></div>`).join('')}</div><button class="go" id="mxLgo">Получить 100 TIX</button><small>Приветственный бонус начисляется один раз.</small></div>`;
     document.body.appendChild(o);
     Q('#mxLgo', o).onclick = async () => {
       const b = Q('#mxLgo', o); b.disabled = true; b.textContent = 'Начисляем…';
@@ -416,7 +470,7 @@
   }
   let tries = 0; (function wait() { if (ME_() && ME_().id && Q('#app,.app,.side')) { setTimeout(launch, 1800); } else if (tries++ < 400) setTimeout(wait, 800); })();
 
-  window.GoldaMint = { wallet, market, tools, gifts, listNft, ownerTix, send: uid => sendSheet(uid), launch, sweep: () => sweep(document.body) };
+  window.GoldaMint = { tempBan, wallet, market, tools, gifts, balances, listNft, ownerTix, send: uid => sendSheet(uid), launch, sweep: () => sweep(document.body) };
   function start() { sweep(document.body); mo.observe(document.body, { childList: true, subtree: true }); }
   if (document.body) start(); else document.addEventListener('DOMContentLoaded', start);
 })();

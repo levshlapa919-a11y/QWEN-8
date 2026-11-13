@@ -131,3 +131,18 @@ html[data-ui="clean"] .gs-ok,html[data-ui="clean"] .gs-sell{background:var(--ac)
 html[data-ui="clean"] .gs-sell.alt{background:var(--p2)!important;color:var(--tx)!important}
 html[data-ui="clean"] .gs-halo{background:none!important}
 .mx-grid.g3{grid-template-columns:repeat(3,1fr);gap:8px}.mx-grid.g3 .mx-n{padding:6px 6px 9px;border-radius:14px}.mx-grid.g3 .mx-nm{font-size:12px;margin:6px 2px 0}.mx-act.one{grid-template-columns:1fr}
+
+/* iPhone, приложение на экране «Домой»: высота по всему экрану */
+html.ios-sa,html.ios-sa body{height:100%;overflow:hidden}
+html.ios-sa body{position:fixed;inset:0;width:100%}
+html.ios-sa .app,html.ios-sa .main{height:100%!important;min-height:0}
+
+/* объёмная графика NFT: рисунок на всю карточку */
+.mx-art{padding:0!important;overflow:hidden}
+.mx-art .ga,.gf-e .ga,.gs-halo .ga,.gm-e .ga,.g3-art .ga{border-radius:inherit}
+.gf-e{width:100%!important;max-width:none!important;border-radius:12px;overflow:hidden}
+.gs-halo{width:210px;height:210px;border-radius:26px;overflow:hidden;box-shadow:0 14px 40px rgba(0,0,0,.35)}
+.gm-e{border-radius:14px;overflow:hidden}
+.g3-art{padding:0!important;overflow:hidden;background:none!important}
+.mx-bg{opacity:.5;border-radius:50%;overflow:hidden}
+.mx-lart{opacity:.55;border-radius:50%;overflow:hidden}

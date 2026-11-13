@@ -25,13 +25,13 @@
     const tags = (own ? '<span class="tag gold">👑 Создатель</span>' : self ? '<span class="tag green">это ты</span>' : '') + (u.is_admin && !own ? '<span class="tag gold">админ</span>' : '') + (u.is_banned ? '<span class="tag red">бан</span>' : '') + (muted(u) ? '<span class="tag green">🔇 до ' + new Date(u.muted_until).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }) + '</span>' : '') + (isBot(u) ? '<span class="tag">бот</span>' : '');
     let h = `<div class="f6-row ${isO ? 'open' : ''}" data-id="${u.id}"><div class="f6-head">${avatarHTML(u, 's')}<div class="f6-main"><div class="f6-name">${E(u.display_name || u.username)} ${tags}</div><div class="f6-sub">@${E(u.username)} · ${seen(u)}</div></div><span class="f6-arr">${isO ? '▴' : '▾'}</span></div>`;
     if (isO) {
-      h += `<div class="f6-body"><div class="f6-info"><div><small>Почта</small><b class="f6-copy" data-copy="${E(u.email)}">${E(u.email)}</b></div><div><small>Регистрация</small><b>${date(u.created_at)}</b></div><div><small>Gold</small><b id="f6g">…</b></div><div><small>TIX</small><b id="f6p">…</b></div><div><small>ID</small><b class="f6-copy" data-copy="${u.id}">${u.id.slice(0, 8)}…</b></div></div><div class="f6-acts" data-uid="${u.id}">`;
+      h += `<div class="f6-body"><div class="f6-info"><div><small>Почта</small><b class="f6-copy" data-copy="${E(u.email)}">${E(u.email)}</b></div><div><small>Регистрация</small><b>${date(u.created_at)}</b></div><div><small>Gold</small><b id="f6g">…</b></div><div><small>TIX</small><b id="f6p">…</b></div>${u.is_banned && u.banned_until ? `<div><small>Бан до</small><b>${new Date(u.banned_until).toLocaleString('ru-RU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</b></div>` : ''}<div><small>ID</small><b class="f6-copy" data-copy="${u.id}">${u.id.slice(0, 8)}…</b></div></div><div class="f6-acts" data-uid="${u.id}">`;
       h += '<button data-a="chats">👁 Чаты</button><button data-a="dm">✉️ Написать</button>';
       if (prot) h += '<span class="f6-lock">🔒 защищён от действий</span>';
       else {
         h += '<button data-a="m10">🔇 10м</button><button data-a="m60">🔇 1ч</button><button data-a="m1440">🔇 24ч</button><button data-a="mc">🔇 Своё…</button>';
         if (muted(u)) h += '<button data-a="unmute">🔓 Размут</button>';
-        h += `<button class="${u.is_banned ? 'ok' : 'bad'}" data-a="ban">${u.is_banned ? '✔ Разбанить' : '⛔ Бан'}</button><button class="${u.is_admin ? 'bad' : 'ok'}" data-a="adm">${u.is_admin ? '🚫 Снять админа' : '⚡ Сделать админом'}</button>`;
+        h += `<button class="${u.is_banned ? 'ok' : 'bad'}" data-a="ban">${u.is_banned ? '✔ Разбанить' : '⛔ Бан'}</button>${u.is_banned ? '' : '<button class="bad" data-a="tban">Бан на время…</button>'}<button class="${u.is_admin ? 'bad' : 'ok'}" data-a="adm">${u.is_admin ? '🚫 Снять админа' : '⚡ Сделать админом'}</button>`;
         if (iAmOwner()) h += '<button class="bad" data-a="del">🗑 Удалить</button>';
       }
       h += '</div></div>';
@@ -87,6 +87,7 @@
     if (u.email === ownerMail() && k !== 'chats') return tst('👑 Создателя нельзя трогать', 'red');
     if (uid === ME.id) return tst('На себе нельзя', 'red');
     if (k === 'del') { if (!await confirmBox('Удалить аккаунт?', 'Все данные пользователя будут удалены безвозвратно.')) return; const { error } = await sb.from('profiles').delete().eq('id', uid); if (error) return tst('Ошибка: ' + ru(error.message), 'red'); tst('Аккаунт удалён ✔'); S.open = null; return window.refreshAdminUsers(); }
+    if (k === 'tban') return window.GoldaMint.tempBan(uid, u.username, async () => { await fetchAllUsers(); Q('#f6Stats').innerHTML = stats(); paint(); });
     let upd;
     if (k === 'ban') upd = { is_banned: !u.is_banned };
     else if (k === 'adm') upd = { is_admin: !u.is_admin };

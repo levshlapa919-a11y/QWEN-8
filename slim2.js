@@ -138,10 +138,11 @@
           const m = ME_(); if (!m) return;
           Q('#s2ph').innerHTML = `<div class="s2av">${avatarHTML(m, 'l')}</div><h2>${E(m.display_name || m.username)}</h2><p>@${E(m.username || '')}${m.about ? ' · ' + E(m.about) : ''}</p>`;
         }; draw();
-        body.innerHTML = row({ id: 'edit', ic: 'user', t: t('edit_profile'), s: t('name_about') }) +
+        body.innerHTML = '<div id="s2bal"></div>' + row({ id: 'edit', ic: 'user', t: t('edit_profile'), s: t('name_about') }) +
           row({ id: 'tix', ic: 'wallet', t: 'Кошелёк TIX', s: 'Баланс, обмен gold, переводы' }) + row({ id: 'market', ic: 'chart', t: 'Рынок NFT', s: 'Купить и продать за TIX' }) + row({ id: 'wallet', ic: 'wallet', t: t('wallet'), s: t('wallet_s') }) + row({ id: 'stats', ic: 'chart', t: t('stats') }) +
           row({ id: 'story', ic: 'brush', t: t('stories'), s: t('expires') }) + row({ id: 'saved', ic: 'bookmark', t: t('saved'), s: t('notes') }) + row({ id: 'share', ic: 'share', t: t('share') }) + '<div class="s2lbl">Подарки и NFT</div><div id="s2gifts"></div>';
         body.onclick = e => { const r = e.target.closest('[data-id]'); if (r) act(r.dataset.id); };
+        G(() => window.GoldaMint.balances(Q('#s2bal', body)));
         G(() => window.GoldaMint.gifts(Q('#s2gifts', body), ME.id));
       }
     });

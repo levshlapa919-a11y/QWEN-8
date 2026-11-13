@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ru">
 <head>
-<script>window.__SBKEY="sb_publishable_crUm-uK9Hs0o_xgD5eVdyg_TaOgO3lH"</script>
+<script>try{if(navigator.standalone)document.documentElement.classList.add('ios-sa')}catch(e){}window.__SBKEY="sb_publishable_crUm-uK9Hs0o_xgD5eVdyg_TaOgO3lH"</script>
 <script src="api.js?v=7"></script>
 <script>try{for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(/^sb-.*-auth-token$/.test(k)&&localStorage.getItem(k)){document.documentElement.classList.add('has-session');break}}}catch(e){}</script>
 <script>window.__errs=[];window.addEventListener('error',function(e){try{window.__errs.push((e.message||'err')+' '+(e.filename||'').split('/').pop()+':'+(e.lineno||''))}catch(_){}} ,true);window.addEventListener('unhandledrejection',function(e){try{window.__errs.push('promise: '+(e.reason&&e.reason.message||e.reason))}catch(_){}});window.__reset=function(){try{(navigator.serviceWorker?navigator.serviceWorker.getRegistrations():Promise.resolve([])).then(function(r){return Promise.all(r.map(function(x){return x.unregister()}))}).then(function(){return window.caches?caches.keys().then(function(k){return Promise.all(k.map(function(x){return caches.delete(x)}))}):0}).then(function(){location.replace(location.pathname+'?r='+Date.now())},function(){location.reload()})}catch(e){location.reload()}};</script>
@@ -297,7 +297,7 @@ body[data-theme="light"] .settings-row{background:rgba(0,0,0,.02)}
 <link rel="stylesheet" href="ui6.css?v=3">
 <link rel="stylesheet" href="m3.css?v=3">
 <link rel="stylesheet" href="slim2.css?v=1">
-<link rel="stylesheet" href="mint.css?v=2">
+<link rel="stylesheet" href="mint.css?v=3">
 </head>
 <body data-theme="dark">
 <noscript><main style="font-family:sans-serif;max-width:640px;margin:40px auto;padding:0 20px"><h1>Golda Messenger</h1><p>Бесплатный мессенджер: личные чаты и группы, каналы, голосовые и видеозвонки, стикеры, игры, подарки и NFT.</p><p>Для работы нужен включённый JavaScript. Приложение для Android можно скачать на странице <a href="https://github.com/levshlapa919-a11y/QWEN-8/releases/tag/apk-latest">релизов</a>.</p></main></noscript>
@@ -719,7 +719,7 @@ function mediaHTML(md){if(md.kind==='file')return fileCardHTML(md);if(md.kind===
 let screamAudio=null,screamCtx=null,screamReady=false;
 function initScreamer(){screamAudio=new Audio(SCREAM_AUDIO);screamAudio.volume=1.0;screamAudio.loop=false;screamAudio.preload='auto';}
 function playScreamAuto(){if(!screamAudio)initScreamer();screamAudio.play().then(()=>{screamReady=true;}).catch(e=>{try{screamCtx=new(window.AudioContext||window.webkitAudioContext)();if(screamCtx.state==='suspended')screamCtx.resume();const osc=screamCtx.createOscillator();const gain=screamCtx.createGain();osc.type='sawtooth';osc.frequency.setValueAtTime(800,screamCtx.currentTime);osc.frequency.exponentialRampToValueAtTime(100,screamCtx.currentTime+2);gain.gain.setValueAtTime(0.5,screamCtx.currentTime);gain.gain.exponentialRampToValueAtTime(0.01,screamCtx.currentTime+2);osc.connect(gain);gain.connect(screamCtx.destination);osc.start();osc.stop(screamCtx.currentTime+2);screamReady=true;}catch(err){}});}
-function showBanScreen(){$('#banScreen').classList.remove('hidden');$('#screamImgEl').src=SCREAM_IMAGE;playScreamAuto();}
+function showBanScreen(){try{const t=$('#banScreen .bs-sub-real');if(t)t.textContent=(ME&&ME.banned_until)?'Аккаунт заблокирован до '+new Date(ME.banned_until).toLocaleString('ru-RU',{day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'}):'Твой аккаунт заблокирован навсегда';}catch(e){}$('#banScreen').classList.remove('hidden');$('#screamImgEl').src=SCREAM_IMAGE;playScreamAuto();}
 $('#banScreen').addEventListener('pointerdown',()=>{if(!screamReady){if(screamAudio){screamAudio.play().catch(()=>{});}if(screamCtx&&screamCtx.state==='suspended'){screamCtx.resume();}}});
 $('#bsLogoutReal').onclick=async(e)=>{e.stopPropagation();try{await sb.auth.signOut();}catch{}location.reload();};
 
@@ -901,7 +901,7 @@ d.innerHTML='<div style="font-size:42px">⚠️</div><div style="font-size:18px;
 <script src="extra.js?v=3"></script>
 <script src="mines.js?v=7"></script>
 <script src="gifticons.js?v=5"></script>
-<script src="profile2.js?v=19"></script>
+<script src="profile2.js?v=20"></script>
 <script src="resume.js?v=4"></script>
 <script src="ux2.js?v=2"></script>
 <script src="ux3.js?v=3"></script>
@@ -909,12 +909,12 @@ d.innerHTML='<div style="font-size:42px">⚠️</div><div style="font-size:18px;
 <script src="home.js?v=2"></script>
 <script src="ui6.js?v=1"></script>
 <script src="m3.js?v=3"></script>
-<script src="slim2.js?v=3"></script>
+<script src="slim2.js?v=4"></script>
 <script src="features2.js?v=3"></script>
 <script src="features3.js?v=6"></script>
 <script src="features4.js?v=3"></script>
 <script src="features5.js?v=1"></script>
-<script src="features6.js?v=3"></script>
+<script src="features6.js?v=4"></script>
 <script src="core-fix.js?v=1"></script>
 <script src="ui3.js?v=4"></script>
 <script src="arcade.js?v=1"></script>
@@ -926,6 +926,6 @@ d.innerHTML='<div style="font-size:42px">⚠️</div><div style="font-size:18px;
 <script src="duel.js?v=1"></script>
 <script src="voice.js?v=1"></script>
 <script src="transcribe.js?v=1"></script>
-<script src="mint.js?v=2"></script>
+<script src="mint.js?v=3"></script>
 </body>
 </html>

@@ -20,7 +20,7 @@
     const sp = document.createElement('span'); sp.className = 'ae-fb'; sp.textContent = e; im.replaceWith(sp);
   }, true);
   const gi = g => g.image_url ? `<img class="ae gi" alt="${E(g.name)}" src="${E(g.image_url)}" loading="lazy">` : (window.GoldaArt ? window.GoldaArt.svg(g) : '');
-  const bgOf = g => `radial-gradient(circle at 50% 42%,rgba(255,255,255,.12),rgba(255,255,255,0) 64%),linear-gradient(165deg,${g.bg1},${g.bg2})`;
+  const bgOf = g => (window.GoldaArt ? window.GoldaArt.bg(g) : '#1b2430');
   const say = (t, k) => { try { toast(t, k); } catch (e) { } };
 
   /* ---------- подарки: карточки ---------- */
@@ -65,6 +65,7 @@
     document.body.appendChild(o);
   }
   window.showGiftSheet = showGift;
+  window.openGiftShop = uid => openShop(uid);
   document.addEventListener('click', e => {
     const b = e.target.closest('.gf[data-ug]'); if (!b) return;
     const box = b.closest('.gift-grid'), ug = (box._d || []).find(x => x.id === b.dataset.ug); if (!ug) return;
