@@ -169,4 +169,10 @@
   function clearBadge() { try { navigator.clearAppBadge && navigator.clearAppBadge(); } catch (_) {} }
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { clearBadge(); savePushSubscription(); } });
   clearBadge();
+  // подписка могла слететь (смена аккаунта, истёк срок на iPhone): обновляем при запуске, раз в 10 минут и по сигналу от сервис-воркера
+  if (supported) {
+    navigator.serviceWorker.addEventListener('message', e => { if (e.data && e.data.type === 'resub') savePushSubscription(); });
+    setTimeout(savePushSubscription, 3000);
+    setInterval(() => { if (document.visibilityState === 'visible') savePushSubscription(); }, 600000);
+  }
 })();

@@ -98,7 +98,7 @@
     });
     return { closed, open };
   }
-  function svg(g) {
+  function svgOld(g) {
     g = g || {}; const nm = String(g.name || ''), rar = MET[g.rarity] ? g.rarity : 'common', key = nm + '|' + rar; if (ART[key]) return ART[key];
     const w = nm.split(/\s+/), p = pal(g), mk = icon(nm), id = 'a' + h32(key).toString(36), m = MET[rar];
     const sym = SYMS[h32((w[1] || '') + nm) % SYMS.length], sk = IC[sym === (w[0] || '').toLowerCase() ? SYMS[(SYMS.indexOf(sym) + 7) % SYMS.length] : sym];
@@ -114,6 +114,28 @@
 <g transform="translate(50 49) scale(1.5) translate(-50 -50)" stroke-linecap="round" stroke-linejoin="round">${model.closed}${model.open ? `<g fill="none"><g stroke="#05080c" stroke-opacity=".5" stroke-width="3.400">${model.open}</g><g stroke="url(#${id}l)" stroke-width="2.200">${model.open}</g></g>` : ''}</g>
 <rect width="100" height="100" fill="url(#${id}g)"/>`;
     return (ART[key] = `<svg class="ga" viewBox="0 0 100 100" aria-hidden="true">${o}</svg>`);
+  }
+
+  const OLDGIFT = window.giftSVG, ART2 = {};
+  function svg(g) {
+    g = g || {}; const nm = String(g.name || ''), key = nm + '|' + (g.rarity || '');
+    if (ART2[key]) return ART2[key];
+    let raw = null; try { raw = OLDGIFT && OLDGIFT(nm); } catch (e) { }
+    if (!raw) return (ART2[key] = svgOld(g));
+    const gl = (raw.match(/--gl:(#[0-9a-fA-F]{3,8})/) || [])[1] || '#6aa0ff', ol = (raw.match(/--ol:(#[0-9a-fA-F]{3,8})/) || [])[1] || '#1b2a55';
+    const inner = raw.replace(/^<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '');
+    const id = 'q' + h32(nm).toString(36), leg = g.rarity === 'legendary' || g.rarity === 'mythic';
+    const pos = [[16, 18], [84, 16], [10, 50], [90, 52], [18, 84], [82, 86], [50, 8], [50, 94], [30, 34], [72, 32], [26, 68], [76, 70]];
+    const pat = pos.map((q, i) => `<use href="#${id}i" transform="translate(${q[0]} ${q[1]}) scale(${i % 2 ? .16 : .2}) translate(-50 -50)"/>`).join('');
+    const o = `<defs><radialGradient id="${id}b" cx=".5" cy=".4" r=".85"><stop offset="0" stop-color="${gl}"/><stop offset=".55" stop-color="${ol}"/><stop offset="1" stop-color="#05070d"/></radialGradient>
+<radialGradient id="${id}h" cx=".3" cy=".12" r=".7"><stop offset="0" stop-color="#fff" stop-opacity=".38"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+<radialGradient id="${id}f" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#000" stop-opacity=".45"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
+<g id="${id}i">${inner}</g></defs>
+<rect width="100" height="100" fill="url(#${id}b)"/><g opacity=".13">${pat}</g>
+<ellipse cx="50" cy="82" rx="24" ry="5" fill="url(#${id}f)"/>
+<g transform="translate(17 12) scale(.66)" style="filter:drop-shadow(0 3px 3px rgba(0,0,0,.45))"><use href="#${id}i"/></g>
+<rect width="100" height="100" fill="url(#${id}h)"/>${leg ? `<rect x=".6" y=".6" width="98.8" height="98.8" rx="0" fill="none" stroke="#ffe08a" stroke-opacity=".55" stroke-width="1.2"/>` : ''}`;
+    return (ART2[key] = `<svg class="ga" viewBox="0 0 100 100" aria-hidden="true">${o}</svg>`);
   }
   window.GoldaArt = { svg, h32, bg: bgc };
   /* старый набор мультяшных значков больше не нужен */

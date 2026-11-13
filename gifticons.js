@@ -97,9 +97,32 @@
     'Cookie Heart': ['heart', 'copper'], 'Homemade Cake': ['cake', 'peach'], 'B-Day Candle': ['candle', 'sapph'], 'Sakura Flower': ['flower', 'rose'], 'Star Notepad': ['star', 'silver'],
     'Hypno Lollipop': ['lolli', 'aqua'], 'Trapped Heart': ['heart', 'sapph'], 'Bow Tie': ['bow', 'ruby'], 'Joyful Bundle': ['box', 'emer'], 'Berry Box': ['box', 'rose'], 'Bunny Muffin': ['cake', 'rose'],
     'Pet Snake': ['snake', 'amet'], 'Whip Cupcake': ['cake', 'amet'], 'Sleigh Bell': ['bell', 'gold'], 'Ice Cream': ['icecream', 'rose'], 'Toy Bear': ['bear', 'copper'],
-    'Алмаз': ['gem', 'aqua'], 'Корона': ['crown', 'gold'], 'Галактика': ['orb', 'sapph'], 
+    'Алмаз': ['gem', 'aqua'],
+    'Ruby Locket': ['locket', 'ruby'],
+    'Emerald Cap': ['cap', 'emer'],
+    'Royal Helmet': ['helmet', 'amet'],
+    'Frost Shard': ['shard', 'aqua'],
+    'Silver Oscar': ['statue', 'silver'],
+    'Night Perfume': ['perfume', 'ink'],
+    'Blue Rose': ['rose', 'sapph'],
+    'Gold Bracelet': ['bracelet', 'gold'],
+    'Silver Key': ['key', 'silver'],
+    'Ruby Moon': ['moon', 'ruby'],
+    'Jade Lamp': ['lamp', 'emer'],
+    'Frost Bell': ['bell', 'aqua'],
+    'Sweet Heart': ['heart', 'rose'],
+    'Amber Orb': ['orb', 'copper'],
+    'Rose Candle': ['candle', 'rose'],
+    'Mint Cake': ['cake', 'emer'],
+    'Sapphire Bow': ['bow', 'sapph'],
+    'Ember Skull': ['skull', 'copper'],
+    'Ghost Cat': ['cat', 'ink'],
+    'Star Lolly': ['lolli', 'amet'],
+    'Crystal Star': ['star', 'aqua'],
+    'GOLDA': ['coin', 'gold'],
+ 'Корона': ['crown', 'gold'], 'Галактика': ['orb', 'sapph'], 
   };
-  const LEG = ['Plush Pepe', 'Heart Locket', "Durov's Cap", 'Precious Peach', 'Heroic Helmet', 'Astral Shard', 'Mini Oscar', 'Perfume Bottle', 'Eternal Rose', 'Алмаз', 'Корона', 'Единорог', 'Феникс', 'Дракон', 'Галактика', 'Золотая Голда', 'Призрак'];
+  const LEG = ['Plush Pepe', 'Heart Locket', "Durov's Cap", 'Precious Peach', 'Heroic Helmet', 'Astral Shard', 'Mini Oscar', 'Perfume Bottle', 'Eternal Rose', 'Алмаз', 'Корона', 'Единорог', 'Феникс', 'Дракон', 'Галактика', 'Золотая Голда', 'Призрак', 'GOLDA', 'Ruby Locket', 'Silver Oscar'];
   let N = 0;
   function svg(name) {
     const m = MAP[name]; if (!m) return null; const p = PAL[m[1]], u = 'i' + (++N);

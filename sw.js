@@ -1,5 +1,5 @@
 /* golda-mesenger service worker: push + офлайн-оболочка */
-const CACHE = 'golda-shell-v75';
+const CACHE = 'golda-shell-v76';
 const SHELL = ['./', './index.html', './manifest.json', './mobile.css', './push.js', './icon-192.png'];
 
 self.addEventListener('install', e => {
@@ -84,6 +84,13 @@ self.addEventListener('push', e => {
     if (self.navigator && self.navigator.setAppBadge) {
       try { await self.navigator.setAppBadge(); } catch (_) {}
     }
+  })());
+});
+
+self.addEventListener('pushsubscriptionchange', e => {
+  e.waitUntil((async () => {
+    const list = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    list.forEach(c => c.postMessage({ type: 'resub' }));
   })());
 });
 
