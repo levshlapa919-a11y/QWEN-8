@@ -116,25 +116,97 @@
     return (ART[key] = `<svg class="ga" viewBox="0 0 100 100" aria-hidden="true">${o}</svg>`);
   }
 
-  const OLDGIFT = window.giftSVG, ART2 = {};
+  /* ===== Коллекционные предметы: огранённые камни, орбы, кристаллы, медальоны, кольца ===== */
+  const ART2 = {};
+  const hsl = (h, s, l, a) => `hsl(${(h % 360 + 360) % 360} ${s}% ${Math.max(2, Math.min(97, l))}%${a == null ? '' : ' / ' + a}`.replace(/(\))?$/, ')');
+  const P2 = a => a.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
+  const polar = (cx, cy, r, deg) => [cx + r * Math.cos(deg * Math.PI / 180), cy + r * Math.sin(deg * Math.PI / 180)];
+  const lit = (deg, base, amp) => base + amp * Math.cos((deg + 125) * Math.PI / 180); // свет сверху-слева
+  function tone(rar, hsh) {
+    const pick = (a, k) => a[(hsh >>> k) % a.length];
+    if (rar === 'mythic') return { h: 45, s: 78, metal: 45, bd: 38 };
+    if (rar === 'legendary') { const h = pick([348, 196, 158, 282, 28, 212], 3); return { h, s: 82, metal: 44, bd: h }; }
+    if (rar === 'epic') { const h = pick([268, 296, 326, 252], 3); return { h, s: 70, metal: 215, bd: h }; }
+    if (rar === 'rare') { const h = pick([206, 190, 222, 176], 3); return { h, s: 66, metal: 215, bd: h }; }
+    if (rar === 'uncommon') { const h = pick([150, 168, 128], 3); return { h, s: 56, metal: 215, bd: h }; }
+    return { h: pick([214, 200, 226], 3), s: 40, metal: 215, bd: 214 };
+  }
+  function metalDefs(id, T) {
+    const m = T.metal, gold = m < 90, s = gold ? 70 : 8;
+    return `<linearGradient id="${id}m" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${hsl(m, s, gold ? 82 : 92)}"/><stop offset=".35" stop-color="${hsl(m, s, gold ? 58 : 66)}"/><stop offset=".62" stop-color="${hsl(m, s, gold ? 36 : 40)}"/><stop offset="1" stop-color="${hsl(m, s, gold ? 70 : 78)}"/></linearGradient>
+<linearGradient id="${id}n" x1="1" y1="1" x2="0" y2="0"><stop offset="0" stop-color="${hsl(m, s, gold ? 78 : 88)}"/><stop offset=".5" stop-color="${hsl(m, s, gold ? 40 : 44)}"/><stop offset="1" stop-color="${hsl(m, s, gold ? 66 : 74)}"/></linearGradient>`;
+  }
+  function gemShape(cx, cy, R, T, id) {
+    const n = 8, O = [], I = [], M = []; let o = '';
+    for (let i = 0; i < n; i++) { O.push(polar(cx, cy, R, 22.5 + i * 45)); I.push(polar(cx, cy, R * .52, 22.5 + i * 45)); M.push(polar(cx, cy, R * .78, i * 45)); }
+    for (let i = 0; i < n; i++) {
+      const j = (i + 1) % n, a = 22.5 + i * 45 + 22.5;
+      o += `<polygon points="${P2([O[i], M[i], I[i]])}" fill="${hsl(T.h, T.s, lit(a - 22, 50, 26))}"/>`;
+      o += `<polygon points="${P2([O[j], M[i], I[j]])}" fill="${hsl(T.h, T.s, lit(a + 22, 50, 26))}"/>`;
+      o += `<polygon points="${P2([O[i], M[i], O[j]])}" fill="${hsl(T.h, T.s - 6, lit(a, 62, 24))}"/>`;
+      o += `<polygon points="${P2([I[i], M[i], I[j]])}" fill="${hsl(T.h, T.s - 4, lit(a + 180, 46, 24))}" opacity=".95"/>`;
+    }
+    o += `<polygon points="${P2(I)}" fill="url(#${id}t)"/>`;
+    o += `<polygon points="${P2(O)}" fill="none" stroke="rgba(255,255,255,.5)" stroke-width=".7"/>`;
+    o += `<polygon points="${P2([I[5], I[6], I[7]].map((p, k) => [cx + (p[0] - cx) * .7, cy + (p[1] - cy) * .7]))}" fill="#fff" opacity=".55"/>`;
+    return o;
+  }
+  function prism(x, b, w, h, rot, T, id, k) {
+    const s = b - h * .74, a = b - h, L = (d) => hsl(T.h, T.s, d);
+    return `<g transform="rotate(${rot} ${x} ${b})"><polygon points="${P2([[x - w / 2, b], [x, b + 4], [x, s + 4], [x - w / 2, s]])}" fill="${L(54 + k)}"/>
+<polygon points="${P2([[x, b + 4], [x + w / 2, b], [x + w / 2, s], [x, s + 4]])}" fill="${L(30 + k)}"/>
+<polygon points="${P2([[x - w / 2, s], [x, s + 4], [x, a]])}" fill="${L(74 + k)}"/>
+<polygon points="${P2([[x, s + 4], [x + w / 2, s], [x, a]])}" fill="${L(46 + k)}"/>
+<polygon points="${P2([[x - w / 2 + 1.5, b - 3], [x - w / 4, b], [x - w / 4, s + 6], [x - w / 2 + 1.5, s + 2]])}" fill="#fff" opacity=".28"/></g>`;
+  }
+  function model(kind, T, id, hsh) {
+    const g = T.h, s = T.s; let o = '';
+    if (kind === 'gem') {
+      o += `<defs><radialGradient id="${id}t" cx=".35" cy=".3" r=".9"><stop offset="0" stop-color="${hsl(g, s - 10, 90)}"/><stop offset="1" stop-color="${hsl(g, s, 58)}"/></radialGradient></defs>` + gemShape(50, 47, 31, T, id);
+    } else if (kind === 'orb') {
+      o += `<defs><radialGradient id="${id}o" cx=".35" cy=".3" r=".85"><stop offset="0" stop-color="${hsl(g, s - 14, 86)}"/><stop offset=".45" stop-color="${hsl(g, s, 52)}"/><stop offset="1" stop-color="${hsl(g, s, 14)}"/></radialGradient>
+<radialGradient id="${id}c" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="${hsl(g + 20, 95, 88)}"/><stop offset="1" stop-color="${hsl(g + 20, 95, 60, 0)}"/></radialGradient>
+<radialGradient id="${id}r" cx=".5" cy=".5" r=".5"><stop offset=".78" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="${hsl(g + 30, 90, 80)}" stop-opacity=".7"/></radialGradient></defs>
+<circle cx="50" cy="48" r="31" fill="url(#${id}o)"/><circle cx="50" cy="52" r="15" fill="url(#${id}c)" opacity=".85"/>
+<g fill="none" stroke="#fff" stroke-opacity=".28" stroke-width=".9"><ellipse cx="50" cy="48" rx="25" ry="9" transform="rotate(${20 + hsh % 40} 50 48)"/><ellipse cx="50" cy="48" rx="25" ry="9" transform="rotate(${-40 - hsh % 30} 50 48)"/></g>
+<circle cx="50" cy="48" r="31" fill="url(#${id}r)"/><ellipse cx="39" cy="33" rx="11" ry="6.500" transform="rotate(-35 39 33)" fill="#fff" opacity=".7"/><circle cx="61" cy="64" r="2.600" fill="#fff" opacity=".35"/>`;
+    } else if (kind === 'crystal') {
+      o += prism(34, 76, 17, 36, -9, T, id, -6) + prism(66, 76, 17, 32, 11, T, id, -10) + prism(50, 80, 22, 54, 0, T, id, 0);
+    } else if (kind === 'medal') {
+      const n = 5 + hsh % 4, st = [];
+      for (let i = 0; i < n * 2; i++) st.push(polar(50, 48, i % 2 ? 7 : 15, -90 + i * 180 / n));
+      let studs = ''; for (let i = 0; i < 16; i++) { const p = polar(50, 48, 28, i * 22.5); studs += `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="1.100" fill="#fff" opacity=".55"/>`; }
+      o += `<defs>${metalDefs(id, T)}<radialGradient id="${id}f" cx=".35" cy=".3" r=".9"><stop offset="0" stop-color="${hsl(g, s - 10, 62)}"/><stop offset="1" stop-color="${hsl(g, s, 16)}"/></radialGradient></defs>
+<circle cx="50" cy="48" r="33" fill="url(#${id}m)"/><circle cx="50" cy="48" r="29.500" fill="url(#${id}n)"/><circle cx="50" cy="48" r="25" fill="url(#${id}f)"/>${studs}
+<polygon points="${P2(st)}" fill="url(#${id}m)" stroke="rgba(0,0,0,.35)" stroke-width=".6"/><circle cx="50" cy="48" r="4.200" fill="${hsl(g + 10, 90, 78)}"/><circle cx="48.800" cy="46.800" r="1.400" fill="#fff"/>`;
+    } else { // ring
+      o += `<defs>${metalDefs(id, T)}<radialGradient id="${id}t" cx=".35" cy=".3" r=".9"><stop offset="0" stop-color="${hsl(g, s - 10, 90)}"/><stop offset="1" stop-color="${hsl(g, s, 58)}"/></radialGradient></defs>
+<circle cx="50" cy="60" r="23" fill="none" stroke="rgba(0,0,0,.35)" stroke-width="9"/><circle cx="50" cy="58" r="23" fill="none" stroke="url(#${id}m)" stroke-width="8"/><circle cx="50" cy="58" r="19.500" fill="none" stroke="url(#${id}n)" stroke-width="1.500" opacity=".8"/>
+<path d="M42 38 L50 33 L58 38 L56 44 L44 44Z" fill="url(#${id}m)"/><g>${gemShape(50, 28, 13, T, id)}</g>`;
+    }
+    return o;
+  }
   function svg(g) {
-    g = g || {}; const nm = String(g.name || ''), key = nm + '|' + (g.rarity || '');
+    g = g || {}; const nm = String(g.name || ''), rar = g.rarity || 'common', key = nm + '|' + rar;
     if (ART2[key]) return ART2[key];
-    let raw = null; try { raw = OLDGIFT && OLDGIFT(nm); } catch (e) { }
-    if (!raw) return (ART2[key] = svgOld(g));
-    const gl = (raw.match(/--gl:(#[0-9a-fA-F]{3,8})/) || [])[1] || '#6aa0ff', ol = (raw.match(/--ol:(#[0-9a-fA-F]{3,8})/) || [])[1] || '#1b2a55';
-    const inner = raw.replace(/^<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '').replace(/<feMergeNode in="ol"\/>/, '').replace(/<path transform="translate\([^>]*>\s*<animate[^>]*\/>\s*<\/path>/g, '').replace(/<ellipse cx="50" cy="94"[^>]*\/>/, '');
-    const id = 'q' + h32(nm).toString(36), leg = g.rarity === 'legendary' || g.rarity === 'mythic';
-    const pos = [[16, 18], [84, 16], [10, 50], [90, 52], [18, 84], [82, 86], [50, 8], [50, 94], [30, 34], [72, 32], [26, 68], [76, 70]];
-    const pat = pos.map((q, i) => `<use href="#${id}i" transform="translate(${q[0]} ${q[1]}) scale(${i % 2 ? .16 : .2}) translate(-50 -50)"/>`).join('');
-    const o = `<defs><radialGradient id="${id}b" cx=".5" cy=".4" r=".85"><stop offset="0" stop-color="${gl}"/><stop offset=".55" stop-color="${ol}"/><stop offset="1" stop-color="#05070d"/></radialGradient>
-<radialGradient id="${id}h" cx=".3" cy=".12" r=".7"><stop offset="0" stop-color="#fff" stop-opacity=".38"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
-<radialGradient id="${id}f" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#000" stop-opacity=".45"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
-<g id="${id}i">${inner}</g></defs>
-<rect width="100" height="100" fill="url(#${id}b)"/><g opacity=".13">${pat}</g>
-<ellipse cx="50" cy="82" rx="24" ry="5" fill="url(#${id}f)"/>
-<g transform="translate(17 12) scale(.66)" style="filter:drop-shadow(0 3px 3px rgba(0,0,0,.45))"><use href="#${id}i"/></g>
-<rect width="100" height="100" fill="url(#${id}h)"/>${leg ? `<rect x=".6" y=".6" width="98.8" height="98.8" rx="0" fill="none" stroke="#ffe08a" stroke-opacity=".55" stroke-width="1.2"/>` : ''}`;
+    const hsh = h32(nm), id = 'q' + hsh.toString(36), T = tone(rar, hsh), ln = nm.toLowerCase();
+    let kind = ['gem', 'orb', 'crystal', 'medal', 'ring'][hsh % 5];
+    if (/ring|signet|bracelet/.test(ln)) kind = 'ring';
+    else if (/orb|ball|globe|moon|eye|planet|галакт|jar|crystal ball/.test(ln)) kind = 'orb';
+    else if (/shard|crystal|ion|astral|frost|star|спектр/.test(ln)) kind = 'crystal';
+    else if (/gem|diamond|алмаз|jewel|peach|rose/.test(ln)) kind = 'gem';
+    else if (/locket|pendant|oscar|coin|medal|корон|seal|watch|key|cap|helmet|hat/.test(ln)) kind = 'medal';
+    const hb = T.bd, leg = rar === 'legendary' || rar === 'mythic';
+    let pat = ''; const pos = [[14, 16], [86, 14], [8, 48], [92, 50], [16, 84], [84, 86], [50, 7], [50, 95], [28, 30], [72, 28], [24, 68], [76, 70], [38, 90], [62, 88]];
+    pos.forEach((q, i) => { const r = i % 3 ? 2.2 : 3.2; pat += `<path d="M${q[0]} ${q[1] - r}L${q[0] + r * .6} ${q[1]}L${q[0]} ${q[1] + r}L${q[0] - r * .6} ${q[1]}Z"/>`; });
+    let rays = ''; if (leg) for (let i = 0; i < 12; i++) { const a = i * 30, p1 = polar(50, 46, 80, a - 5), p2 = polar(50, 46, 80, a + 5); rays += `<polygon points="50,46 ${P2([p1, p2])}"/>`; }
+    const o = `<defs><radialGradient id="${id}b" cx=".5" cy=".42" r=".85"><stop offset="0" stop-color="${hsl(hb, 62, leg ? 44 : 38)}"/><stop offset=".6" stop-color="${hsl(hb, 58, 20)}"/><stop offset="1" stop-color="${hsl(hb, 50, 8)}"/></radialGradient>
+<radialGradient id="${id}h" cx=".3" cy=".08" r=".75"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+<radialGradient id="${id}s" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#000" stop-opacity=".5"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient></defs>
+<rect width="100" height="100" fill="url(#${id}b)"/><g fill="${hsl(hb, 70, 75)}" opacity=".16">${pat}</g><g fill="#fff" opacity=".07">${rays}</g>
+<ellipse cx="50" cy="86" rx="25" ry="4.500" fill="url(#${id}s)"/>
+<g style="filter:drop-shadow(0 2px 2px rgba(0,0,0,.45))">${model(kind, T, id, hsh)}</g>
+<rect width="100" height="100" fill="url(#${id}h)"/>${leg ? `<rect x=".5" y=".5" width="99" height="99" fill="none" stroke="${hsl(44, 85, 70)}" stroke-opacity=".5"/>` : ''}`;
     return (ART2[key] = `<svg class="ga" viewBox="0 0 100 100" aria-hidden="true">${o}</svg>`);
   }
   window.GoldaArt = { svg, h32, bg: bgc };
