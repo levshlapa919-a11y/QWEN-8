@@ -1,4 +1,4 @@
-/* GOLDA 2.1: строгая графика NFT, кошелёк TIX, рынок NFT, окно «выход из беты», инструменты, очистка интерфейса от эмодзи */
+/* YZITK Chats 2.1: строгая графика NFT, кошелёк TIX, рынок NFT, окно «выход из беты», инструменты, очистка интерфейса от эмодзи */
 (function () {
   'use strict';
   const Q = (s, r) => (r || document).querySelector(s), QA = (s, r) => [...(r || document).querySelectorAll(s)];
@@ -271,7 +271,7 @@
 
   function wallet() {
     PG().open('tix', {
-      title: 'TIX', big: 1, sub: 'Внутренняя валюта GOLDA', tab: 'set', async render(body) {
+      title: 'TIX', big: 1, sub: 'Внутренняя валюта YZITK Chats', tab: 'set', async render(body) {
         const paint = async () => {
           const r = await rpc('tix_state'); const d = r.data;
           if (!d) { body.innerHTML = '<div class="s2empty">Не удалось загрузить кошелёк</div>'; return; }
@@ -465,7 +465,7 @@
   function tools() {
     const { row } = PG();
     PG().open('tools', {
-      title: 'Инструменты', big: 1, sub: 'Дополнительные возможности GOLDA', tab: 'set', render(body) {
+      title: 'Инструменты', big: 1, sub: 'Дополнительные возможности YZITK Chats', tab: 'set', render(body) {
         const dnd = LS.g('golda_dnd', '0') === '1';
         body.innerHTML = row({ id: 'rem', ic: 'clock', t: 'Напоминания', s: 'Бот напомнит в нужное время' }) + row({ id: 'find', ic: 'search', t: 'Поиск по сообщениям', s: 'По всем вашим чатам' }) + row({ id: 'notes', ic: 'user', t: 'Заметки о контактах', s: 'Видны только вам' }) + row({ id: 'exp', ic: 'bookmark', t: 'Экспорт переписки', s: 'Сохранить чат в текстовый файл' }) +
           row({ id: 'dnd', ic: 'bell', t: 'Тихие часы', s: dnd ? 'Включены: ' + LS.g('golda_dnd_from', '23:00') + ' – ' + LS.g('golda_dnd_to', '08:00') : 'Отключены', v: dnd ? 'Вкл' : 'Выкл' }) + row({ id: 'send', ic: 'wallet', t: 'Перевод TIX', s: 'Отправить другу' });
@@ -553,7 +553,7 @@
     } catch (e) { launchBusy = false; return; }
     const o = document.createElement('div'); o.id = 'mxLaunch'; o.className = 'mx-lo';
     const items = [['Кошелёк TIX', 'Обмен праймиков на TIX, переводы друзьям, история операций.'], ['Рынок NFT', 'Покупайте и продавайте NFT за TIX по свободным ценам.'], ['Новая коллекция', 'Все подарки и NFT переработаны: строгая графика вместо значков.'], ['Инструменты', 'Напоминания, поиск по сообщениям, заметки о контактах, экспорт переписки, тихие часы.'], ['Приватность', 'Скрытие фото, статуса и «о себе», чёрный список, список устройств.']];
-    o.innerHTML = `<div class="mx-lc"><div class="mx-lart">${svg({ name: 'Маяк Янтарь', rarity: 'legendary' })}</div><div class="mx-lk">GOLDA 2.1</div><h2>Мессенджер вышел из беты</h2><p>Спасибо, что были с нами с самого начала. Теперь GOLDA работает в полную силу.</p><div class="mx-li">${items.map(x => `<div><b>${x[0]}</b><span>${x[1]}</span></div>`).join('')}</div><button class="go" id="mxLgo">Получить 100 TIX</button><small>Приветственный бонус начисляется один раз.</small></div>`;
+    o.innerHTML = `<div class="mx-lc"><div class="mx-lart">${svg({ name: 'Маяк Янтарь', rarity: 'legendary' })}</div><div class="mx-lk">YZITK Chats 2.1</div><h2>Мессенджер вышел из беты</h2><p>Спасибо, что были с нами с самого начала. Теперь GOLDA работает в полную силу.</p><div class="mx-li">${items.map(x => `<div><b>${x[0]}</b><span>${x[1]}</span></div>`).join('')}</div><button class="go" id="mxLgo">Получить 100 TIX</button><small>Приветственный бонус начисляется один раз.</small></div>`;
     document.body.appendChild(o);
     Q('#mxLgo', o).onclick = async () => {
       const b = Q('#mxLgo', o); b.disabled = true; b.textContent = 'Начисляем…';

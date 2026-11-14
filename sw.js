@@ -1,5 +1,5 @@
 /* golda-mesenger service worker: push + офлайн-оболочка */
-const CACHE = 'golda-shell-v79';
+const CACHE = 'golda-shell-v81';
 const SHELL = ['./', './index.html', './manifest.json', './mobile.css', './push.js', './icon-192.png'];
 
 self.addEventListener('install', e => {
@@ -47,13 +47,13 @@ self.addEventListener('push', e => {
   let data = {};
   try { data = e.data ? e.data.json() : {}; } catch (_) { data = { body: e.data ? e.data.text() : '' }; }
 
-  const title = data.title || 'golda-mesenger';
+  const title = data.title || 'YZITK Chats';
   const isCall = data.type === 'call';
   const options = {
     body: data.body || 'Новое сообщение',
     icon: 'icon-192.png',
     badge: 'badge-96.png',
-    tag: data.tag || 'golda',
+    tag: data.tag || 'yzitk',
     renotify: true,
     vibrate: isCall ? [600, 250, 600, 250, 600, 250, 600, 250, 600] : [200, 100, 200],
     requireInteraction: isCall,

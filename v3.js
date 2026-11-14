@@ -279,7 +279,7 @@
     let g = '';
     if (stkTab === 'b') g = STK.map((_, i) => `<button class="st" data-s="b:${i}"><img src="${stkSVG(i)}" alt=""></button>`).join('');
     else g = `<button class="st add" data-add>＋</button>` + MYSTK.map(s => `<button class="st" data-s="${E(s.url)}" data-id="${s.id}"><img src="${E(s.url)}" alt="" loading="lazy">${stkManage ? `<span class="del" data-del="${s.id}">✕</span>` : ''}</button>`).join('');
-    return `<div class="stk-tabs"><button data-t="b" class="${stkTab === 'b' ? 'on' : ''}">Golda</button><button data-t="m" class="${stkTab === 'm' ? 'on' : ''}">Мои</button></div>` +
+    return `<div class="stk-tabs"><button data-t="b" class="${stkTab === 'b' ? 'on' : ''}">YZITK</button><button data-t="m" class="${stkTab === 'm' ? 'on' : ''}">Мои</button></div>` +
       (stkTab === 'm' ? `<div class="stk-hint">Загрузи любую картинку — она станет твоим стикером. ${MYSTK.length ? '<a href="#" data-manage style="color:var(--neon)">' + (stkManage ? 'Готово' : 'Удалить…') + '</a>' : ''}</div>` : '') +
       `<div class="stk-grid">${g}</div>`;
   }

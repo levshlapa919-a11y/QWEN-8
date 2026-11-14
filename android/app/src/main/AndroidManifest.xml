@@ -9,7 +9,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <application android:label="Golda" android:icon="@mipmap/ic_launcher" android:usesCleartextTraffic="false" android:allowBackup="false" android:theme="@style/T">
+    <application android:label="YZITK Chats" android:icon="@mipmap/ic_launcher" android:usesCleartextTraffic="false" android:allowBackup="false" android:theme="@style/T">
         <activity android:name=".Main" android:exported="true" android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout" android:windowSoftInputMode="adjustResize">
             <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
         </activity>

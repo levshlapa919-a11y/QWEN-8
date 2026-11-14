@@ -109,7 +109,7 @@
     ].filter(x => x !== undefined);
     let n = 0;
     D.innerHTML = `<div class="sc"></div><div class="pn"><div class="hd"><div id="clDAva"></div><b>${esc((Q('#meName') || {}).textContent)}</b><small>${esc((Q('#meUname') || {}).textContent)}</small><button class="tg" title="Тема">${ic(dark ? 'sun' : 'moon', 22)}</button></div>` +
-      items.map(it => it ? `<button class="it" style="--i:${n++}" data-n="${n - 1}">${ic(it[0], 24)}<span>${it[1]}</span></button>` : '<div class="sp"></div>').join('') + `<div class="ft">Golda Messenger</div></div>`;
+      items.map(it => it ? `<button class="it" style="--i:${n++}" data-n="${n - 1}">${ic(it[0], 24)}<span>${it[1]}</span></button>` : '<div class="sp"></div>').join('') + `<div class="ft">YZITK Chats</div></div>`;
     document.body.appendChild(D);
     const ava = Q('#meAva'); if (ava) Q('#clDAva').innerHTML = ava.innerHTML;
     const real = items.filter(Boolean);
@@ -173,7 +173,7 @@
         ${row('trash', '#e5484d', 'Очистить кэш', 'Перезагрузит и обновит приложение', '', 'cache')}
       </div>
       <div class="sec"><h4>О приложении</h4>
-        ${row('info', '#707579', 'Golda Messenger', 'Сообщения, каналы, игры и NFT', '<span class="vl">v5</span>', '')}
+        ${row('info', '#707579', 'YZITK Chats', 'Сообщения, каналы, игры и NFT', '<span class="vl">v5</span>', '')}
         ${row('out', '#e5484d', 'Выйти из аккаунта', ME && ME.email ? esc(ME.email) : '', '', 'logout', 'red')}
       </div></div></div>`;
     const ava = Q('#meAva'); if (ava) Q('#clSAva').innerHTML = ava.innerHTML;
@@ -215,7 +215,7 @@
         case 'motion': { const on = LS.g('golda_motion', 'on') === 'on'; LS.s('golda_motion', on ? 'off' : 'on'); rw.querySelector('.sw').classList.toggle('on', !on); applyLook(); break; }
         case 'enter': { const on = LS.g('golda_enter', '1') === '1'; LS.s('golda_enter', on ? '0' : '1'); rw.querySelector('.sw').classList.toggle('on', !on); break; }
         case 'install': clickQ('#settingsInstall'); break;
-        case 'apk': window.open('https://github.com/levshlapa919-a11y/QWEN-8/releases/download/apk-latest/golda.apk', '_blank'); break;
+        case 'apk': window.open('https://github.com/levshlapa919-a11y/QWEN-8/releases/download/apk-latest/yzitk.apk', '_blank'); break;
         case 'cache': if (confirm('Очистить кэш и перезагрузить приложение?')) { (async () => { try { const rs = await navigator.serviceWorker.getRegistrations(); for (const r of rs) await r.unregister(); const ks = await caches.keys(); for (const k of ks) await caches.delete(k); } catch (er) { } location.reload(); })(); } break;
         case 'logout': closeSet(); clickQ('#btnLogout'); break;
       }

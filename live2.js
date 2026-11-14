@@ -12,7 +12,7 @@
   let muteUntil = 0;
   const muted = () => list('golda_muted');
   const wrap = (name, fn) => { const o = window[name]; if (typeof o === 'function' && !o.__lv) { const n = function () { return fn(o, this, arguments); }; n.__lv = 1; window[name] = n; } };
-  const quietFeed = m => { try { const c = CHATS.find(x => x.id === m.chat_id); return !!(c && c.type === 'group' && c.name === 'Golda Лента' && !String(m.content || '').startsWith('**Итоги дня**')); } catch (e) { return false; } };
+  const quietFeed = m => { try { const c = CHATS.find(x => x.id === m.chat_id); return !!(c && c.type === 'group' && (c.name === 'YZITK Лента' || c.name === 'Golda Лента') && !String(m.content || '').startsWith('**Итоги дня**')); } catch (e) { return false; } };
   wrap('sendNotif', (o, t, a) => { const m = a[0]; if (m && (muted().includes(m.chat_id) || quietFeed(m))) { muteUntil = Date.now() + 150; return; } return o.apply(t, a); });
   wrap('playNotifSound', (o, t, a) => { if (Date.now() < muteUntil) return; return o.apply(t, a); });
   const ov = navigator.vibrate && navigator.vibrate.bind(navigator);

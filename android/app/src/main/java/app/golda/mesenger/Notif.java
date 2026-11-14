@@ -21,7 +21,7 @@ public class Notif extends Service {
             nm.createNotificationChannel(new NotificationChannel(CH_SVC, "Фоновая работа", NotificationManager.IMPORTANCE_MIN));
         }
         Notification.Builder b = Build.VERSION.SDK_INT >= 26 ? new Notification.Builder(this, CH_SVC) : new Notification.Builder(this);
-        b.setSmallIcon(android.R.drawable.stat_notify_chat).setContentTitle("Golda").setContentText("Получение сообщений").setOngoing(true);
+        b.setSmallIcon(android.R.drawable.stat_notify_chat).setContentTitle("YZITK Chats").setContentText("Получение сообщений").setOngoing(true);
         if (Build.VERSION.SDK_INT >= 29) startForeground(1, b.build(), android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC);
         else startForeground(1, b.build());
         if (!run) {

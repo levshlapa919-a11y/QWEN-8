@@ -39,7 +39,7 @@
   // welcome
   const w = document.createElement('div'); w.id = 'welcome'; w.className = 'hidden';
   w.innerHTML = '<div class="w-logo"><div class="w-blob"></div><div class="w-ring"></div></div>' +
-    '<div class="w-name"><b>golda</b>-mesenger</div><div class="w-sub">Общайся красиво</div>' +
+    '<div class="w-name"><b>YZITK</b> Chats</div><div class="w-sub">Общайся красиво</div>' +
     '<div class="w-btns"><button class="a-btn main" id="wReg" type="button">Создать аккаунт</button><button class="a-btn sec" id="wLogin" type="button">Войти</button></div>';
   document.body.appendChild(w);
   let shown = false;

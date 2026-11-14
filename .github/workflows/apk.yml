@@ -43,6 +43,6 @@ jobs:
       - name: Release
         env: { GH_TOKEN: '${{ github.token }}' }
         run: |
-          cp android/app/build/outputs/apk/release/app-release.apk golda.apk
+          cp android/app/build/outputs/apk/release/app-release.apk yzitk.apk
           gh release delete apk-latest -y --cleanup-tag || true
-          gh release create apk-latest golda.apk --title "Golda APK" --notes "Скачай golda.apk и установи на Android"
+          gh release create apk-latest yzitk.apk --title "YZITK Chats APK" --notes "Скачай yzitk.apk и установи на Android"

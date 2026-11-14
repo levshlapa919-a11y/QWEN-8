@@ -123,7 +123,7 @@
   }
   window.LIVE = { confetti, pop, shareProfile() {
     const url = location.origin + location.pathname.replace(/index\.html$/, '') + '?u=' + encodeURIComponent((ME.username || '').toLowerCase());
-    if (navigator.share) { navigator.share({ title: 'Golda Messenger', text: 'Напиши мне в Golda', url }).catch(() => { }); return; }
+    if (navigator.share) { navigator.share({ title: 'YZITK Chats', text: 'Напиши мне в YZITK Chats', url }).catch(() => { }); return; }
     (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(() => { try { toast('Ссылка скопирована'); } catch (e) { } }).catch(() => prompt('Ссылка на профиль', url));
   } };
 

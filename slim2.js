@@ -253,7 +253,7 @@
           const rv = e.target.closest('[data-rev]'), r = e.target.closest('[data-id]');
           if (rv) { if (!confirm('Завершить сеанс? Это устройство будет выброшено из аккаунта.')) return; const { error } = await sb.rpc('revoke_device', { sid: rv.dataset.rev }); if (error) return tst(err(error), 'red'); tst('Сеанс завершён ✔'); return draw(); }
           if (!r) return;
-          if (r.dataset.id === 'link') { const u = location.origin + location.pathname; try { if (navigator.share) await navigator.share({ title: 'Golda', url: u }); else { await navigator.clipboard.writeText(u); tst(t('copied')); } } catch (er) { try { await navigator.clipboard.writeText(u); tst(t('copied')); } catch (e2) { prompt('Ссылка', u); } } }
+          if (r.dataset.id === 'link') { const u = location.origin + location.pathname; try { if (navigator.share) await navigator.share({ title: 'YZITK Chats', url: u }); else { await navigator.clipboard.writeText(u); tst(t('copied')); } } catch (er) { try { await navigator.clipboard.writeText(u); tst(t('copied')); } catch (e2) { prompt('Ссылка', u); } } }
           if (r.dataset.id === 'endall') { if (!confirm('Завершить все остальные сеансы?')) return; const { error } = await sb.rpc('revoke_other_devices', { keep: SID }); if (error) return tst(err(error), 'red'); tst('Остальные сеансы завершены ✔'); draw(); }
           if (r.dataset.id === 'pass') sheet(`<h3>${t('change_pass')}</h3><input class="s2in" id="p1" type="password" placeholder="Новый пароль (от 6 символов)" autocomplete="new-password"><input class="s2in" id="p2" type="password" placeholder="Повторите пароль" autocomplete="new-password"><button class="go">${t('save')}</button>`, (ov, close) => {
             Q('.go', ov).onclick = async () => { const a = Q('#p1', ov).value, b = Q('#p2', ov).value; if (a.length < 6) return tst('Пароль минимум 6 символов', 'red'); if (a !== b) return tst('Пароли не совпадают', 'red'); const { error } = await sb.auth.updateUser({ password: a }); if (error) return tst(err(error), 'red'); close(); tst('Пароль изменён ✔'); };
@@ -376,7 +376,7 @@
       case 'wallet': return G(() => GAMES_HUB());
       case 'tix': return G(() => window.GoldaMint.wallet()); case 'market': return G(() => window.GoldaMint.market()); case 'tools': return G(() => window.GoldaMint.tools());
       case 'stats': return viaOld('stats'); case 'share': return G(() => LIVE.shareProfile()); case 'passcode': closeAll(); return G(() => window.F2.pass());
-      case 'apk': return window.open('https://github.com/levshlapa919-a11y/QWEN-8/releases/download/apk-latest/golda.apk', '_blank');
+      case 'apk': return window.open('https://github.com/levshlapa919-a11y/QWEN-8/releases/download/apk-latest/yzitk.apk', '_blank');
       case 'cache': if (confirm('Очистить кэш и перезагрузить приложение?')) (async () => { try { const rs = await navigator.serviceWorker.getRegistrations(); for (const r of rs) await r.unregister(); const ks = await caches.keys(); for (const k of ks) await caches.delete(k); } catch (er) { } location.reload(); })(); return;
       case 'admin': closeAll(); return (Q('#btnAdmin') || {}).click && Q('#btnAdmin').click();
       case 'logout': closeAll(); return (Q('#btnLogout') || {}).click && Q('#btnLogout').click();
@@ -384,7 +384,7 @@
   }
 
   /* ---------- главный экран: заголовок ---------- */
-  const feedChat = () => G(() => CHATS.find(c => c.type === 'group' && /Golda\s+Лента/i.test(c.name || '')));
+  const feedChat = () => G(() => CHATS.find(c => c.type === 'group' && /(YZITK|Golda)\s+Лента/i.test(c.name || '')));
   function top() {
     const side = Q('.side'); if (!side || Q('#s2Top')) return;
     const d = document.createElement('div'); d.id = 's2Top';

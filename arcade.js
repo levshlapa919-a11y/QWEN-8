@@ -29,7 +29,7 @@
       if (a === 'again') { o.remove(); again(); }
       else if (a === 'top') top(root, game);
       else if (a === 'ch') {
-        let cid = null; try { cid = CURRENT || (CHATS.find(c => c.type === 'group' && c.name === 'Golda Лента') || {}).id; } catch (er) { }
+        let cid = null; try { cid = CURRENT || (CHATS.find(c => c.type === 'group' && (c.name === 'YZITK Лента' || c.name === 'Golda Лента')) || {}).id; } catch (er) { }
         if (!cid) return tst('Открой чат, куда отправить', 'red');
         const { error } = await sb.from('messages').insert({ chat_id: cid, sender_id: ME.id, content: '**' + NAMES[game] + '**: мой результат ' + score + '. Побьёшь? Игры → ' + NAMES[game] });
         tst(error ? 'Не отправилось' : 'Вызов отправлен', error ? 'red' : '');

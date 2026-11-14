@@ -83,7 +83,7 @@
   async function initPush() {
     if (!ME) return;
     if (isIOS && !isStandalone) {
-      showBanner('📱 На iPhone уведомления работают только из приложения: <b>Поделиться → На экран «Домой»</b>, затем открой иконку GOLDA.', '', null, 'push_ios_hint');
+      showBanner('📱 На iPhone уведомления работают только из приложения: <b>Поделиться → На экран «Домой»</b>, затем открой иконку YZITK.', '', null, 'push_ios_hint');
       return;
     }
     if (!supported) return;
@@ -102,7 +102,7 @@
     if (isIOS && !isStandalone) return { ok: false, text: 'Открой сайт с иконки на рабочем столе (не из Safari). Если иконки нет: Safari → Поделиться → На экран «Домой».', btn: false };
     if (isIOS && iosVersion() && iosVersion() < 16.4) return { ok: false, text: 'Нужен iOS 16.4 или новее (сейчас ' + iosVersion() + '). Обнови iPhone в Настройки → Основные → Обновление ПО.', btn: false };
     if (!supported) return { ok: false, text: 'Этот браузер не поддерживает push-уведомления.', btn: false };
-    if (Notification.permission === 'denied') return { ok: false, text: 'Уведомления запрещены. Включи в Настройках телефона → GOLDA (или Safari) → Уведомления.', btn: false };
+    if (Notification.permission === 'denied') return { ok: false, text: 'Уведомления запрещены. Включи в Настройках телефона → YZITK Chats (или Safari) → Уведомления.', btn: false };
     if (Notification.permission === 'granted') {
       let sub = null;
       try { const reg = await navigator.serviceWorker.ready; sub = await reg.pushManager.getSubscription(); } catch (_) {}
@@ -126,7 +126,7 @@
     document.getElementById('pushTestBtn').onclick = async () => {
       try {
         const reg = await navigator.serviceWorker.ready;
-        await reg.showNotification('GOLDA', { body: 'Тест: уведомления работают ✔', icon: 'icon-192.png', badge: 'badge-96.png', tag: 'golda-test' });
+        await reg.showNotification('YZITK Chats', { body: 'Тест: уведомления работают ✔', icon: 'icon-192.png', badge: 'badge-96.png', tag: 'golda-test' });
       } catch (e) { toast('Не удалось показать тест: ' + (e.message || e), 'red'); }
     };
   }
