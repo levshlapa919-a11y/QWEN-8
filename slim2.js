@@ -139,7 +139,7 @@
           Q('#s2ph').innerHTML = `<div class="s2av">${avatarHTML(m, 'l')}</div><h2>${E(m.display_name || m.username)}</h2><p>@${E(m.username || '')}${m.about ? ' · ' + E(m.about) : ''}</p>`;
         }; draw();
         body.innerHTML = '<div id="s2bal"></div>' + row({ id: 'edit', ic: 'user', t: t('edit_profile'), s: t('name_about') }) +
-          row({ id: 'tix', ic: 'wallet', t: 'Кошелёк TIX', s: 'Баланс, обмен gold, переводы' }) + row({ id: 'market', ic: 'chart', t: 'Рынок NFT', s: 'Купить и продать за TIX' }) + row({ id: 'wallet', ic: 'wallet', t: t('wallet'), s: t('wallet_s') }) + row({ id: 'stats', ic: 'chart', t: t('stats') }) +
+          row({ id: 'tix', ic: 'wallet', t: 'Кошелёк TIX', s: 'Баланс, обмен gold, переводы' }) + row({ id: 'market', ic: 'chart', t: 'Рынок NFT', s: 'Купить и продать за TIX' }) + row({ id: 'hub', ic: 'check', t: 'Награды и коллекция', s: 'Серия, достижения, витрина, крафт' }) + row({ id: 'wallet', ic: 'wallet', t: t('wallet'), s: t('wallet_s') }) + row({ id: 'stats', ic: 'chart', t: t('stats') }) +
           row({ id: 'story', ic: 'brush', t: t('stories'), s: t('expires') }) + row({ id: 'saved', ic: 'bookmark', t: t('saved'), s: t('notes') }) + row({ id: 'share', ic: 'share', t: t('share') }) + '<div class="s2lbl">Подарки и NFT</div><div id="s2gifts"></div>';
         body.onclick = e => { const r = e.target.closest('[data-id]'); if (r) act(r.dataset.id); };
         G(() => window.GoldaMint.balances(Q('#s2bal', body)));
@@ -374,7 +374,7 @@
       case 'look': return G(() => GoldaSettings.open());
       case 'calls': { closeAll(); const c = QA('.stab').find(b => /звон|call/i.test(b.textContent)); c && c.click(); return; }
       case 'wallet': return G(() => GAMES_HUB());
-      case 'tix': return G(() => window.GoldaMint.wallet()); case 'market': return G(() => window.GoldaMint.market()); case 'tools': return G(() => window.GoldaMint.tools());
+      case 'tix': return G(() => window.GoldaMint.wallet()); case 'market': return G(() => window.GoldaMint.market()); case 'tools': return G(() => window.GoldaMint.tools()); case 'hub': return G(() => window.GoldaEngage.hub());
       case 'stats': return viaOld('stats'); case 'share': return G(() => LIVE.shareProfile()); case 'passcode': closeAll(); return G(() => window.F2.pass());
       case 'apk': return window.open('https://github.com/levshlapa919-a11y/QWEN-8/releases/download/apk-latest/yzitk.apk', '_blank');
       case 'cache': if (confirm('Очистить кэш и перезагрузить приложение?')) (async () => { try { const rs = await navigator.serviceWorker.getRegistrations(); for (const r of rs) await r.unregister(); const ks = await caches.keys(); for (const k of ks) await caches.delete(k); } catch (er) { } location.reload(); })(); return;

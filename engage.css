@@ -1,0 +1,25 @@
+/* награды, достижения, витрина, крафт */
+.ev-card{background:var(--p1);border-radius:18px;padding:16px;margin:0 0 12px}
+.ev-h{font-weight:700;font-size:17px}
+.ev-sub{color:var(--mut);font-size:14px;line-height:1.4;margin-top:4px}
+.ev-dots{display:flex;gap:6px;margin:14px 0}
+.ev-d{flex:1;height:38px;border-radius:10px;background:var(--p2);display:grid;place-items:center;font-size:13px;font-weight:700;color:var(--mut)}
+.ev-d.big{flex:1.5}
+.ev-d.on{background:var(--ac,var(--accent,#7f9be6));color:var(--on-ac,#000)}
+.ev-btn{display:block;width:100%;padding:14px;border:0;border-radius:14px;background:var(--ac,var(--accent,#7f9be6));color:var(--on-ac,#000);font:700 16px var(--font,inherit);cursor:pointer;margin-top:12px}
+.ev-btn:disabled{opacity:.45;cursor:default}
+.ev-btn.ghost{background:var(--p2);color:var(--tx)}
+.ev-ar{display:flex;gap:14px;align-items:center;padding:10px 6px;opacity:.5}
+.ev-ar.on{opacity:1}
+.ev-ar b{display:block;font-size:16px}
+.ev-ar small{display:block;color:var(--mut);font-size:13px;margin-top:2px}
+.ev-bd{flex:none;display:inline-grid;place-items:center;border-radius:50%;color:hsl(var(--h) 20% 55%);background:var(--p2);border:1px solid rgba(255,255,255,.08)}
+.ev-bd.on{color:#fff;background:radial-gradient(circle at 30% 25%,hsl(var(--h) 80% 68%),hsl(var(--h) 70% 40%) 70%);border-color:hsl(var(--h) 80% 75% / .5);box-shadow:0 3px 10px hsl(var(--h) 70% 30% / .45)}
+.ev-bds{display:flex;flex-wrap:wrap;gap:10px}
+.ev-slots{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.ev-slot{border:0;background:none;color:inherit;padding:0;font:inherit;text-align:center;cursor:pointer}
+.ev-slot.empty{display:block}
+.ev-slot.empty .ev-plus{aspect-ratio:1;border-radius:14px;border:2px dashed rgba(255,255,255,.2);display:grid;place-items:center;font-size:32px;color:var(--mut)}
+.ev-slots.mini .ev-slot{cursor:default}
+.ev-on .mx-art{outline:3px solid var(--ac,var(--accent,#7f9be6));outline-offset:2px}
+.ev-link{margin:12px 0;padding:12px;border-radius:12px;background:var(--p2);font-size:13px;word-break:break-all;color:var(--tx)}
