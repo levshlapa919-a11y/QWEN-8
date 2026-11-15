@@ -320,8 +320,8 @@
     PG().open('market', {
       title: 'Рынок NFT', big: 1, sub: 'Покупка и продажа за TIX · комиссия 5%', tab: 'set', async render(body) {
         const load = async () => {
-          const [a, b, c, d] = await Promise.all([rpc('market_browse', { p_q: S.q, p_rarity: S.rar, p_sort: S.sort, p_limit: 60, p_off: 0 }), rpc('market_mine'), rpc('market_stats'), rpc('tix_state')]);
-          S.items = a.data || []; S.mine = b.data || []; S.st = c.data; S.bal = d.data ? d.data.tix : null;
+          const [a, b, c, d, h] = await Promise.all([rpc('market_browse', { p_q: S.q, p_rarity: S.rar, p_sort: S.sort, p_limit: 60, p_off: 0 }), rpc('market_mine'), rpc('market_stats'), rpc('tix_state'), rpc('market_recent', { p_limit: 60 })]);
+          S.items = a.data || []; S.mine = b.data || []; S.st = c.data; S.bal = d.data ? d.data.tix : null; S.hist = h.data || [];
         };
         const draw = () => {
           const st = S.st || {};
@@ -334,7 +334,7 @@
           } else if (S.tab === 'mine') {
             h += S.mine.length ? `<div class="mx mx-grid">${S.mine.map(u => `<button type="button" class="mx-n" data-u="${E(u.ug)}">${art(u, u.serial)}<div class="mx-nm">${E(u.name)}</div><div class="mx-pr ${u.listing ? '' : 'mut'}">${u.listing ? fm(u.price) + ' TIX' : u.locked ? 'Занят' : 'Не в продаже'}</div></button>`).join('')}</div>` : '<div class="s2empty">У вас пока нет NFT. Их можно купить на рынке или получить в подарок.</div>';
           } else {
-            h += (st.recent || []).length ? (st.recent).map(x => `<div class="mx mx-lg"><div><b>${E(x.name)} #${x.serial}</b><small>${E(RAR[x.rarity] || '')} · ${E(ago(x.at))}</small></div><span>${fm(x.price)} TIX</span></div>`).join('') : '<div class="s2empty">Продаж пока не было</div>';
+            h += (S.hist || []).length ? S.hist.map(x => `<div class="mx mx-lg"><div><b>${E(x.name)} #${x.serial}</b><small>${E(RAR[x.rarity] || '')} · ${E(ago(x.at))}</small><small>${x.mine_sell ? 'Вы продали → ' : E(x.seller_name || '—') + ' → '}<span style="color:var(--tx);font-weight:700">${x.mine_buy ? 'вы' : E(x.buyer_name || '—')}</span></small></div><span>${fm(x.price)} TIX</span></div>`).join('') : '<div class="s2empty">Продаж пока не было</div>';
           }
           body.innerHTML = h;
         };
