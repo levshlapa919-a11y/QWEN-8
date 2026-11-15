@@ -72,9 +72,9 @@
           const row = (id, t, sub) => `<button class="s2r" data-id="${id}" type="button"><div class="s2rt"><b>${t}</b><small>${sub}</small></div><span class="s2c">›</span></button>`;
           body.innerHTML = `<div class="ev-card"><div class="ev-h">Ежедневная награда</div><div class="ev-sub">Серия: ${s.streak} ${s.streak === 1 ? 'день' : 'дн.'}${s.best ? ' · рекорд ' + s.best : ''}</div>${dots(s.streak)}
 <button class="ev-btn" data-id="claim" ${s.claimed ? 'disabled' : ''}>${s.claimed ? 'Награда получена, возвращайся завтра' : 'Забрать ' + nextReward(s.streak) + ' TIX'}</button></div>
-${row('ach', 'Достижения', 'Значки за активность и коллекцию')}${row('show', 'Витрина NFT', 'Три любимых NFT на вашем профиле')}${row('craft', 'Крафт NFT', 'Три одинаковой редкости дают один выше')}${row('ref', 'Пригласить друзей', '+200 TIX вам и +100 TIX другу')}`;
+${row('ach', 'Достижения', 'Значки за активность и коллекцию')}${row('show', 'Витрина NFT', 'Три любимых NFT на вашем профиле')}${row('craft', 'Крафт NFT', 'Три одинаковой редкости дают один выше')}${row('tour', 'Турнир недели', 'Лучшие в играх получают gold каждую неделю')}${row('ref', 'Пригласить друзей', '+200 TIX вам и +100 TIX другу')}`;
         };
-        body.onclick = e => { const b = e.target.closest('[data-id]'); if (!b || b.disabled) return; const k = b.dataset.id; if (k === 'claim') claim(paint); else if (k === 'ach') ach(); else if (k === 'show') showcase(); else if (k === 'craft') craft(); else if (k === 'ref') invite(); };
+        body.onclick = e => { const b = e.target.closest('[data-id]'); if (!b || b.disabled) return; const k = b.dataset.id; if (k === 'claim') claim(paint); else if (k === 'ach') ach(); else if (k === 'show') showcase(); else if (k === 'craft') craft(); else if (k === 'ref') invite(); else if (k === 'tour') tourney(); };
         await paint();
       }
     });
@@ -185,5 +185,30 @@ ${row('ach', 'Достижения', 'Значки за активность и 
     setTimeout(dailyPopup, 2500);
   }, 1000);
 
-  window.GoldaEngage = { hub, ach, showcase, craft, invite, daily: dailyPopup };
+
+  /* ---------- турнир недели ---------- */
+  const GN = { g2048: '2048', snake: 'Змейка', tap: 'Тап' };
+  const left = iso => { const s = Math.max(0, (new Date(iso) - Date.now()) / 1000 | 0), d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600); return d ? d + ' д ' + h + ' ч' : h + ' ч ' + Math.floor(s % 3600 / 60) + ' мин'; };
+  function tourney() {
+    PG().open('tour', {
+      title: 'Турнир недели', big: 1, sub: 'Каждый понедельник результаты обнуляются', tab: 'set', async render(body) {
+        body.innerHTML = '<div class="s2empty">Загрузка…</div>';
+        const d = (await rpc('tourney_state')).data; if (!d) { body.innerHTML = '<div class="s2empty">Не удалось загрузить</div>'; return; }
+        const pz = d.prizes || [];
+        body.innerHTML = `<div class="ev-card"><div class="ev-h">До конца недели ${left(d.ends)}</div><div class="ev-sub">Призы за каждую игру: 1 место ${fm(pz[0])}, 2 место ${fm(pz[1])}, 3 место ${fm(pz[2])} gold. Результат считается по лучшей попытке за неделю.</div></div>` +
+          d.games.map(g => `<div class="ev-card"><div class="ev-h">${GN[g.game] || g.game}${g.mine != null ? ' <small style="font-weight:500;color:var(--mut)">· ваш результат ' + fm(g.mine) + '</small>' : ''}</div>` +
+            (g.top.length ? g.top.map((x, i) => `<div style="display:flex;gap:10px;padding:8px 2px;align-items:center${x.me ? ';color:var(--ac,var(--accent,#7f9be6));font-weight:700' : ''}"><span style="width:22px;color:var(--mut)">${i + 1}</span><span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${E(x.name)}</span><b>${fm(x.best)}</b></div>`).join('') : '<div class="ev-sub">Пока никто не играл. Станьте первым.</div>') + '</div>').join('');
+      }
+    });
+  }
+
+  /* ---------- открытие чужой визитки по ссылке ?u=ник ---------- */
+  /* ссылка ?u=ник: у вошедших открывает профиль (live.js), у гостей показываем, кто зовёт */
+  async function openFromLink() {
+    let u = null; try { u = new URLSearchParams(location.search).get('u'); } catch (e) { } if (!u || G(() => ME)) return;
+    const r = await rpc('public_profile', { p_username: u }); const p = r.data; if (!p) return;
+    const el = Q('#authScreen .brand-tag'); if (el) { el.textContent = 'Вас ждёт ' + p.name + ' (@' + p.username + ')'; }
+  }
+  const lt = setInterval(() => { if (G(() => typeof sb) === 'object') { clearInterval(lt); setTimeout(openFromLink, 600); } }, 600);
+  window.GoldaEngage = { tourney, hub, ach, showcase, craft, invite, daily: dailyPopup };
 })();
