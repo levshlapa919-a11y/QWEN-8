@@ -1,0 +1,81 @@
+/* номера на машины, рубли, украшения профиля */
+.pl{display:inline-flex;align-items:stretch;font-size:10px;background:#f6f6f0;color:#111;border:.14em solid #111;border-radius:.45em;font-family:'Arial Narrow',Arial,Helvetica,sans-serif;position:relative;line-height:1;vertical-align:middle;white-space:nowrap;box-shadow:0 .2em .6em rgba(0,0,0,.35)}
+.pl-main{display:flex;align-items:center;gap:.1em;padding:.2em .5em .2em .55em;font-weight:700;font-size:3.1em;letter-spacing:.015em;position:relative;overflow:hidden;border-radius:.2em 0 0 .2em}
+.pl-main b{font-weight:800}
+.pl-reg{border-left:.14em solid #111;padding:.25em .5em .2em;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center;min-width:3.2em}
+.pl-reg b{font-size:2.1em;font-weight:800;line-height:.95}
+.pl-reg small{font-size:.9em;display:flex;align-items:center;gap:.3em;font-weight:700;margin-top:.15em}
+.pl-reg i{display:inline-block;width:1.4em;height:.9em;border:.07em solid #111;background:linear-gradient(#fff 33%,#1c57a5 33% 66%,#d52b1e 66%)}
+.pl.sm{font-size:6px}.pl.md{font-size:8px}.pl.lg{font-size:12px}.pl.xl{font-size:15px}
+.pl-rare{background:linear-gradient(135deg,#f0f7ff,#b9d6ff);border-color:#0f3468;color:#0b2447}
+.pl-rare .pl-reg{border-color:#0f3468}.pl-rare .pl-reg i{border-color:#0f3468}
+.pl-expensive{background:linear-gradient(135deg,#effff0,#97e4a3);border-color:#0d4a20;color:#07300f}
+.pl-expensive .pl-reg{border-color:#0d4a20}
+.pl-epic{background:linear-gradient(135deg,#f6edff,#c7a0ff);border-color:#35146a;color:#240c4b;box-shadow:0 0 1.6em #a05cff77,0 .2em .6em rgba(0,0,0,.35)}
+.pl-epic .pl-reg{border-color:#35146a}
+.pl-legendary{background:linear-gradient(135deg,#fff3c4,#ffc634 55%,#fff0a8);border-color:#4f3000;color:#2b1a00;box-shadow:0 0 2em #ffb52e99,0 .2em .6em rgba(0,0,0,.35)}
+.pl-legendary .pl-reg{border-color:#4f3000}
+.pl-legendary .pl-main::after,.pl-divine .pl-main::after{content:'';position:absolute;top:-10%;bottom:-10%;width:35%;left:-60%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.85),transparent);transform:skewX(-18deg);animation:plShine 2.8s ease-in-out infinite}
+.pl-divine{background:linear-gradient(135deg,#fff,#ffeafc 30%,#e1f8ff 62%,#fff7d8);border-color:#000;color:#1a0b2e;box-shadow:0 0 0 .2em #fff,0 0 1.4em .1em #ff6ad5,0 0 3em .3em #5fd0ff;animation:plHue 5s linear infinite}
+.pl-divine .pl-reg{border-color:#000}
+@keyframes plShine{0%{left:-60%}55%,100%{left:130%}}
+@keyframes plHue{to{filter:hue-rotate(360deg)}}
+/* страница */
+.pl-seg{display:flex;background:var(--p1);border-radius:14px;padding:4px;gap:4px;margin-bottom:12px}
+.pl-seg button{flex:1;border:0;background:none;color:var(--mut);padding:10px 4px;border-radius:11px;font:700 14px var(--font,inherit);cursor:pointer}
+.pl-seg button.on{background:var(--p2);color:var(--tx)}
+.pl-bal{display:flex;justify-content:space-between;align-items:center}
+.pl-bal b{font-size:26px}.pl-bal small{color:var(--mut);display:block;font-size:13px}
+.pl-stage{min-height:150px;display:grid;place-items:center;text-align:center;margin:8px 0 2px;position:relative}
+.pl-stage .pl{font-size:13px}
+.pl-rn{font:800 18px var(--font,inherit);margin-top:10px;min-height:24px}
+.pl-rs{color:var(--mut);font-size:13px;min-height:18px}
+.pl-in{animation:plIn .5s cubic-bezier(.2,1.5,.4,1)}
+@keyframes plIn{0%{transform:scale(.55);opacity:0}100%{transform:none;opacity:1}}
+.pl-fl{animation:plFl .35s ease-out}@keyframes plFl{0%{background:rgba(255,255,255,.18)}100%{background:transparent}}
+.pl-odds{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.pl-odds span{font-size:12px;padding:4px 9px;border-radius:99px;background:var(--p2);color:var(--mut)}
+.pl-odds span b{color:var(--tx)}
+.pl-task{display:flex;align-items:center;gap:12px;padding:11px 2px;border-top:1px solid rgba(255,255,255,.06)}
+.pl-task:first-of-type{border-top:0}
+.pl-task>div{flex:1;min-width:0}.pl-task b{display:block;font-size:15px}.pl-task small{color:var(--mut);font-size:13px}
+.pl-task button{border:0;border-radius:99px;padding:8px 14px;background:var(--ac,var(--accent,#7f9be6));color:var(--on-ac,#000);font:700 13px var(--font,inherit);cursor:pointer;white-space:nowrap}
+.pl-task button:disabled{background:var(--p2);color:var(--mut);cursor:default}
+.pl-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#plBody{padding-bottom:120px}
+.pl .pl-reg small{color:inherit;font-size:.9em}
+.pl-cell{border:0;background:var(--p1);border-radius:16px;padding:14px 8px 10px;color:inherit;font:inherit;cursor:pointer;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px}
+.pl-cell small{color:var(--mut);font-size:12px}.pl-cell.eq{outline:2px solid var(--ac,var(--accent,#7f9be6))}
+.pl-sec{font:700 13px var(--font,inherit);color:var(--mut);text-transform:uppercase;letter-spacing:.05em;margin:16px 4px 8px}
+.pl-it{display:flex;align-items:center;gap:12px;padding:10px;border-radius:14px;background:var(--p1);margin-bottom:8px}
+.pl-it>div{flex:1;min-width:0}.pl-it b{display:block;font-size:15px}.pl-it small{color:var(--mut);font-size:13px}
+.pl-it button{border:0;border-radius:99px;padding:8px 14px;background:var(--p2);color:var(--tx);font:700 13px var(--font,inherit);cursor:pointer;white-space:nowrap}
+.pl-it button.buy{background:var(--ac,var(--accent,#7f9be6));color:var(--on-ac,#000)}
+.pl-sw{width:46px;height:46px;border-radius:12px;flex:none;display:grid;place-items:center;font-size:20px;position:relative}
+.pl-prev{border-radius:18px;padding:22px 14px 16px;text-align:center;margin-bottom:12px;background:var(--p1)}
+.pl-prev .pn{font:700 20px var(--font,inherit);margin-top:12px}.pl-prev .pt{font-size:13px;color:var(--mut);margin-top:2px;min-height:17px}
+.pl-prev .pp{margin-top:10px}
+.pl-sh .pl{font-size:13px;margin:6px 0 10px}
+/* украшения профиля */
+.dc-bg{position:relative}
+.dc-bg-dawn{background:linear-gradient(160deg,#c2417a,#6a2fb5 55%,#2a1c6b)!important}
+.dc-bg-ice{background:linear-gradient(160deg,#1f6f9c,#154a73 55%,#0e2a4a)!important}
+.dc-bg-neon{background:radial-gradient(circle at 20% 0,#ff2bd6aa,transparent 55%),radial-gradient(circle at 90% 100%,#00e5ffaa,transparent 55%),#0b0620!important}
+.dc-bg-matrix{background:repeating-linear-gradient(0deg,rgba(0,255,120,.07) 0 2px,transparent 2px 5px),linear-gradient(#001a0c,#022a14)!important}
+.dc-bg-space{background:radial-gradient(1.5px 1.5px at 20% 30%,#fff,transparent),radial-gradient(1.5px 1.5px at 70% 20%,#fff,transparent),radial-gradient(1px 1px at 50% 70%,#fff,transparent),radial-gradient(1.5px 1.5px at 85% 60%,#fff,transparent),radial-gradient(1px 1px at 30% 85%,#fff,transparent),radial-gradient(circle at 80% 10%,#5b3fd066,transparent 50%),#050818!important}
+.dc-bg-fire{background:linear-gradient(0deg,#ff5a00,#b3200a 40%,#2a0707)!important}
+.dc-bg-aurora{background:linear-gradient(120deg,#0b3d5c,#0f7a6b,#3b2f8f,#0b3d5c);background-size:300% 300%!important;animation:dcAur 9s ease infinite}
+.dc-bg-gold{background:linear-gradient(135deg,#4a3410,#9a7424 35%,#e6c25a 50%,#9a7424 65%,#4a3410)!important;background-size:250% 250%;animation:dcAur 7s ease infinite}
+@keyframes dcAur{50%{background-position:100% 50%}}
+.dc-ring{position:relative;display:inline-block;border-radius:50%}
+.dc-ring::before{content:'';position:absolute;inset:-5px;border-radius:50%;pointer-events:none;background:var(--rc);-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3px));mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3px))}
+.dc-fr-gold{--rc:linear-gradient(135deg,#fff3a8,#e0a800,#fff3a8)}
+.dc-fr-ice{--rc:linear-gradient(135deg,#d9f4ff,#4fb7ff,#d9f4ff)}
+.dc-fr-neon{--rc:conic-gradient(#ff2bd6,#00e5ff,#ff2bd6)}
+.dc-fr-fire{--rc:conic-gradient(#ff3d00,#ffc400,#ff3d00)}
+.dc-fr-rainbow::before{background:conic-gradient(#ff5f6d,#ffc371,#fff56a,#7dff9d,#5fd0ff,#b07dff,#ff5fd0,#ff5f6d);animation:dcSp 3s linear infinite}
+@keyframes dcSp{to{transform:rotate(360deg)}}
+.dc-ttl{display:inline-block;font:700 12px var(--font,inherit);padding:3px 10px;border-radius:99px;background:rgba(255,255,255,.16);margin:4px 0 2px}
+.dc-pl{margin:8px 0 2px}
+.overlay.dc-bg .modal,#userOverlay.tg-prof.dc-bg .modal{background:transparent!important;border-color:transparent!important;box-shadow:none!important}
+.overlay.dc-bg .m-title,.overlay.dc-bg .h-name,.overlay.dc-bg .pick-sub{text-shadow:0 1px 6px rgba(0,0,0,.45)}
