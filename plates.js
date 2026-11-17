@@ -25,7 +25,8 @@
   /* ---------- номер ---------- */
   function parse(s) { const m = String(s || '').match(/^(\S)(\d{3})(\S{2}) (\d{2,3})$/); return m && { a: m[1], d: m[2], b: m[3], r: m[4] }; }
   function plate(p, size) {
-    const m = parse(p.plate); if (!m) return '';
+    const m = parse(p.plate);
+    if (!m) { const t = String(p.plate || ''); if (!t) return ''; const f = t.length > 14 ? '.5em' : t.length > 10 ? '.66em' : t.length > 8 ? '.82em' : '1em'; return `<span class="pl pl-free pl-${E(p.rarity)} ${size || ''}"><span class="pl-main"><span class="pl-t" style="font-size:${f}">${E(t)}</span></span></span>`; }
     return `<span class="pl pl-${E(p.rarity)} ${size || ''}"><span class="pl-main"><span>${m.a}</span><b>${m.d}</b><span>${m.b}</span></span><span class="pl-reg"><b>${m.r}</b><small>RUS <i></i></small></span></span>`;
   }
   /* то же правило редкости, что и на сервере: нужно для предпросмотра у создателя */
@@ -48,7 +49,8 @@
   const body = () => Q('#plBody');
   const costOf = () => { const st = S.st || {}; return !S.region ? st.cost || 1000 : PREM.includes(S.region) ? st.cost_prem || 2500 : st.cost_region || 1500; };
 
-  async function open() {
+  async function open(tab) {
+    if (tab) S.tab = tab;
     PG().open('plates', {
       title: 'Номера', big: 1, sub: 'Рулетка, гараж и оформление профиля', tab: 'set', async render(b) {
         b.innerHTML = '<div id="plWrap"><div class="pl-seg" id="plSeg"><button data-t="game">Игра</button><button data-t="gar">Гараж</button><button data-t="col">Коллекция</button><button data-t="prof">Профиль</button></div><div id="plBody"></div></div>';
@@ -112,15 +114,16 @@
 
   /* анимация: символы встают на место по одному */
   function shell(d) {
-    const m = parse(d.plate), sl = (c, t) => `<u class="sl" data-t="${t}" data-c="${c}"></u>`;
+    const m = parse(d.plate), sl = (c, t) => `<u class="sl" data-t="${t}" data-c="${E(c)}"></u>`;
+    if (!m) { const cs = [...String(d.plate)], f = cs.length > 14 ? '.5em' : cs.length > 10 ? '.66em' : cs.length > 8 ? '.82em' : '1em'; return `<span class="pl xl pl-free pl-spin"><span class="pl-main"><span class="pl-t" style="font-size:${f}">${cs.map(c => sl(c, /\d/.test(c) ? 'D' : /[A-Za-zА-Яа-я]/.test(c) ? 'L' : 'X')).join('')}</span></span></span>`; }
     return `<span class="pl xl pl-spin"><span class="pl-main">${sl(m.a, 'L')}<b>${sl(m.d[0], 'D')}${sl(m.d[1], 'D')}${sl(m.d[2], 'D')}</b>${sl(m.b[0], 'L')}${sl(m.b[1], 'L')}</span><span class="pl-reg"><b>${[...m.r].map(c => sl(c, 'D')).join('')}</b><small>RUS <i></i></small></span></span>`;
   }
   function reveal(stg, d) {
     return new Promise(res => {
       stg.innerHTML = shell(d); const pl = Q('.pl', stg), sls = QA('.sl', stg), hot = ['legendary', 'divine'].includes(d.rarity);
-      const L = 'АВЕКМНОРСТУХ', D = '0123456789', rnd = t => { const s = t === 'L' ? L : D; return s[Math.random() * s.length | 0]; };
-      const gaps = [650, 600, 600, 650, 800, 900, 1050, 1250, 1500]; let at = 0; const sched = [];
-      sls.forEach((s, i) => { at += gaps[i] || 1200; if (hot && i >= sls.length - 2) at += 700; sched.push(at); });
+      const L = 'АВЕКМНОРСТУХ', D = '0123456789', rnd = t => { if (t === 'X') return ' '; const s = t === 'L' ? L : D; return s[Math.random() * s.length | 0]; };
+      const gaps = sls.length > 9 ? [520, 420, 420, 420, 480, 520, 600, 700, 800] : [650, 600, 600, 650, 800, 900, 1050, 1250, 1500]; let at = 0; const sched = [];
+      sls.forEach((s, i) => { at += gaps[Math.min(i, gaps.length - 1)] || 1200; if (hot && i >= sls.length - 2) at += 700; sched.push(at); });
       const t0 = performance.now(); let done = false, locked = 0;
       const fin = () => {
         if (done) return; done = true; clearInterval(iv); sls.forEach(s => { s.textContent = s.dataset.c; s.classList.add('lk'); });
@@ -176,9 +179,9 @@
     const nm = u => (u.id === me.id ? 'Я · ' : '') + (u.display_name || u.username || 'Пользователь');
     const rigLine = rig.plate ? `Подкручено: <b>${E(rig.plate)}</b> (${RN[rig.rarity]})` : rig.rarity ? `Подкручено: <b style="color:${RC[rig.rarity]}">${RN[rig.rarity]}</b>` : 'Следующая прокрутка обычная';
     el.querySelector('.pl-own').innerHTML = head + `
-      <div class="pl-sec" style="margin-top:6px">Подкрутка номера</div>
+      <div class="pl-sec" style="margin-top:6px">Подкрутка номера</div><div class="ev-sub">Пишите что угодно (до 18 символов) и выбирайте редкость.</div>
       <div class="ev-sub" id="ownRig">${rigLine}${rig.plate || rig.rarity ? ' · <a href="#" id="ownClr">отменить</a>' : ''}</div>
-      <input class="s2in" id="ownP" placeholder="Свой номер: А777АА 77 (латиница тоже можно)" autocomplete="off" style="margin-top:10px">
+      <input class="s2in" id="ownP" placeholder="Любой текст или номер: А777АА 77, YZITK, Король" autocomplete="off" style="margin-top:10px">
       <div class="pl-ownprev" id="ownPv"></div>
       <div class="pl-chips" id="ownR">${RK.map(k => `<button data-k="${k}" style="--c:${RC[k]}">${RN[k]}</button>`).join('')}</div>
       <div class="pl-two"><button class="ev-btn" id="ownRigBtn">Подкрутить прокрутку</button><button class="ev-btn ghost" id="ownGive">Выдать себе сразу</button></div>
@@ -193,16 +196,19 @@
     const root = el, P = Q('#ownP', root), PV = Q('#ownPv', root);
     Q('#ownT', root).onclick = () => { S.ownerOpen = false; LS.s('pl_own_open', '0'); ownerPanel(el); };
     const clr = Q('#ownClr', root); if (clr) clr.onclick = async e => { e.preventDefault(); await rpc('owner_pl_rig', { p_plate: '', p_rarity: '' }); tst('Подкрутка снята'); ownerPanel(el); };
-    P.oninput = () => { const f = fmtPlate(P.value); const r = f && rarityOf(f); PV.innerHTML = f ? plate({ plate: f, rarity: r }, 'md') + `<small style="color:${RC[r]}">${RN[r]}</small>` : (P.value ? '<small>Формат: буква, 3 цифры, 2 буквы и регион. Буквы: А В Е К М Н О Р С Т У Х</small>' : ''); if (f) { rar = ''; QA('#ownR button', root).forEach(x => x.classList.remove('on')); } };
-    Q('#ownR', root).onclick = e => { const x = e.target.closest('[data-k]'); if (!x) return; rar = rar === x.dataset.k ? '' : x.dataset.k; QA('#ownR button', root).forEach(y => y.classList.toggle('on', y.dataset.k === rar)); if (rar) { P.value = ''; PV.innerHTML = ''; } };
-    const ER = { format: 'Неверный номер', taken: 'Такой номер уже занят', rarity: 'Выберите редкость', forbidden: 'Недоступно' };
+    const val = () => { const raw = P.value.trim(); const f = raw ? fmtPlate(raw) : ''; return { raw, f, txt: f || raw }; };
+    const prev = () => { const v = val(); if (!v.txt) { PV.innerHTML = ''; return; } const r = rar || (v.f && rarityOf(v.f)) || ''; PV.innerHTML = r ? plate({ plate: v.txt, rarity: r }, 'md') + `<small style="color:${RC[r]}">${RN[r]}${v.f ? '' : ' · свой текст'}</small>` : '<small>Выберите редкость для этого текста</small>'; };
+    P.oninput = prev;
+    Q('#ownR', root).onclick = e => { const x = e.target.closest('[data-k]'); if (!x) return; rar = rar === x.dataset.k ? '' : x.dataset.k; QA('#ownR button', root).forEach(y => y.classList.toggle('on', y.dataset.k === rar)); prev(); };
+    const ER = { format: 'Текст от 1 до 18 символов', taken: 'Такой номер уже есть', rarity: 'Выберите редкость', forbidden: 'Недоступно' };
+    const check = () => { const v = val(); if (!v.txt && !rar) { tst('Введите текст или выберите редкость', 'red'); return null; } if (v.txt && !v.f && !rar) { tst('Выберите редкость для своего текста', 'red'); return null; } return v; };
     Q('#ownRigBtn', root).onclick = async () => {
-      const f = P.value ? fmtPlate(P.value) : ''; if (P.value && !f) return tst('Неверный номер', 'red'); if (!f && !rar) return tst('Введите номер или выберите редкость', 'red');
-      const r = await rpc('owner_pl_rig', { p_plate: f || '', p_rarity: f ? '' : rar }); if (r.data && r.data.ok) { tst('Следующая прокрутка подкручена'); ownerPanel(el); } else tst(ER[r.data && r.data.error] || 'Ошибка', 'red');
+      const v = check(); if (!v) return;
+      const r = await rpc('owner_pl_rig', { p_plate: v.txt, p_rarity: rar }); if (r.data && r.data.ok) { tst('Следующая прокрутка подкручена'); ownerPanel(el); } else tst(ER[r.data && r.data.error] || 'Ошибка', 'red');
     };
     Q('#ownGive', root).onclick = async () => {
-      const f = P.value ? fmtPlate(P.value) : ''; if (P.value && !f) return tst('Неверный номер', 'red'); if (!f && !rar) return tst('Введите номер или выберите редкость', 'red');
-      const r = await rpc('owner_pl_give', { p_user: me.id, p_plate: f || '', p_rarity: f ? '' : rar }); if (r.data && r.data.ok) { tst('Выдан номер ' + r.data.plate); await refresh(); setBal(); ownerPanel(el); } else tst(ER[r.data && r.data.error] || 'Ошибка', 'red');
+      const v = check(); if (!v) return;
+      const r = await rpc('owner_pl_give', { p_user: me.id, p_plate: v.txt, p_rarity: rar }); if (r.data && r.data.ok) { tst('Выдан номер ' + r.data.plate); await refresh(); setBal(); ownerPanel(el); } else tst(ER[r.data && r.data.error] || 'Ошибка', 'red');
     };
     const U = Q('#ownU', root), L = Q('#ownL', root), qi = Q('#ownQ', root), A = Q('#ownA', root);
     const drawP = () => { U.innerHTML = `<div class="pl-pk">${G(() => avatarHTML(pick, 's')) || ''}<b>${E(nm(pick))}</b></div>`; };

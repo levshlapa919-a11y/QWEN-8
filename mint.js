@@ -421,7 +421,7 @@
   /* ================= Верх профиля: балансы, магазин подарков, управление TIX ================= */
   async function balances(el) {
     if (!el) return; const r = await rpc('tix_state'); const d = r.data || {};
-    el.innerHTML = `<div class="mx mx-card" style="padding:18px 20px"><div class="mx-l">Баланс</div><div class="mx-b" style="font-size:34px">${fm(d.tix)}<span>TIX</span></div><div class="mx-s">${fm(d.gold)} gold · курс 1500 gold = 1 TIX</div></div>
+    el.innerHTML = `<div class="mx mx-card" style="padding:18px 20px"><div class="mx-l">Баланс</div><div class="mx-b" style="font-size:${String(fm(d.tix)).length > 15 ? 22 : String(fm(d.tix)).length > 11 ? 26 : String(fm(d.tix)).length > 8 ? 30 : 34}px">${fm(d.tix)}<span>TIX</span></div><div class="mx-s">${fm(d.gold)} gold · курс 1500 gold = 1 TIX</div></div>
       <div class="mx mx-act"><button data-b="shop">Магазин подарков</button><button data-b="swap">Купить TIX</button><button data-b="wal">Кошелёк</button></div>${OWN() ? '<div class="mx mx-act" style="grid-template-columns:1fr 1fr"><button data-b="own">Выдать TIX себе</button><button data-b="own">Убрать TIX у себя</button></div>' : ''}`;
     el.onclick = e => { const b = e.target.closest('[data-b]'); if (!b) return; const k = b.dataset.b; if (k === 'shop') G(() => window.openGiftShop(ME.id)); else if (k === 'swap') swapSheet(d, () => balances(el)); else if (k === 'wal') wallet(); else if (k === 'own') ownerTix(G(() => ME.id), () => balances(el)); };
   }

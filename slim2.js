@@ -422,6 +422,7 @@
       const b = e.target.closest('[data-k]'); if (!b) return; const k = b.dataset.k;
       if (k === 'user') { e.stopImmediatePropagation(); e.stopPropagation(); closeAll(); G(() => { if (CURRENT) closeChat(); }); profilePage(); }
       else if (k === 'set') { e.stopImmediatePropagation(); e.stopPropagation(); closeAll(); G(() => GoldaSettings.close()); G(() => { if (CURRENT) closeChat(); }); settingsPage(); }
+      else if (k === 'games') { e.stopImmediatePropagation(); e.stopPropagation(); closeAll(); G(() => GoldaSettings.close()); G(() => { if (CURRENT) closeChat(); }); G(() => window.GoldaDrive.hub()); }
       else if (k === 'chats') { closeAll(); const cb = Q('.stab[data-st="chats"]'); if (cb && !cb.classList.contains('on')) cb.click(); G(() => GoldaSettings.close()); const s = Q('.side'); s && s.classList.remove('s2-search'); }
       else if (k === 'users') { closeAll(); }
       else if (k === 'search') { closeAll(); G(() => GoldaSettings.close()); G(() => { if (CURRENT) closeChat(); }); const s = Q('.side'); s && s.classList.add('s2-search'); const i = Q('#searchInput'); i && setTimeout(() => i.focus(), 80); }
